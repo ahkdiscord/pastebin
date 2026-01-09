@@ -43,11 +43,29 @@
       closeBrackets(),
       autocompletion(),
       rectangularSelection(),
-      highlightActiveLine(),
       highlightActiveLineGutter(),
       highlightSelectionMatches(),
       highlightSpecialChars(),
-      EditorView.theme({}, { dark: true }),
+      EditorView.theme(
+        {
+          "&.cm-focused": {
+            outline: "none",
+          },
+          ".cm-gutters": {
+            backgroundColor: "var(--black)",
+          },
+          ".cm-activeLine": {
+            backgroundColor: "var(--slate)",
+          },
+          ".cm-selectionBackground": {
+            backgroundColor: "var(--smoke)",
+          },
+          "&.cm-focused .cm-selectionBackground": {
+            backgroundColor: "var(--smoke) !important",
+          },
+        },
+        { dark: true },
+      ),
     ],
   });
 
