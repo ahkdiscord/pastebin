@@ -1,7 +1,9 @@
 <script lang="ts">
   import Editor from "$lib/Editor.svelte";
 
-  const script = $state("this\nis a\ntest");
+  let script = $state("test");
+
+  let length = $derived(script.length);
 
   function newClicked() {
     console.log("click");
@@ -23,7 +25,16 @@
     </nav>
   </header>
 
-  <Editor content={script} />
+  <Editor
+    initialContent={script}
+    onUpdate={content => {
+      script = content;
+    }}
+  />
+
+  <div>
+    The document is {length} characters long.
+  </div>
 </form>
 
 <style>
