@@ -37,6 +37,8 @@
 <style>
   header {
     position: sticky;
+    top: 0;
+    z-index: 100;
 
     background-color: var(--black);
     color: var(--white);
