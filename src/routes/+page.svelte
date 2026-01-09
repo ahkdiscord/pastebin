@@ -1,7 +1,8 @@
 <script lang="ts">
   import Editor from "$lib/Editor.svelte";
+  import { onMount } from "svelte";
 
-  let script: string = $state("test");
+  let script: string = $state("");
 
   let length = $derived(script.length);
 
@@ -10,6 +11,16 @@
       script = "";
     }
   }
+
+  onMount(() => {
+    if (!script) {
+      script = localStorage.getItem("script") ?? script;
+    }
+  });
+
+  $effect(() => {
+    localStorage.setItem("script", script);
+  });
 </script>
 
 <form method="POST">
