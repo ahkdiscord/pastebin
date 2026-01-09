@@ -1,12 +1,14 @@
 <script lang="ts">
   import Editor from "$lib/Editor.svelte";
 
-  let script = $state("test");
+  let script: string = $state("test");
 
   let length = $derived(script.length);
 
   function newClicked() {
-    console.log("click");
+    if (script && confirm("Do you want to clear the current script?")) {
+      script = "";
+    }
   }
 </script>
 

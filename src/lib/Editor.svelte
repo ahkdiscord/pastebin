@@ -81,10 +81,15 @@
 
   onMount(() => {
     view = new EditorView({
-      doc: content,
       parent: wrapper,
       state,
     });
+  });
+
+  $effect(() => {
+    if (view && content !== view.state.doc.toString()) {
+      view?.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: content } });
+    }
   });
 
   onDestroy(() => {
