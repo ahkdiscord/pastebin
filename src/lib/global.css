@@ -1,0 +1,19 @@
+:root {
+  --black: hsl(200deg 004% 002%);
+  --night: hsl(200deg 004% 008%);
+  --slate: hsl(200deg 004% 016%);
+
+  --white: hsl(020deg 006% 096%);
+  --shell: hsl(020deg 012% 088%);
+  --paper: hsl(020deg 024% 080%);
+
+  --magic: hsl(252deg 080% 080%);
+  --slime: hsl(128deg 080% 072%);
+  --coral: hsl(352deg 080% 064%);
+}
+
+body {
+  margin: 0;
+  background-color: var(--slate);
+  color: var(--shell);
+}
