@@ -4,7 +4,6 @@
   import {
     drawSelection,
     dropCursor,
-    highlightActiveLine,
     highlightActiveLineGutter,
     highlightSpecialChars,
     keymap,
@@ -18,11 +17,10 @@
   import { highlightSelectionMatches } from "@codemirror/search";
 
   interface Props {
-    initialContent: string;
-    onUpdate: (newContent: string) => void;
+    content: string;
   }
 
-  let { initialContent, onUpdate }: Props = $props();
+  let { content = $bindable() }: Props = $props();
 
   let wrapper: HTMLDivElement;
   let view: EditorView | undefined;
@@ -31,7 +29,7 @@
 
   const state = EditorState.create({
     // svelte-ignore state_referenced_locally
-    doc: initialContent,
+    doc: content,
     extensions: [
       lineNumbers(),
       drawSelection(),
@@ -74,7 +72,7 @@
 
         const string = transaction.newDoc.toString();
 
-        onUpdate(string);
+        content = string;
 
         return null;
       }),
@@ -83,7 +81,7 @@
 
   onMount(() => {
     view = new EditorView({
-      doc: initialContent,
+      doc: content,
       parent: wrapper,
       state,
     });

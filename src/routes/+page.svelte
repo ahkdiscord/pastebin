@@ -25,12 +25,7 @@
     </nav>
   </header>
 
-  <Editor
-    initialContent={script}
-    onUpdate={content => {
-      script = content;
-    }}
-  />
+  <Editor bind:content={script} />
 
   <div>
     The document is {length} characters long.
