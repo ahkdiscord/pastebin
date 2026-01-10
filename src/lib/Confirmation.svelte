@@ -60,6 +60,9 @@
     padding: 1em;
     color: var(--black);
     background-color: var(--shell);
+
+    /* because I keep forgetting: <x> <y> <blur> <spread> <color> */
+    box-shadow: 0em 1em 0.5em 0.5em color-mix(in srgb, var(--black) 20%, transparent);
   }
 
   .content {
