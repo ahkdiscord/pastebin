@@ -49,6 +49,9 @@
       highlightSpecialChars(),
       EditorView.theme(
         {
+          "&.cm-editor": {
+            overflow: "hidden",
+          },
           "&.cm-focused": {
             outline: "none",
           },
@@ -97,10 +100,10 @@
   });
 </script>
 
-<div id="editor" bind:this={wrapper}></div>
+<div class="editor" bind:this={wrapper}></div>
 
 <style>
-  #editor {
+  .editor {
     display: contents;
   }
 </style>

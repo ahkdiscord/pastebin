@@ -38,9 +38,10 @@
       </ul>
     </nav>
   </header>
-
-  <Editor bind:content={script} />
+  <input type="hidden" name="script" value={script} />
 </form>
+
+<Editor bind:content={script} />
 
 <Confirmation bind:open={confirmationOpen}>
   Do you want to clear the current script?
@@ -62,10 +63,6 @@
 
 <style>
   header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-
     background-color: var(--black);
     color: var(--white);
 

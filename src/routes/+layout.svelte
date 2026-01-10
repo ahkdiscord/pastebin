@@ -10,4 +10,16 @@
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<div class="page">
+  {@render children()}
+</div>
+
+<style>
+  .page {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    height: 100%;
+    overflow: hidden;
+  }
+</style>
