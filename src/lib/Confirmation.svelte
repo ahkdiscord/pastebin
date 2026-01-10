@@ -47,7 +47,7 @@
     left: 0;
     z-index: 100;
 
-    background-color: color-mix(in srgb, var(--black) 10%, transparent);
+    background-color: color-mix(in srgb, var(--black) 20%, transparent);
 
     display: flex;
     justify-content: center;
