@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { preventDefault } from "svelte/legacy";
-  import { fly } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
 
   interface Props {
     open: boolean;
@@ -16,7 +16,13 @@
 </script>
 
 {#if open}
-  <div class="container" onmousedown={() => (open = false)} role="none" tabindex="-1">
+  <div
+    class="container"
+    onmousedown={() => (open = false)}
+    role="none"
+    tabindex="-1"
+    transition:fade={{ duration: transitionDurationMs }}
+  >
     <div
       class="dialog"
       onmousedown={e => e.stopPropagation()}
