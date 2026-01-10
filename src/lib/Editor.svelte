@@ -67,6 +67,9 @@
           "&.cm-focused .cm-selectionBackground": {
             backgroundColor: "var(--smoke) !important",
           },
+          ".cm-selectionMatch": {
+            backgroundColor: "color-mix(in srgb, var(--slime) 25%, transparent)",
+          },
         },
         { dark: true },
       ),
