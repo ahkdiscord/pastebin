@@ -1,15 +1,16 @@
 <script lang="ts">
+  import Confirmation from "$lib/Confirmation.svelte";
   import Editor from "$lib/Editor.svelte";
   import { onMount } from "svelte";
 
   let script: string = $state("");
 
-  let length = $derived(script.length);
+  let confirmationOpen: boolean = $state(false);
 
   function newClicked() {
-    if (script && confirm("Do you want to clear the current script?")) {
-      script = "";
-    }
+    if (script === "") return;
+
+    confirmationOpen = true;
   }
 
   onMount(() => {
@@ -39,11 +40,25 @@
   </header>
 
   <Editor bind:content={script} />
-
-  <div>
-    The document is {length} characters long.
-  </div>
 </form>
+
+<Confirmation bind:open={confirmationOpen}>
+  Do you want to clear the current script?
+
+  {#snippet yes()}
+    <button
+      class="dialog-button dangerous"
+      onclick={() => {
+        script = "";
+        confirmationOpen = false;
+      }}>Clear</button
+    >
+  {/snippet}
+
+  {#snippet no()}
+    <button class="dialog-button" onclick={() => (confirmationOpen = false)}>Cancel</button>
+  {/snippet}
+</Confirmation>
 
 <style>
   header {
@@ -104,8 +119,21 @@
     cursor: pointer;
   }
 
-  button:hover,
-  a:hover {
+  header button:hover,
+  header a:hover {
     background-color: var(--slate);
+  }
+
+  .dialog-button {
+    padding: 0.5em 1em;
+    color: var(--black);
+  }
+
+  .dialog-button:hover {
+    background-color: color-mix(in srgb, var(--magic) 20%, transparent);
+  }
+
+  .dialog-button.dangerous:hover {
+    background-color: color-mix(in srgb, var(--coral) 20%, transparent);
   }
 </style>
