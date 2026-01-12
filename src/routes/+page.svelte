@@ -35,7 +35,7 @@
           >
         </li>
       </ul>
-      <a href="/">ahkbin</a>
+      <a class="unimportant" href="/">ahkbin</a>
       <button class="icon" type="button" onclick={() => (settingsOpen = true)}>
         <SettingsIcon />
       </button>
@@ -138,6 +138,12 @@
   button.icon {
     align-self: center;
     padding: 0.5em;
+  }
+
+  @media screen and (width < 24rem) {
+    .unimportant {
+      display: none;
+    }
   }
 
   .dialog-button {
