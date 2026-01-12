@@ -1,17 +1,13 @@
 <script lang="ts">
-  import Confirmation from "$lib/Confirmation.svelte";
+  import Dialog from "$lib/Dialog.svelte";
   import Editor from "$lib/Editor.svelte";
+  import SettingsIcon from "$lib/SettingsIcon.svelte";
   import { onMount } from "svelte";
 
   let script: string = $state("");
 
   let confirmationOpen: boolean = $state(false);
-
-  function newClicked() {
-    if (script === "") return;
-
-    confirmationOpen = true;
-  }
+  let settingsOpen: boolean = $state(false);
 
   onMount(() => {
     if (!script) {
@@ -29,10 +25,20 @@
     <nav>
       <ul>
         <li>
-          <button type="button" onclick={newClicked}>new</button>
+          <button
+            type="button"
+            onclick={() => {
+              if (script === "") return;
+
+              confirmationOpen = true;
+            }}>new</button
+          >
         </li>
       </ul>
       <a href="/">ahkbin</a>
+      <button class="icon" type="button" onclick={() => (settingsOpen = true)}>
+        <SettingsIcon />
+      </button>
       <ul>
         <li><button type="submit">paste</button></li>
       </ul>
@@ -43,10 +49,11 @@
 
 <Editor bind:content={script} />
 
-<Confirmation bind:open={confirmationOpen}>
+<Dialog bind:open={confirmationOpen}>
   Do you want to clear the current script?
 
-  {#snippet yes()}
+  {#snippet buttons()}
+    <button class="dialog-button" onclick={() => (confirmationOpen = false)}>Cancel</button>
     <button
       class="dialog-button dangerous"
       onclick={() => {
@@ -55,11 +62,16 @@
       }}>Clear</button
     >
   {/snippet}
+</Dialog>
 
-  {#snippet no()}
-    <button class="dialog-button" onclick={() => (confirmationOpen = false)}>Cancel</button>
+<Dialog bind:open={settingsOpen}>
+  Settings
+
+  {#snippet buttons()}
+    <button class="dialog-button" onclick={() => (settingsOpen = false)}>Cancel</button>
+    <button class="dialog-button positive">Save</button>
   {/snippet}
-</Confirmation>
+</Dialog>
 
 <style>
   header {
@@ -68,15 +80,17 @@
 
     display: flex;
     align-items: center;
-    padding: 0.25em 0.5em;
+    padding: 0.25em;
 
     font-size: 1.5rem;
+    line-height: 1.5;
   }
 
   nav {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     flex-grow: 1;
+    gap: 0.5em;
   }
 
   ul {
@@ -121,6 +135,11 @@
     background-color: var(--slate);
   }
 
+  button.icon {
+    align-self: center;
+    padding: 0.5em;
+  }
+
   .dialog-button {
     padding: 0.5em 1em;
     color: var(--black);
@@ -132,5 +151,9 @@
 
   .dialog-button.dangerous:hover {
     background-color: color-mix(in srgb, var(--coral) 20%, transparent);
+  }
+
+  .dialog-button.positive:hover {
+    background-color: color-mix(in srgb, var(--slime) 20%, transparent);
   }
 </style>

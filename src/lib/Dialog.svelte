@@ -1,18 +1,16 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { preventDefault } from "svelte/legacy";
   import { fade, fly } from "svelte/transition";
 
   interface Props {
     open: boolean;
     children: Snippet;
-    yes: Snippet;
-    no: Snippet;
+    buttons: Snippet;
   }
 
   const transitionDurationMs = 200;
 
-  let { open = $bindable(), yes, no, children }: Props = $props();
+  let { open = $bindable(), buttons, children }: Props = $props();
 </script>
 
 {#if open}
@@ -30,14 +28,13 @@
       tabindex="0"
       transition:fly={{ y: -5, duration: transitionDurationMs }}
     >
-      <div class="content">
-        <div class="question">
+      <div class="body">
+        <div class="content">
           {@render children()}
         </div>
 
         <div class="buttons">
-          {@render no()}
-          {@render yes()}
+          {@render buttons()}
         </div>
       </div>
     </div>
@@ -71,12 +68,12 @@
     box-shadow: 0em 1em 0.5em 0.5em color-mix(in srgb, var(--black) 20%, transparent);
   }
 
-  .content {
+  .body {
     display: flex;
     flex-direction: column;
   }
 
-  .question {
+  .content {
     padding: 1em;
   }
 
