@@ -54,6 +54,7 @@
     border: none;
     border-radius: 1em;
     padding: 1em;
+    margin: 1em;
     color: var(--black);
     background-color: var(--shell);
 
