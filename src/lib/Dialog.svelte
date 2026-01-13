@@ -5,12 +5,11 @@
   interface Props {
     open: boolean;
     children: Snippet;
-    buttons: Snippet;
   }
 
   const transitionDurationMs = 200;
 
-  let { open = $bindable(), buttons, children }: Props = $props();
+  let { open = $bindable(), children }: Props = $props();
 </script>
 
 {#if open}
@@ -29,13 +28,7 @@
       transition:fly={{ y: -5, duration: transitionDurationMs }}
     >
       <div class="body">
-        <div class="content">
-          {@render children()}
-        </div>
-
-        <div class="buttons">
-          {@render buttons()}
-        </div>
+        {@render children()}
       </div>
     </div>
   </div>
@@ -71,15 +64,6 @@
   .body {
     display: flex;
     flex-direction: column;
-  }
-
-  .content {
-    padding: 1em;
-  }
-
-  .buttons {
-    display: flex;
-    justify-content: end;
     gap: 1em;
   }
 </style>

@@ -50,27 +50,27 @@
 <Editor bind:content={script} />
 
 <Dialog bind:open={confirmationOpen}>
-  Do you want to clear the current script?
+  <div class="dialog-content">Do you want to clear the current script?</div>
 
-  {#snippet buttons()}
-    <button class="dialog-button" onclick={() => (confirmationOpen = false)}>Cancel</button>
+  <div class="dialog-buttons">
+    <button onclick={() => (confirmationOpen = false)}>Cancel</button>
     <button
-      class="dialog-button dangerous"
+      class="dangerous"
       onclick={() => {
         script = "";
         confirmationOpen = false;
       }}>Clear</button
     >
-  {/snippet}
+  </div>
 </Dialog>
 
 <Dialog bind:open={settingsOpen}>
-  Settings
+  <div class="dialog-content">Settings</div>
 
-  {#snippet buttons()}
-    <button class="dialog-button" onclick={() => (settingsOpen = false)}>Cancel</button>
-    <button class="dialog-button positive">Save</button>
-  {/snippet}
+  <div class="dialog-buttons">
+    <button onclick={() => (settingsOpen = false)}>Cancel</button>
+    <button class="positive">Save</button>
+  </div>
 </Dialog>
 
 <style>
@@ -140,26 +140,41 @@
     padding: 0.5em;
   }
 
-  @media screen and (width < 24rem) {
+  @media (width < 24rem) {
     .unimportant {
       display: none;
     }
   }
 
-  .dialog-button {
+  .dialog-content {
+    margin: 1em;
+  }
+
+  .dialog-buttons {
+    display: flex;
+    justify-content: end;
+    gap: 1em;
+  }
+
+  .dialog-buttons button {
     padding: 0.5em 1em;
     color: var(--black);
   }
 
-  .dialog-button:hover {
-    background-color: color-mix(in srgb, var(--magic) 20%, transparent);
+  .dialog-buttons button {
+    --accent-color: var(--magic);
   }
 
-  .dialog-button.dangerous:hover {
-    background-color: color-mix(in srgb, var(--coral) 20%, transparent);
+  .dialog-buttons button.dangerous {
+    --accent-color: var(--coral);
   }
 
-  .dialog-button.positive:hover {
-    background-color: color-mix(in srgb, var(--slime) 20%, transparent);
+  .dialog-buttons button.positive {
+    --accent-color: var(--slime);
+  }
+
+  .dialog-buttons button:hover {
+    background-color: color-mix(in srgb, var(--accent-color) 20%, transparent);
+  }
   }
 </style>
