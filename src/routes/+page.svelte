@@ -36,7 +36,7 @@
         </li>
       </ul>
       <a class="unimportant" href="/">ahkbin</a>
-      <button class="icon" type="button" onclick={() => (settingsOpen = true)}>
+      <button class="icon settings" class:open={settingsOpen} type="button" onclick={() => (settingsOpen = true)}>
         <SettingsIcon />
       </button>
       <ul>
@@ -138,6 +138,14 @@
   button.icon {
     align-self: center;
     padding: 0.5em;
+  }
+
+  button.settings {
+    transition: transform 0.25s ease;
+  }
+
+  button.settings.open {
+    transform: rotateZ(120deg);
   }
 
   @media (width < 24rem) {
