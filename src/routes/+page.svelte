@@ -49,7 +49,7 @@
 
 <Editor bind:content={script} />
 
-<Dialog bind:open={confirmationOpen}>
+<Dialog dismissable bind:open={confirmationOpen}>
   <div class="dialog-content">Do you want to clear the current script?</div>
 
   <div class="dialog-buttons">

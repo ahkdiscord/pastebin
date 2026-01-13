@@ -4,18 +4,23 @@
 
   interface Props {
     open: boolean;
+    dismissable?: boolean;
     children: Snippet;
   }
 
   const transitionDurationMs = 200;
 
-  let { open = $bindable(), children }: Props = $props();
+  let { open = $bindable(), dismissable = false, children }: Props = $props();
 </script>
 
 {#if open}
   <div
     class="container"
-    onmousedown={() => (open = false)}
+    onmousedown={() => {
+      if (dismissable) {
+        open = false;
+      }
+    }}
     role="none"
     tabindex="-1"
     transition:fade={{ duration: transitionDurationMs }}
