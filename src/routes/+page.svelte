@@ -176,5 +176,10 @@
   .dialog-buttons button:hover {
     background-color: color-mix(in srgb, var(--accent-color) 20%, transparent);
   }
+
+  @media (hover: none) {
+    .dialog-buttons button {
+      background-color: color-mix(in srgb, var(--accent-color) 10%, transparent);
+    }
   }
 </style>
