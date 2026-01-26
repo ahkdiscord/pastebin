@@ -3,6 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --black: hsl(200deg 004% 002%);
+        --night: hsl(200deg 004% 008%);
+        --slate: hsl(200deg 004% 012%);
+        --smoke: hsl(200deg 004% 032%);
+
+        --white: hsl(020deg 006% 096%);
+        --shell: hsl(020deg 006% 088%);
+        --paper: hsl(020deg 006% 080%);
+
+        --magic: hsl(252deg 080% 080%);
+        --slime: hsl(128deg 080% 072%);
+        --coral: hsl(352deg 080% 064%);
+      }
+
+      body {
+        margin: 0;
+        background-color: var(--black);
+        color: var(--white);
+      }
+    </style>
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">

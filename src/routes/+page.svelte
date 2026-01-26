@@ -1,18 +1,2 @@
-<script lang="ts">
-  import Editor from "$lib/Editor.svelte";
-  import { onMount } from "svelte";
-
-  let script: string = $state("");
-
-  onMount(() => {
-    if (!script) {
-      script = localStorage.getItem("script") ?? script;
-    }
-  });
-
-  $effect(() => {
-    localStorage.setItem("script", script);
-  });
-</script>
-
-<Editor bind:content={script} />
+<h1>Welcome to SvelteKit</h1>
+<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
