@@ -46,7 +46,7 @@
   .page {
     display: grid;
     grid-template-rows: auto 1fr;
-    min-height: 100vh;
+    min-height: 100%;
   }
 
   header {
@@ -56,6 +56,12 @@
     gap: 0.5em;
 
     padding: 0.5em;
+
+    background-color: var(--black);
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
   .together {
