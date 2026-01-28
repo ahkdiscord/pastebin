@@ -12,21 +12,16 @@
   $effect(() => {
     console.log(script);
   });
-
-  let versionSelect: Select;
 </script>
 
 <Page>
   {#snippet headerStart()} 
-    <Select bind:this={versionSelect}>
+    <Select>
         AutoHotkey {version}
 
         {#snippet options()}
           {#each versions as v}
-            <Button color="clear" onclick={() => {
-              version = v;
-              versionSelect.close();
-            }}>use {v}</Button>
+            <Button color="clear" onclick={() => version = v}>use {v}</Button>
           {/each}
         {/snippet}
       </Select>

@@ -30,7 +30,7 @@
   {#if expanded}
     <div class="dropdown" transition:fly={{y: -8, duration: 250}}>
       <div class="shape">
-        <div class="options">
+        <div class="options" onclick={close} role="none">
           {@render options()}
         </div>
       </div>
