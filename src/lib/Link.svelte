@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import type { HTMLButtonAttributes } from "svelte/elements";
+  import type { HTMLAnchorAttributes } from "svelte/elements";
 
-  export interface Props extends HTMLButtonAttributes {
+  export interface Props extends HTMLAnchorAttributes {
     children: Snippet;
     active?: boolean;
     color?: "shell" | "slate" | "magic" | "slime" | "coral" | "clear";
@@ -11,12 +11,12 @@
   const { children, active, color, ...rest }: Props = $props();
 </script>
 
-<button {...rest} class:active class={{[color ?? ""]: true}}>
+<a {...rest} class:active class={{[color ?? ""]: true}}>
   {@render children()}
-</button>
+</a>
 
 <style>
-  button {
+  a {
     --this-highlight: color-mix(in srgb, 25% var(--highlight, var(--shell)), transparent);
 
     padding-block: 0.5em;
@@ -33,39 +33,38 @@
 
     color: inherit;
     cursor: pointer;
-    font: unset;
   }
 
-  button.shell {
+  a.shell {
     --highlight: var(--shell);
   }
 
-  button.slate {
+  a.slate {
     --highlight: var(--slate);
   }
 
-  button.magic {
+  a.magic {
     --highlight: var(--magic);
   }
 
-  button.slime {
+  a.slime {
     --highlight: var(--slime);
   }
 
-  button.coral {
+  a.coral {
     --highlight: var(--coral);
   }
 
-  button.clear {
+  a.clear {
     --highlight: transparent;
   }
 
-  button:hover, button.active {
+  a:hover, a.active {
     background-color: var(--this-highlight);
   }
 
   @media (hover: none) {
-    button {
+    a {
       background-color: var(--this-highlight);
     }
   }
