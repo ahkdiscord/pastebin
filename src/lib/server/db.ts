@@ -53,7 +53,7 @@ export async function addPaste(version: Version, content: string): Promise<strin
       content,
       creation: creation.valueOf(),
       expiry: expiry.valueOf(),
-    })}
+    } satisfies PasteEntity)}
   `;
 
   return id;
