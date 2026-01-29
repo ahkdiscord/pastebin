@@ -77,3 +77,12 @@ export async function getPaste(pasteId: string): Promise<Paste | null> {
     expiry: expiry ? new Date(expiry) : undefined,
   };
 }
+
+export async function deleteExpiredPastes(expiry: Date): Promise<number> {
+  const x = await sql`
+    DELETE FROM pastes
+    WHERE expiry < ${expiry.valueOf()}
+  `;
+
+  return x.count ?? 0;
+}
