@@ -5,6 +5,7 @@
   import Select from "$lib/Select.svelte";
   import Pen from "@lucide/svelte/icons/pen";
   import Play from "@lucide/svelte/icons/play";
+  import Check from "@lucide/svelte/icons/check";
   import { enhance } from "$app/forms";
 
   const { data } = $props();
@@ -32,7 +33,7 @@
 {#if data.newlyPasted}
   <div class="toast">
     <div class="content">
-      Your script has been saved
+      <Check size={16} /> Your script has been saved
     </div>
   </div>
 {/if}
@@ -52,7 +53,7 @@
     user-select: none;
 
     opacity: 0;
-    animation: 500ms forwards fly-in, 500ms 5s reverse fly-in;
+    animation: 500ms forwards fly-in; /*, 500ms 5s reverse fly-in;*/
     animation-fill-mode: forwards;
   }
 
@@ -60,6 +61,10 @@
     background-color: var(--slate);
     padding: 1em 1.5em;
     border-radius: 1em;
+
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
   }
 
   @keyframes fly-in {
