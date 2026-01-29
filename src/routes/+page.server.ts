@@ -1,6 +1,16 @@
-import { addPaste } from '$lib/server/db.js';
+import { addPaste, getPaste } from '$lib/server/db.js';
 import { isVersion } from '$lib/types.js';
 import { error, redirect } from '@sveltejs/kit';
+
+export async function load({ cookies }) {
+  const edit = cookies.get("edit");
+
+  cookies.delete("edit", { path: "/" });
+
+  return {
+    paste: edit ? await getPaste(edit) ?? undefined : undefined,
+  }
+}
 
 export const actions = {
   async share({ request, cookies }) {

@@ -5,11 +5,11 @@
   import Select from "$lib/Select.svelte";
   import Pen from "@lucide/svelte/icons/pen";
   import Play from "@lucide/svelte/icons/play";
-  import Link from "$lib/Link.svelte";
+  import { enhance } from "$app/forms";
 
   const { data } = $props();
 
-  const { id, content: script, version } = $derived(data.paste);
+  const { content: script, version } = $derived(data.paste);
 </script>
 
 <Page>
@@ -20,7 +20,9 @@
   {/snippet}
 
   {#snippet headerEnd()}
-    <Link href={`/${id}/edit`}><Pen size={16}/> Edit</Link>
+    <form action="?/edit" method="POST" use:enhance>
+      <Button ><Pen size={16}/> Edit</Button>
+    </form>
     <Button><Play size={16}/> Run</Button>
   {/snippet}
 

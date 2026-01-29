@@ -8,8 +8,10 @@
   import Share from "@lucide/svelte/icons/share";
   import Play from "@lucide/svelte/icons/play";
 
-  let script: string = $state("");
-  let version: Version = $state("v2.0");
+  const { data } = $props();
+
+  let script: string = $derived(data.paste?.content ?? "");
+  let version: Version = $derived(data.paste?.version ?? "v2.0");
 
   $effect(() => {
     console.log(script);

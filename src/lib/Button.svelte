@@ -32,8 +32,10 @@
     border-radius: 0.5em;
 
     color: inherit;
-    cursor: pointer;
     font: unset;
+  }
+  button:not(:disabled) {
+    cursor: pointer;
   }
 
   button.shell {
@@ -60,7 +62,7 @@
     --highlight: transparent;
   }
 
-  button:hover, button.active {
+  button:not(:disabled):hover, button.active {
     background-color: var(--this-highlight);
   }
 

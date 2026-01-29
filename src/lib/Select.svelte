@@ -25,7 +25,7 @@
   <Button active={expanded} {disabled} {color} onclick={() => expanded = !expanded}>
     {@render children()}
 
-    <div class="chevron" class:rotated={expanded}><ChevronDown size={16}/></div>
+    {#if !disabled}<div class="chevron" class:rotated={expanded}><ChevronDown size={16}/></div>{/if}
   </Button>
   
   {#if expanded}
