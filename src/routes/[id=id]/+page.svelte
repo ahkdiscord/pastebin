@@ -17,10 +17,6 @@
     <Select disabled>
       AutoHotkey {version}
     </Select>
-
-    {#if data.newlyPasted}
-      NEWLY PASTED
-    {/if}
   {/snippet}
 
   {#snippet headerEnd()}
@@ -30,3 +26,49 @@
 
   <Editor readOnly content={script} />
 </Page>
+
+{#if data.newlyPasted}
+  <div class="toast">
+    <div class="content">
+      Your script has been saved
+    </div>
+  </div>
+{/if}
+
+<style>
+  .toast {
+    position: fixed;
+    top: 1em;
+    left: 0;
+    right: 0;
+
+    display: flex;
+    justify-content: center;
+
+    z-index: 20;
+    pointer-events: none;
+    user-select: none;
+
+    opacity: 0;
+    animation: 500ms forwards fly-in, 500ms 5s reverse fly-in;
+    animation-fill-mode: forwards;
+  }
+
+  .toast .content {
+    background-color: var(--slate);
+    padding: 1em 1.5em;
+    border-radius: 1em;
+  }
+
+  @keyframes fly-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+</style>
