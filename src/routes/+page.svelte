@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { enhance } from "$app/forms";
   import Button from "$lib/Button.svelte";
   import Editor from "$lib/Editor.svelte";
   import Page from "$lib/Page.svelte";
   import Select from "$lib/Select.svelte";
   import { versions, type Version } from "$lib/types";
-  import { Play, Share } from "@lucide/svelte";
+  import Share from "@lucide/svelte/icons/share";
+  import Play from "@lucide/svelte/icons/play";
 
   let script: string = $state("");
   let version: Version = $state("v2.0");
@@ -28,7 +30,11 @@
   {/snippet}
 
   {#snippet headerEnd()}
-    <Button><Share size={16}/> Share</Button>
+    <form action="?/share" method="POST" use:enhance>
+      <input type="hidden" name="version" value={version} />
+      <input type="hidden" name="script" value={script} />
+      <Button><Share size={16}/> Share</Button>
+    </form>
     <Button><Play size={16}/> Run</Button>
   {/snippet}
 

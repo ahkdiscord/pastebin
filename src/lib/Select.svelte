@@ -7,11 +7,12 @@
 
   export interface Props {
     children: Snippet;
-    options: Snippet;
+    options?: Snippet;
+    disabled?: boolean;
     color?: "shell" | "slate" | "magic" | "slime" | "coral";
   }
 
-  const { children, options, color }: Props = $props();
+  const { children, options, disabled = false, color }: Props = $props();
 
   let expanded = $state(false);
 
@@ -21,7 +22,7 @@
 </script>
 
 <div class="wrapper">
-  <Button active={expanded} {color} onclick={() => expanded = !expanded}>
+  <Button active={expanded} {disabled} {color} onclick={() => expanded = !expanded}>
     {@render children()}
 
     <div class="chevron" class:rotated={expanded}><ChevronDown size={16}/></div>
@@ -31,7 +32,7 @@
     <div class="dropdown" transition:fly={{y: -8, duration: 250}}>
       <div class="shape">
         <div class="options" onclick={close} role="none">
-          {@render options()}
+          {@render options?.()}
         </div>
       </div>
     </div>

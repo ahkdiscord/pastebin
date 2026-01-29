@@ -33,6 +33,7 @@
 
     color: inherit;
     cursor: pointer;
+    text-decoration: unset;
   }
 
   a.shell {
