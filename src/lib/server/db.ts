@@ -12,10 +12,30 @@ export interface Paste {
 
 interface PasteEntity {
   id: string;
-  version: string | null;
+  version: string | undefined;
   content: string;
-  creation: Date | null;
-  expiry: Date | null;
+  creation: Date | number | undefined;
+  expiry: Date | number | undefined;
+}
+
+function toEntity({ id, version, content, creation, expiry }: Paste): PasteEntity {
+  if (sql.options.adapter === "sqlite") {
+    return {
+      id,
+      version,
+      content,
+      creation: creation?.valueOf(),
+      expiry: expiry?.valueOf(),
+    };
+  }
+
+  return {
+    id,
+    version,
+    content,
+    creation,
+    expiry,
+  }
 }
 
 export async function init() {
@@ -47,13 +67,13 @@ export async function addPaste(version: Version, content: string): Promise<strin
   const expiry = add(creation, { days: 30 });
 
   await sql`
-    INSERT INTO pastes ${sql({
+    INSERT INTO pastes ${sql(toEntity({
       id,
       version,
       content,
-      creation: creation,
-      expiry: expiry,
-    } satisfies PasteEntity)}
+      creation,
+      expiry,
+    }))}
   `;
 
   return id;
