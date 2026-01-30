@@ -46,7 +46,7 @@
 <Page>
   {#snippet headerStart()} 
     <Select disabled>
-      AutoHotkey {version}
+      <span class="unimportant">AutoHotkey</span>  {version}
     </Select>
   {/snippet}
 
@@ -89,6 +89,12 @@
 {/if}
 
 <style>
+  @media (width < 32em) {
+    .unimportant {
+      display: none;
+    }
+  }
+
   .toast {
     position: fixed;
     top: 1em;

@@ -47,11 +47,11 @@
 <Page>
   {#snippet headerStart()} 
     <Select>
-        AutoHotkey {version}
+        <span class="unimportant">AutoHotkey</span> {version}
 
         {#snippet options()}
           {#each versions as v}
-            <Button color="clear" onclick={() => version = v}>use {v}</Button>
+            <Button color="clear" onclick={() => version = v}><span class="unimportant">use</span> {v}</Button>
           {/each}
         {/snippet}
       </Select>
@@ -92,6 +92,12 @@
 </Page>
 
 <style>
+  @media (width < 32em) {
+    .unimportant {
+      display: none;
+    }
+  }
+
   form {
     display: contents;
   }
