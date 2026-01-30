@@ -14,8 +14,8 @@ interface PasteEntity {
   id: string;
   version: string | null;
   content: string;
-  creation: number | null;
-  expiry: number | null;
+  creation: Date | null;
+  expiry: Date | null;
 }
 
 export async function init() {
@@ -24,8 +24,8 @@ export async function init() {
       id VARCHAR(8) PRIMARY KEY,
       version TEXT,
       content TEXT NOT NULL,
-      creation TIMESTAMP,
-      expiry TIMESTAMP
+      creation TIMESTAMPTZ,
+      expiry TIMESTAMPTZ
     )
   `;
 
@@ -51,8 +51,8 @@ export async function addPaste(version: Version, content: string): Promise<strin
       id,
       version,
       content,
-      creation: creation.valueOf(),
-      expiry: expiry.valueOf(),
+      creation: creation,
+      expiry: expiry,
     } satisfies PasteEntity)}
   `;
 
