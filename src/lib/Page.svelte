@@ -7,7 +7,7 @@
     headerEnd: Snippet;
   }
 
-  let { children, headerStart, headerEnd } = $props();
+  let { children, headerStart, headerEnd }: Props = $props();
 </script>
 
 <div class="page">
@@ -29,7 +29,11 @@
   .page {
     display: grid;
     grid-template-rows: auto 1fr;
-    min-height: 100%;
+    height: 100%;
+  }
+
+  .page > * {
+    min-height: 0;
   }
 
   header {
@@ -41,10 +45,6 @@
     padding: 0.5em;
 
     background-color: var(--black);
-
-    position: sticky;
-    top: 0;
-    z-index: 10;
   }
 
   .together {
