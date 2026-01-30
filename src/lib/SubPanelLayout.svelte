@@ -14,6 +14,18 @@
   let width: number = $state(0);
   let height: number = $state(0);
 
+  export function open() {
+    
+    if (width < 100) host.style.setProperty("--width", "auto");
+    if (height < 100) host.style.setProperty("--height", "auto");
+
+    width = subpanel.clientWidth;
+    height = subpanel.clientHeight;
+
+    host.style.setProperty("--width", `${width}px`);
+    host.style.setProperty("--height", `${height}px`);
+  }
+
   function startDrag() {
     document.addEventListener("mouseup", endDrag);
     

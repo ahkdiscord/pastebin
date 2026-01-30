@@ -30,7 +30,10 @@
     const result: Result = await response.json();
 
     output = result.output;
+    panels.open();
   }
+
+  let panels: SubPanelLayout;
 </script>
 
 <Page>
@@ -60,7 +63,7 @@
     }}><Play size={16}/> Run</Button>
   {/snippet}
     
-  <SubPanelLayout>
+  <SubPanelLayout bind:this={panels}>
     {#snippet left()}
     <Editor bind:content={script} />
     {/snippet}
