@@ -7,10 +7,29 @@
   import Play from "@lucide/svelte/icons/play";
   import Check from "@lucide/svelte/icons/check";
   import { enhance } from "$app/forms";
+    import type { Result } from "$lib/server/running.js";
+    import SubPanelLayout from "$lib/SubPanelLayout.svelte";
+    import Output from "$lib/Output.svelte";
 
   const { data } = $props();
 
   const { content: script, version } = $derived(data.paste);
+
+  let output: string = $state("");
+
+  async function runScript() {
+    const response = await fetch("/run", {
+      method: "POST",
+      body: JSON.stringify({ version, script }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result: Result = await response.json();
+
+    output = result.output;
+  }
 </script>
 
 <Page>
@@ -24,10 +43,21 @@
     <form action="?/edit" method="POST" use:enhance>
       <Button ><Pen size={16}/> Edit</Button>
     </form>
-    <Button><Play size={16}/> Run</Button>
+    <Button onclick={() => {
+      if (!script) return;
+      runScript();
+    }}><Play size={16}/> Run</Button>
   {/snippet}
 
-  <Editor readOnly content={script} />
+  <SubPanelLayout>
+    {#snippet left()}
+    <Editor readOnly content={script} />
+    {/snippet}
+    
+    {#snippet right()}
+      <Output content={output} />
+    {/snippet}
+  </SubPanelLayout>
 </Page>
 
 {#if data.newlyPasted}
