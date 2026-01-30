@@ -27,8 +27,6 @@
   }
 
   function startDrag() {
-    document.addEventListener("mouseup", endDrag);
-    
     dragging = true;
 
     width = subpanel.clientWidth;
@@ -37,22 +35,37 @@
 
   function endDrag() {
     dragging = false;
+
+    previousTouch = undefined;
   }
 
-  function drag(e: MouseEvent) {
+  function mouseDrag(e: MouseEvent) {
     if (!dragging) return;
 
     width -= e.movementX;
     height -= e.movementY;
   }
 
+  let previousTouch: Touch | undefined;
+  function touchDrag(e: TouchEvent) {
+    if (!dragging) return;
+
+    width -= previousTouch ? e.touches[0].pageX - previousTouch.pageX : 0;
+    height -= previousTouch ? e.touches[0].pageY - previousTouch.pageY : 0;
+
+    previousTouch = e.changedTouches[0];
+  }
+
   let host: HTMLElement;
   let subpanel: HTMLElement;
 </script>
 
+<svelte:body onmouseup={endDrag} ontouchend={endDrag} />
+
 <div
   class="panels"
-  onmousemove={drag}
+  onmousemove={mouseDrag}
+  ontouchmove={touchDrag}
   role="none"
   style={`--width: ${width}px; --height: ${height}px`}
   bind:this={host}
@@ -60,7 +73,7 @@
   <section>
     {@render left()}
   </section>
-  <div class="drag-handle" onmousedown={startDrag} role="none">
+  <div class="drag-handle" onmousedown={startDrag} ontouchstart={startDrag} role="button" tabindex="-1">
     <EllipsisVertical size="16" />
   </div>
   <section bind:this={subpanel}>
@@ -70,6 +83,7 @@
 
 <style>
   .panels {
+    width: 100%;
     height: 100%;
 
     display: grid;
@@ -79,6 +93,14 @@
 
   .panels > * {
     min-height: 0;
+    min-width: 0;
+  }
+
+  .drag-handle {
+    align-self: center;
+    justify-self: center;
+    cursor: col-resize;
+    display: flex;
   }
 
   @media (width < 48rem) {
@@ -89,12 +111,13 @@
 
     .drag-handle {
       transform: rotateZ(90deg);
+      padding: 0.5em;
     }
   }
 
-  .drag-handle {
-    align-self: center;
-    justify-self: center;
-    cursor: col-resize;
+  @media (pointer: fine) {
+    .drag-handle {
+      padding: 0;
+    }
   }
 </style>
