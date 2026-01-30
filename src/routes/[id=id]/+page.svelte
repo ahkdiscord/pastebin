@@ -6,30 +6,38 @@
   import Pen from "@lucide/svelte/icons/pen";
   import Play from "@lucide/svelte/icons/play";
   import Check from "@lucide/svelte/icons/check";
+  import Ellipsis from "@lucide/svelte/icons/ellipsis";
   import { enhance } from "$app/forms";
-    import type { Result } from "$lib/server/running.js";
-    import SubPanelLayout from "$lib/SubPanelLayout.svelte";
-    import Output from "$lib/Output.svelte";
+  import type { Result } from "$lib/server/running.js";
+  import SubPanelLayout from "$lib/SubPanelLayout.svelte";
+  import Output from "$lib/Output.svelte";
 
   const { data } = $props();
 
   const { content: script, version } = $derived(data.paste);
 
+  let running: boolean = $state(false);
   let output: string = $state("");
 
   async function runScript() {
-    const response = await fetch("/run", {
-      method: "POST",
-      body: JSON.stringify({ version, script }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    running = true;
 
-    const result: Result = await response.json();
-
-    output = result.output;
-    panels.open();
+    try {
+      const response = await fetch("/run", {
+        method: "POST",
+        body: JSON.stringify({ version, script }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      const result: Result = await response.json();
+  
+      output = result.output;
+      panels.open();
+    } finally {
+      running = false;
+    }
   }
 
   let panels: SubPanelLayout;
@@ -46,10 +54,19 @@
     <form action="?/edit" method="POST" use:enhance>
       <Button ><Pen size={16}/> Edit</Button>
     </form>
-    <Button onclick={() => {
-      if (!script) return;
-      runScript();
-    }}><Play size={16}/> Run</Button>
+    
+    {#if running}
+      <Button disabled>
+        <Ellipsis size={16} /> Running
+      </Button>
+    {:else}
+      <Button onclick={() => {
+        if (!script) return;
+        runScript();
+      }}>
+        <Play size={16} /> Run
+      </Button>
+    {/if}
   {/snippet}
 
   <SubPanelLayout bind:this={panels}>

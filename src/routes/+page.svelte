@@ -7,6 +7,7 @@
   import { versions, type Version } from "$lib/types";
   import Share from "@lucide/svelte/icons/share";
   import Play from "@lucide/svelte/icons/play";
+  import Ellipsis from "@lucide/svelte/icons/ellipsis";
   import Output from "$lib/Output.svelte";
   import type { Result } from "$lib/server/running.js";
   import SubPanelLayout from "$lib/SubPanelLayout.svelte";
@@ -16,21 +17,28 @@
   let script: string = $derived(data.paste?.content ?? "");
   let version: Version = $derived(data.paste?.version ?? "v2.0");
 
+  let running: boolean = $state(false);
   let output: string = $state("");
 
   async function runScript() {
-    const response = await fetch("/run", {
-      method: "POST",
-      body: JSON.stringify({ version, script }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    running = true;
 
-    const result: Result = await response.json();
-
-    output = result.output;
-    panels.open();
+    try {
+      const response = await fetch("/run", {
+        method: "POST",
+        body: JSON.stringify({ version, script }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      const result: Result = await response.json();
+  
+      output = result.output;
+      panels.open();
+    } finally {
+      running = false;
+    }
   }
 
   let panels: SubPanelLayout;
@@ -57,10 +65,19 @@
         if (!script) event.preventDefault();
       }}><Share size={16}/> Share</Button>
     </form>
-    <Button onclick={() => {
-      if (!script) return;
-      runScript();
-    }}><Play size={16}/> Run</Button>
+    
+    {#if running}
+      <Button disabled>
+        <Ellipsis size={16} /> Running
+      </Button>
+    {:else}
+      <Button onclick={() => {
+        if (!script) return;
+        runScript();
+      }}>
+        <Play size={16} /> Run
+      </Button>
+    {/if}
   {/snippet}
     
   <SubPanelLayout bind:this={panels}>
