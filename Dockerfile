@@ -7,6 +7,8 @@ RUN bun install --frozen-lockfile
 
 COPY . .
 
+RUN bun run prepare
+
 RUN bun run build
 
 FROM oven/bun:1
@@ -22,4 +24,4 @@ COPY --from=build /app/package.json ./package.json
 
 EXPOSE 3000
 
-CMD ["bun", "run", "build/index.js"]
+CMD ["bun", "build/index.js"]
