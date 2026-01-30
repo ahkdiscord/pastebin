@@ -12,9 +12,11 @@
   } from "@codemirror/view";
   import { onDestroy, onMount } from "svelte";
   import { defaultKeymap, history, indentWithTab } from "@codemirror/commands";
-  import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
+  import { bracketMatching, foldGutter, HighlightStyle, indentOnInput, LanguageSupport, syntaxHighlighting } from "@codemirror/language";
   import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
   import { highlightSelectionMatches } from "@codemirror/search";
+  import { autohotkeyCompletion, autohotkeyLanguage } from "./editor-highlighting";
+  import { tags } from "@lezer/highlight";
 
   interface Props {
     content: string;
@@ -41,6 +43,8 @@
     // svelte-ignore state_referenced_locally
     doc: content,
     extensions: [
+      new LanguageSupport(autohotkeyLanguage, [autohotkeyCompletion]),
+
       lineNumbers(),
       foldGutter(),
 
@@ -106,6 +110,10 @@
 
         return null;
       }),
+
+      syntaxHighlighting(HighlightStyle.define([
+        { tag: tags.lineComment, color: "gray" }
+      ])),
     ],
   });
 
