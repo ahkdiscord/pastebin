@@ -83,7 +83,7 @@
     user-select: none;
 
     opacity: 0;
-    animation: 500ms forwards fly-in; /*, 500ms 5s reverse fly-in;*/
+    animation: 500ms forwards fly-in, 500ms 5s reverse fly-in;
     animation-fill-mode: forwards;
   }
 
