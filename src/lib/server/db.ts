@@ -101,7 +101,7 @@ export async function getPaste(pasteId: string): Promise<Paste | null> {
 export async function deleteExpiredPastes(expiry: Date): Promise<number> {
   const x = await sql`
     DELETE FROM pastes
-    WHERE expiry < ${expiry.valueOf()}
+    WHERE expiry < ${sql.options.adapter === "sqlite" ? expiry.valueOf() : expiry}
   `;
 
   return x.count ?? 0;
