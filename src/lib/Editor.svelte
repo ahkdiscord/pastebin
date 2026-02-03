@@ -12,38 +12,59 @@
   } from "@codemirror/view";
   import { onDestroy, onMount } from "svelte";
   import { defaultKeymap, history, indentWithTab } from "@codemirror/commands";
-  import { bracketMatching, foldGutter, HighlightStyle, indentOnInput, LanguageSupport, syntaxHighlighting } from "@codemirror/language";
+  import {
+    bracketMatching,
+    foldGutter,
+    HighlightStyle,
+    indentOnInput,
+    LanguageSupport,
+    syntaxHighlighting,
+  } from "@codemirror/language";
   import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
   import { highlightSelectionMatches } from "@codemirror/search";
-  import { autohotkeyCompletion, autohotkeyLanguage } from "./editor-highlighting";
+  import { autohotkeyLanguage } from "./editor-highlighting";
   import { tags } from "@lezer/highlight";
+  import type { Version } from "./types";
 
   interface Props {
     content: string;
+    version: Version;
     readOnly?: boolean;
     tabSize?: number;
   }
 
-  let { content = $bindable(), readOnly = false, tabSize = 4 }: Props = $props();
+  let { content = $bindable(), version, readOnly = false, tabSize = 4 }: Props = $props();
 
   let wrapper: HTMLDivElement;
   let view: EditorView | undefined = $state(undefined);
 
   const tabSizeCompartment = new Compartment();
   $effect(() => {
-    tabSizeCompartment.reconfigure(EditorState.tabSize.of(tabSize));
+    view?.dispatch({
+      effects: tabSizeCompartment.reconfigure(EditorState.tabSize.of(tabSize)),
+    });
   });
 
   const readOnlyCompartment = new Compartment();
   $effect(() => {
-    readOnlyCompartment.reconfigure(EditorState.readOnly.of(readOnly));
+    view?.dispatch({
+      effects: readOnlyCompartment.reconfigure(EditorState.readOnly.of(readOnly)),
+    });
+  });
+
+  const languageSupportCompartment = new Compartment();
+  $effect(() => {
+    view?.dispatch({
+      effects: languageSupportCompartment.reconfigure(new LanguageSupport(autohotkeyLanguage(version)).extension),
+    });
   });
 
   const editorState = EditorState.create({
     // svelte-ignore state_referenced_locally
     doc: content,
     extensions: [
-      new LanguageSupport(autohotkeyLanguage, [autohotkeyCompletion]),
+      // svelte-ignore state_referenced_locally
+      languageSupportCompartment.of(new LanguageSupport(autohotkeyLanguage(version)).extension),
 
       lineNumbers(),
       foldGutter(),
@@ -51,56 +72,30 @@
       drawSelection(),
       rectangularSelection(),
       EditorState.allowMultipleSelections.of(true),
-      
+
       // svelte-ignore state_referenced_locally
       tabSizeCompartment.of(EditorState.tabSize.of(tabSize)),
       indentOnInput(),
-      
+
       closeBrackets(),
       autocompletion(),
-      
+
       history(),
-      
+
       bracketMatching(),
       highlightActiveLineGutter(),
       highlightSelectionMatches(),
       highlightSpecialChars(),
-      
+
       dropCursor(),
 
       // svelte-ignore state_referenced_locally
       readOnlyCompartment.of(EditorState.readOnly.of(readOnly)),
-      
+
       keymap.of([...defaultKeymap, ...closeBracketsKeymap, indentWithTab]),
-      
-      EditorView.theme(
-        {
-          "&.cm-editor": {
-            height: "100%",
-            backgroundColor: "var(--night)",
-          },
-          "&.cm-focused": {
-            outline: "none",
-          },
-          ".cm-gutters": {
-            backgroundColor: "var(--black)",
-          },
-          ".cm-activeLine": {
-            backgroundColor: "var(--slate)",
-          },
-          ".cm-selectionBackground": {
-            backgroundColor: "var(--smoke)",
-          },
-          "&.cm-focused .cm-selectionBackground": {
-            backgroundColor: "var(--smoke) !important",
-          },
-          ".cm-selectionMatch": {
-            backgroundColor: "color-mix(in srgb, var(--slime) 25%, transparent)",
-          },
-        },
-        { dark: true },
-      ),
-      
+
+      EditorView.theme({}, { dark: true }),
+
       EditorState.transactionExtender.of(transaction => {
         if (!transaction.docChanged) return null;
 
@@ -111,9 +106,23 @@
         return null;
       }),
 
-      syntaxHighlighting(HighlightStyle.define([
-        { tag: tags.lineComment, color: "gray" }
-      ])),
+      syntaxHighlighting(
+        HighlightStyle.define([
+          { tag: tags.comment, class: "comment" },
+          { tag: tags.lineComment, class: "comment" },
+          { tag: tags.blockComment, class: "comment" },
+          { tag: tags.bool, class: "bool" },
+          { tag: tags.keyword, class: "keyword" },
+          { tag: tags.controlKeyword, class: "keyword" },
+          { tag: tags.variableName, class: "variable" },
+          { tag: tags.string, class: "string" },
+          { tag: tags.escape, class: "escape" },
+          { tag: tags.className, class: "class" },
+          { tag: tags.function(tags.variableName), class: "function" },
+          { tag: tags.standard(tags.variableName), class: "builtin" },
+          { tag: tags.standard(tags.function(tags.variableName)), class: "builtin function" },
+        ]),
+      ),
     ],
   });
 
@@ -141,5 +150,75 @@
 <style>
   .editor {
     display: contents;
+  }
+
+  .editor :global(.cm-editor) {
+    height: 100%;
+    background-color: var(--night);
+  }
+
+  .editor :global(.cm-focused) {
+    outline: none;
+  }
+
+  .editor :global(.cm-gutters) {
+    background-color: var(--black);
+  }
+
+  .editor :global(.cm-activeLine) {
+    background-color: var(--slate);
+  }
+
+  .editor :global(.cm-selectionBackground) {
+    background-color: var(--smoke) !important;
+    opacity: 0.5;
+  }
+
+  .editor :global(.cm-focused .cm-selectionBackground) {
+    opacity: 1;
+  }
+
+  .editor :global(.cm-selectionMatch) {
+    background-color: color-mix(in srgb, var(--slime) 25%, transparent);
+  }
+
+  .editor :global(.comment) {
+    color: var(--dusty);
+  }
+
+  .editor :global(.bool) {
+    color: var(--berry);
+  }
+
+  .editor :global(.keyword) {
+    color: var(--blush);
+  }
+
+  .editor :global(.variable) {
+    color: var(--paper);
+  }
+
+  .editor :global(.class) {
+    color: var(--magic);
+  }
+
+  .editor :global(.string) {
+    color: var(--royal);
+  }
+
+  .editor :global(.escape) {
+    color: var(--peach);
+  }
+
+  .editor :global(.function) {
+    color: var(--slush);
+  }
+
+  .editor :global(.constant) {
+    font-style: italic;
+  }
+
+  .editor :global(.builtin) {
+    font-weight: bolder;
   }
 </style>

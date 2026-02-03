@@ -1,0 +1,36 @@
+@top Program { expression* }
+
+@skip { space | LineComment | BlockComment }
+
+expression {
+  Identifier |
+  String |
+  Boolean |
+  Application { "(" expression* ")" }
+}
+
+@external specialize { Identifier } specializeIdentifier from "./ahk-v2.0.tokens" {
+  BuiltinVariable
+  BuiltinConstant
+  BuiltinFunction
+}
+
+@tokens {
+  Identifier { $[a-zA-Z_\-0-9]+ }
+
+  String { ( '"' (EscapeSequence | !["`])* '"' ) | ( "'" (EscapeSequence | !['`])* "'" ) }
+
+  EscapeSequence { "`" _ }
+
+  Boolean { "true" | "false" }
+
+  @precedence { Boolean, Identifier }
+
+  LineComment { ";" ![\n]* }
+
+  BlockComment { "/*" _* "*/" space? "\n" }
+
+  space { $[ \t\n\r]+ }
+}
+
+@detectDelim

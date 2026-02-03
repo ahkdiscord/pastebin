@@ -8,7 +8,7 @@
   "plugins": ["prettier-plugin-svelte"],
   "printWidth": 128,
   "proseWrap": "preserve",
-  "quoteProps": "as-needed",
+  "quoteProps": "consistent",
   "semi": true,
   "singleQuote": false,
   "svelteAllowShorthand": true,

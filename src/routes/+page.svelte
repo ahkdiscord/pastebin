@@ -31,9 +31,9 @@
           "Content-Type": "application/json",
         },
       });
-  
+
       const result: Result = await response.json();
-  
+
       output = result.output;
       panels.open();
     } finally {
@@ -45,46 +45,49 @@
 </script>
 
 <Page>
-  {#snippet headerStart()} 
+  {#snippet headerStart()}
     <Select>
-        <span class="unimportant">AutoHotkey</span> {version}
+      <span class="unimportant">AutoHotkey</span>
+      {version}
 
-        {#snippet options()}
-          {#each versions as v}
-            <Button color="clear" onclick={() => version = v}><span class="unimportant">use</span> {v}</Button>
-          {/each}
-        {/snippet}
-      </Select>
+      {#snippet options()}
+        {#each versions as v}
+          <Button color="clear" onclick={() => (version = v)}><span class="unimportant">use</span> {v}</Button>
+        {/each}
+      {/snippet}
+    </Select>
   {/snippet}
 
   {#snippet headerEnd()}
     <form action="?/share" method="POST" use:enhance>
       <input type="hidden" name="version" value={version} />
       <input type="hidden" name="script" value={script} />
-      <Button onclick={event => {
-        if (!script) event.preventDefault();
-      }}><Share size={16}/> Share</Button>
+      <Button
+        onclick={event => {
+          if (!script) event.preventDefault();
+        }}><Share size={16} /> Share</Button>
     </form>
-    
+
     {#if running}
       <Button disabled>
         <Ellipsis size={16} /> Running
       </Button>
     {:else}
-      <Button onclick={() => {
-        if (!script) return;
-        runScript();
-      }}>
+      <Button
+        onclick={() => {
+          if (!script) return;
+          runScript();
+        }}>
         <Play size={16} /> Run
       </Button>
     {/if}
   {/snippet}
-    
+
   <SubPanelLayout bind:this={panels}>
     {#snippet left()}
-    <Editor bind:content={script} />
+      <Editor bind:content={script} {version} />
     {/snippet}
-    
+
     {#snippet right()}
       <Output content={output} />
     {/snippet}
