@@ -14,7 +14,7 @@
 
   const { data } = $props();
 
-  const { content: script, version } = $derived(data.paste);
+  const { content: script, version = "v2.0" } = $derived(data.paste);
 
   let running: boolean = $state(false);
   let output: string = $state("");
@@ -30,9 +30,9 @@
           "Content-Type": "application/json",
         },
       });
-  
+
       const result: Result = await response.json();
-  
+
       output = result.output;
       panels.open();
     } finally {
@@ -44,26 +44,28 @@
 </script>
 
 <Page>
-  {#snippet headerStart()} 
+  {#snippet headerStart()}
     <Select disabled>
-      <span class="unimportant">AutoHotkey</span>  {version}
+      <span class="unimportant">AutoHotkey</span>
+      {version}
     </Select>
   {/snippet}
 
   {#snippet headerEnd()}
     <form action="?/edit" method="POST" use:enhance>
-      <Button ><Pen size={16}/> Edit</Button>
+      <Button><Pen size={16} /> Edit</Button>
     </form>
-    
+
     {#if running}
       <Button disabled>
         <Ellipsis size={16} /> Running
       </Button>
     {:else}
-      <Button onclick={() => {
-        if (!script) return;
-        runScript();
-      }}>
+      <Button
+        onclick={() => {
+          if (!script) return;
+          runScript();
+        }}>
         <Play size={16} /> Run
       </Button>
     {/if}
@@ -71,9 +73,9 @@
 
   <SubPanelLayout bind:this={panels}>
     {#snippet left()}
-    <Editor readOnly content={script} />
+      <Editor readOnly content={script} {version} />
     {/snippet}
-    
+
     {#snippet right()}
       <Output content={output} />
     {/snippet}
@@ -109,7 +111,9 @@
     user-select: none;
 
     opacity: 0;
-    animation: 500ms forwards fly-in, 500ms 5s reverse fly-in;
+    animation:
+      500ms forwards fly-in,
+      500ms 5s reverse fly-in;
     animation-fill-mode: forwards;
   }
 
