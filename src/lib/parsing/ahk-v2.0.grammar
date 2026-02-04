@@ -13,6 +13,7 @@ expression {
   BuiltinVariable
   BuiltinConstant
   BuiltinFunction
+  BuiltinClass
 }
 
 @tokens {

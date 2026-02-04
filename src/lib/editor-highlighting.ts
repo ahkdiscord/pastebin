@@ -18,6 +18,7 @@ function parserWithMetadata(baseParser: LRParser) {
         BuiltinVariable: tags.standard(tags.variableName),
         BuiltinConstant: tags.standard(tags.constant(tags.variableName)),
         BuiltinFunction: tags.standard(tags.function(tags.variableName)),
+        BuiltinClass: tags.standard(tags.className),
       }),
       indentNodeProp.add({
         Application: context => context.column(context.node.from) + context.unit,

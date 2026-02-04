@@ -3,9 +3,10 @@ export const
   BuiltinVariable = 1,
   BuiltinConstant = 2,
   BuiltinFunction = 3,
-  LineComment = 4,
-  BlockComment = 5,
-  Program = 6,
-  Identifier = 7,
-  String = 8,
-  Boolean = 9
+  BuiltinClass = 4,
+  LineComment = 5,
+  BlockComment = 6,
+  Program = 7,
+  Identifier = 8,
+  String = 9,
+  Boolean = 10

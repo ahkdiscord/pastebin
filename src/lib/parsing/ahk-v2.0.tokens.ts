@@ -1,9 +1,10 @@
-import { BuiltinConstant, BuiltinFunction, BuiltinVariable } from "./ahk-v2.0.gen.terms";
+import { BuiltinClass, BuiltinConstant, BuiltinFunction, BuiltinVariable } from "./ahk-v2.0.gen.terms";
 
 export function specializeIdentifier(name: string) {
   if (builtinVariables.has(name.toLowerCase())) return BuiltinVariable;
   if (builtinConstants.has(name.toLowerCase())) return BuiltinConstant;
   if (builtinFunctions.has(name.toLowerCase())) return BuiltinFunction;
+  if (builtinClasses.has(name.toLowerCase())) return BuiltinClass;
 
   return -1;
 }
@@ -144,3 +145,73 @@ const builtinConstants = new Set([
 ]);
 
 const builtinFunctions = new Set(["msgbox"]);
+
+const builtinClasses = new Set([
+  "any",
+  "object",
+  "array",
+  "buffer",
+  "clipboardall",
+  "class",
+  "error",
+  "memoryerror",
+  "oserror",
+  "targeterror",
+  "timeouterror",
+  "typeerror",
+  "unseterror",
+  "membererror",
+  "propertyerror",
+  "methoderror",
+  "unsetitemerror",
+  "valueerror",
+  "indexerror",
+  "zerodivisionerror",
+  "file",
+  "func",
+  "boundfunc",
+  "closure",
+  "enumerator",
+  "gui",
+  // TODO: the following must be handled differently
+  // "gui.control",
+  // "gui.activex",
+  // "gui.button",
+  // "gui.checkbox",
+  // "gui.custom",
+  // "gui.datetime",
+  // "gui.edit",
+  // "gui.groupbox",
+  // "gui.hotkey",
+  // "gui.link",
+  // "gui.list",
+  // "gui.combobox",
+  // "gui.ddl",
+  // "gui.listbox",
+  // "gui.tab",
+  // "gui.listview",
+  // "gui.monthcal",
+  // "gui.pic",
+  // "gui.progress",
+  // "gui.radio",
+  // "gui.slider",
+  // "gui.statusbar",
+  // "gui.text",
+  // "gui.treeview",
+  // "gui.updown",
+  "inputhook",
+  "map",
+  "menu",
+  "menubar",
+  "regexmatchinfo",
+  "primitive",
+  "number",
+  "float",
+  "integer",
+  "string",
+  "varref",
+  "comvalue",
+  "comobjarray",
+  "comobject",
+  "comvalueref",
+]);
