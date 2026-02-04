@@ -35,7 +35,7 @@ function toEntity({ id, version, content, creation, expiry }: Paste): PasteEntit
     content,
     creation,
     expiry,
-  }
+  };
 }
 
 export async function init() {
@@ -56,8 +56,9 @@ export async function init() {
 }
 
 export async function addPaste(version: Version, content: string): Promise<string> {
-  const id = Bun.hash.cityHash32(
-      Bun.randomUUIDv7("base64") // time-based to avoid collisions
+  const id = Bun.hash
+    .cityHash32(
+      Bun.randomUUIDv7("base64"), // time-based to avoid collisions
     )
     .toString(16) // hexadecimal so it's short and concise
     .padStart(8, "0") // padded with 0s so it's a fixed-length of 8 chars
@@ -67,13 +68,15 @@ export async function addPaste(version: Version, content: string): Promise<strin
   const expiry = add(creation, { days: 30 });
 
   await sql`
-    INSERT INTO pastes ${sql(toEntity({
-      id,
-      version,
-      content,
-      creation,
-      expiry,
-    }))}
+    INSERT INTO pastes ${sql(
+      toEntity({
+        id,
+        version,
+        content,
+        creation,
+        expiry,
+      }),
+    )}
   `;
 
   return id;

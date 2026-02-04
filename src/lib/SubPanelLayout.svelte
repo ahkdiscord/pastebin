@@ -15,7 +15,6 @@
   let height: number = $state(0);
 
   export function open() {
-    
     if (width < 100) host.style.setProperty("--width", "auto");
     if (height < 100) host.style.setProperty("--height", "auto");
 
@@ -68,8 +67,7 @@
   ontouchmove={touchDrag}
   role="none"
   style={`--width: ${width}px; --height: ${height}px`}
-  bind:this={host}
->
+  bind:this={host}>
   <section>
     {@render left()}
   </section>

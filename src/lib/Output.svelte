@@ -19,11 +19,11 @@
     doc: content,
     extensions: [
       drawSelection(),
-      
+
       highlightSelectionMatches(),
-      
+
       EditorState.readOnly.of(true),
-      
+
       EditorView.theme(
         {
           "&.cm-editor": {

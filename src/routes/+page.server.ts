@@ -1,6 +1,6 @@
-import { addPaste, getPaste } from '$lib/server/db.js';
-import { isVersion } from '$lib/types.js';
-import { error, redirect } from '@sveltejs/kit';
+import { addPaste, getPaste } from "$lib/server/db.js";
+import { isVersion } from "$lib/types.js";
+import { error, redirect } from "@sveltejs/kit";
 
 export async function load({ cookies }) {
   const edit = cookies.get("edit");
@@ -8,8 +8,8 @@ export async function load({ cookies }) {
   cookies.delete("edit", { path: "/" });
 
   return {
-    paste: edit ? await getPaste(edit) ?? undefined : undefined,
-  }
+    paste: edit ? ((await getPaste(edit)) ?? undefined) : undefined,
+  };
 }
 
 export const actions = {
@@ -32,5 +32,5 @@ export const actions = {
     const path = `/${id}`;
 
     redirect(303, path);
-  }
+  },
 };

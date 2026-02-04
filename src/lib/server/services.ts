@@ -1,4 +1,4 @@
-import { hoursToMilliseconds } from "date-fns"
+import { hoursToMilliseconds } from "date-fns";
 import { deleteExpiredPastes } from "./db";
 
 export class AutoExpire {

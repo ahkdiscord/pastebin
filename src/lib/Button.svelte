@@ -11,7 +11,7 @@
   const { children, active, color, ...rest }: Props = $props();
 </script>
 
-<button {...rest} class:active class={{[color ?? ""]: true}}>
+<button {...rest} class:active class={{ [color ?? ""]: true }}>
   {@render children()}
 </button>
 
@@ -62,7 +62,8 @@
     --highlight: transparent;
   }
 
-  button:not(:disabled):hover, button.active {
+  button:not(:disabled):hover,
+  button.active {
     background-color: var(--this-highlight);
   }
 

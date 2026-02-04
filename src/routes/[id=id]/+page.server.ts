@@ -1,8 +1,8 @@
-import { getPaste } from '$lib/server/db';
-import { error, redirect } from '@sveltejs/kit';
+import { getPaste } from "$lib/server/db";
+import { error, redirect } from "@sveltejs/kit";
 
 export async function load({ params, cookies }) {
-  const paste = await getPaste(params.id) ?? error(404);
+  const paste = (await getPaste(params.id)) ?? error(404);
 
   const newlyPasted = cookies.get("newly-pasted") === "true";
 
@@ -16,5 +16,5 @@ export const actions = {
     cookies.set("edit", params.id, { path: "/" });
 
     redirect(303, "/");
-  }
+  },
 };

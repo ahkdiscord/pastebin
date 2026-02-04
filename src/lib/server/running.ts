@@ -9,7 +9,8 @@ export interface Result {
 }
 
 export async function runScript(script: string, version: Version): Promise<Result> {
-  const cloudahkVersion = version === "v1.1" ? "ahk1" : version === "v2.0" ? "ahk2" : error(400, "version not supported by CloudAHK runner");
+  const cloudahkVersion =
+    version === "v1.1" ? "ahk1" : version === "v2.0" ? "ahk2" : error(400, "version not supported by CloudAHK runner");
 
   const cloudahkUrl = new URL(`${cloudahkVersion}/run`, CLOUDAHK_URL);
 
@@ -17,7 +18,7 @@ export async function runScript(script: string, version: Version): Promise<Resul
     body: script,
     method: "POST",
     headers: {
-      "Authorization": `Basic ${btoa(`${CLOUDAHK_USERNAME}:${CLOUDAHK_PASSWORD}`)}`,
+      Authorization: `Basic ${btoa(`${CLOUDAHK_USERNAME}:${CLOUDAHK_PASSWORD}`)}`,
     },
   });
 
@@ -26,7 +27,7 @@ export async function runScript(script: string, version: Version): Promise<Resul
   return {
     runtime: res.time ? { seconds: res.time / 1000 } : undefined,
     output: res.stdout,
-  }
+  };
 }
 
 interface CloudAhkResponse {

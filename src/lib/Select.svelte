@@ -22,14 +22,14 @@
 </script>
 
 <div class="wrapper">
-  <Button active={expanded} {disabled} {color} onclick={() => expanded = !expanded}>
+  <Button active={expanded} {disabled} {color} onclick={() => (expanded = !expanded)}>
     {@render children()}
 
-    {#if !disabled}<div class="chevron" class:rotated={expanded}><ChevronDown size={16}/></div>{/if}
+    {#if !disabled}<div class="chevron" class:rotated={expanded}><ChevronDown size={16} /></div>{/if}
   </Button>
-  
+
   {#if expanded}
-    <div class="dropdown" transition:fly={{y: -8, duration: 250}}>
+    <div class="dropdown" transition:fly={{ y: -8, duration: 250 }}>
       <div class="shape">
         <div class="options" onclick={close} role="none">
           {@render options?.()}
@@ -55,7 +55,7 @@
     transform: translateY(100%);
     padding-block-start: 0.5em;
   }
-  
+
   .shape {
     background-color: var(--shell);
     color: var(--black);
