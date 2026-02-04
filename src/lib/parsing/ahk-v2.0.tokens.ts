@@ -1,5 +1,13 @@
 import { BuiltinConstant, BuiltinFunction, BuiltinVariable } from "./ahk-v2.0.gen.terms";
 
+export function specializeIdentifier(name: string) {
+  if (builtinVariables.has(name.toLowerCase())) return BuiltinVariable;
+  if (builtinConstants.has(name.toLowerCase())) return BuiltinConstant;
+  if (builtinFunctions.has(name.toLowerCase())) return BuiltinFunction;
+
+  return -1;
+}
+
 const builtinVariables = new Set([
   "a_workingdir",
   "a_scriptname",
@@ -136,11 +144,3 @@ const builtinConstants = new Set([
 ]);
 
 const builtinFunctions = new Set(["msgbox"]);
-
-export function specializeIdentifier(name: string) {
-  if (builtinVariables.has(name.toLowerCase())) return BuiltinVariable;
-  if (builtinConstants.has(name.toLowerCase())) return BuiltinConstant;
-  if (builtinFunctions.has(name.toLowerCase())) return BuiltinFunction;
-
-  return -1;
-}
