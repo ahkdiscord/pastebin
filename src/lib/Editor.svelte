@@ -28,7 +28,7 @@
 
   interface Props {
     content: string;
-    version: Version;
+    version: Version | undefined;
     readOnly?: boolean;
     tabSize?: number;
   }
@@ -55,7 +55,7 @@
   const languageSupportCompartment = new Compartment();
   $effect(() => {
     view?.dispatch({
-      effects: languageSupportCompartment.reconfigure(new LanguageSupport(autohotkeyLanguage(version)).extension),
+      effects: languageSupportCompartment.reconfigure(version ? new LanguageSupport(autohotkeyLanguage(version)) : []),
     });
   });
 
@@ -64,7 +64,7 @@
     doc: content,
     extensions: [
       // svelte-ignore state_referenced_locally
-      languageSupportCompartment.of(new LanguageSupport(autohotkeyLanguage(version)).extension),
+      languageSupportCompartment.of(version ? new LanguageSupport(autohotkeyLanguage(version)) : []),
 
       lineNumbers(),
       foldGutter(),

@@ -4,7 +4,7 @@ import { json } from "@sveltejs/kit";
 import { object, string } from "zod";
 
 const PasteRequest = object({
-  version: Version,
+  version: Version.optional(),
   script: string(),
 });
 

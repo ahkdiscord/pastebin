@@ -15,12 +15,14 @@
   const { data } = $props();
 
   let script: string = $derived(data.paste?.content ?? "");
-  let version: Version = $derived(data.paste?.version ?? "v2.0");
+  let version: Version | undefined = $derived(data.paste ? data.paste.version : "v2.0");
 
   let running: boolean = $state(false);
   let output: string = $state("");
 
   async function runScript() {
+    if (!version) return;
+
     running = true;
 
     try {
@@ -47,13 +49,18 @@
 <Page>
   {#snippet headerStart()}
     <Select>
-      <span class="unimportant">AutoHotkey</span>
-      {version}
+      {#if version}
+        <span class="unimportant">AutoHotkey</span>
+        {version}
+      {:else}
+        Plain Text
+      {/if}
 
       {#snippet options()}
         {#each Array.of(...Version.values).toSorted() as v}
           <Button color="clear" onclick={() => (version = v)}><span class="unimportant">use</span> {v}</Button>
         {/each}
+        <Button color="clear" onclick={() => (version = undefined)}>Plain Text</Button>
       {/snippet}
     </Select>
   {/snippet}
@@ -74,6 +81,7 @@
       </Button>
     {:else}
       <Button
+        disabled={!version}
         onclick={() => {
           if (!script) return;
           runScript();

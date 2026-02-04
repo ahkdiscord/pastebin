@@ -17,7 +17,7 @@ export const actions = {
   async share({ request, cookies }) {
     const data = await request.formData();
 
-    const version = Version.parse(data.get("version"));
+    const version = Version.optional().catch(undefined).parse(data.get("version"));
     const script = string().parse(data.get("script"));
 
     const id = await addPaste(version, script);

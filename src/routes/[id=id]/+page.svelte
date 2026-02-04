@@ -14,7 +14,7 @@
 
   const { data } = $props();
 
-  const { content: script, version = "v2.0" } = $derived(data.paste);
+  const { content: script, version } = $derived(data.paste);
 
   let running: boolean = $state(false);
   let output: string = $state("");
@@ -46,8 +46,12 @@
 <Page>
   {#snippet headerStart()}
     <Select disabled>
-      <span class="unimportant">AutoHotkey</span>
-      {version}
+      {#if version}
+        <span class="unimportant">AutoHotkey</span>
+        {version}
+      {:else}
+        Plain Text
+      {/if}
     </Select>
   {/snippet}
 

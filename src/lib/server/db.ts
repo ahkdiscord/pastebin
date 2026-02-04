@@ -56,7 +56,7 @@ export async function init() {
   `;
 }
 
-export async function addPaste(version: Version, content: string): Promise<string> {
+export async function addPaste(version: Version | undefined, content: string): Promise<string> {
   const id = Bun.hash
     .cityHash32(
       Bun.randomUUIDv7("base64"), // time-based to avoid collisions
