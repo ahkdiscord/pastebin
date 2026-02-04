@@ -1,7 +1,7 @@
 import { styleTags, tags } from "@lezer/highlight";
 import { LRParser } from "@lezer/lr";
-import { parser as ahkV11Parser } from "./parsing/ahk-v1.1";
-import { parser as ahkV20Parser } from "./parsing/ahk-v2.0";
+import { parser as ahkV11Parser } from "./parsing/ahk-v1.1.gen";
+import { parser as ahkV20Parser } from "./parsing/ahk-v2.0.gen";
 import { foldInside, foldNodeProp, indentNodeProp, LRLanguage } from "@codemirror/language";
 import type { Version } from "./types";
 
