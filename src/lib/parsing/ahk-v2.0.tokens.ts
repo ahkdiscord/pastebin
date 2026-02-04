@@ -1,12 +1,53 @@
-import { BuiltinClass, BuiltinConstant, BuiltinFunction, BuiltinVariable } from "./ahk-v2.0.gen.terms";
+import { ExternalTokenizer, InputStream } from "@lezer/lr";
+import * as terms from "./ahk-v2.0.gen.terms";
 
 export function specializeIdentifier(name: string) {
-  if (builtinVariables.has(name.toLowerCase())) return BuiltinVariable;
-  if (builtinConstants.has(name.toLowerCase())) return BuiltinConstant;
-  if (builtinFunctions.has(name.toLowerCase())) return BuiltinFunction;
-  if (builtinClasses.has(name.toLowerCase())) return BuiltinClass;
+  if (builtinVariables.has(name.toLowerCase())) return terms.BuiltinVariable;
+  if (builtinConstants.has(name.toLowerCase())) return terms.BuiltinConstant;
+  if (builtinFunctions.has(name.toLowerCase())) return terms.BuiltinFunction;
+  if (builtinClasses.has(name.toLowerCase())) return terms.BuiltinClass;
 
   return -1;
+}
+
+export const controlFlowKeywords = new ExternalTokenizer(input => {
+  return (
+    acceptIfMatch(input, "break", terms._break) ||
+    acceptIfMatch(input, "case", terms._case) ||
+    acceptIfMatch(input, "catch", terms._catch) ||
+    acceptIfMatch(input, "continue", terms._continue) ||
+    acceptIfMatch(input, "else", terms._else) ||
+    acceptIfMatch(input, "finally", terms._finally) ||
+    acceptIfMatch(input, "for", terms._for) ||
+    acceptIfMatch(input, "goto", terms.goto) ||
+    acceptIfMatch(input, "if", terms._if) ||
+    acceptIfMatch(input, "loop", terms.loop) ||
+    acceptIfMatch(input, "return", terms._return) ||
+    acceptIfMatch(input, "switch", terms._switch) ||
+    acceptIfMatch(input, "throw", terms._throw) ||
+    acceptIfMatch(input, "try", terms._try) ||
+    acceptIfMatch(input, "until", terms.until) ||
+    acceptIfMatch(input, "while", terms._while)
+  );
+});
+
+function isNext(inputStream: InputStream, string: string): boolean {
+  let input: string = "";
+
+  for (let i = 0; i < string.length; i++) {
+    input += String.fromCharCode(inputStream.peek(i));
+  }
+
+  return input.toLowerCase() === string.toLowerCase();
+}
+
+function acceptIfMatch(inputStream: InputStream, string: string, token: number): boolean {
+  if (isNext(inputStream, string)) {
+    inputStream.acceptToken(token, string.length);
+    return true;
+  }
+
+  return false;
 }
 
 const builtinVariables = new Set([

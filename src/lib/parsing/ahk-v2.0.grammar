@@ -3,10 +3,15 @@
 @skip { space | LineComment | BlockComment }
 
 expression {
+  ControlFlow { break | case | catch | continue | else | finally | for | goto | if | loop | return | switch | throw | try | until | while }
   Identifier |
   String |
   Boolean |
   Application { "(" expression* ")" }
+}
+
+@external tokens controlFlowKeywords from "./ahk-v2.0.tokens" {
+  break, case, catch, continue, else, finally, for, goto, if, loop, return, switch, throw, try, until, while
 }
 
 @external specialize { Identifier } specializeIdentifier from "./ahk-v2.0.tokens" {
@@ -17,6 +22,8 @@ expression {
 }
 
 @tokens {
+  ControlFlow { break | case | catch | continue | else | finally | for | goto | if | loop | return | switch | throw | try | until | while }
+
   Identifier { $[a-zA-Z_\-0-9]+ }
 
   String { ( '"' (EscapeSequence | !["`])* '"' ) | ( "'" (EscapeSequence | !['`])* "'" ) }
