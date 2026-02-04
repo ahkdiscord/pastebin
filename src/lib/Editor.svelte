@@ -115,11 +115,16 @@
           { tag: tags.keyword, class: "keyword" },
           { tag: tags.controlKeyword, class: "keyword" },
           { tag: tags.variableName, class: "variable" },
+          { tag: tags.propertyName, class: "variable" },
+          { tag: tags.integer, class: "number" },
           { tag: tags.string, class: "string" },
           { tag: tags.escape, class: "escape" },
           { tag: tags.className, class: "class" },
+          { tag: tags.modifier, class: "modifier" },
+          { tag: tags.name, class: "name" },
           { tag: tags.standard(tags.className), class: "builtin class constant" },
           { tag: tags.function(tags.variableName), class: "function" },
+          { tag: tags.function(tags.keyword), class: "function keyword" },
           { tag: tags.standard(tags.variableName), class: "builtin variable" },
           { tag: tags.standard(tags.constant(tags.variableName)), class: "builtin constant" },
           { tag: tags.standard(tags.function(tags.variableName)), class: "builtin function" },
@@ -192,6 +197,10 @@
     color: var(--berry);
   }
 
+  .editor :global(.number) {
+    color: var(--berry);
+  }
+
   .editor :global(.keyword) {
     color: var(--blush);
   }
@@ -216,11 +225,19 @@
     color: var(--slush);
   }
 
+  .editor :global(.function.keyword) {
+    font-weight: bolder;
+  }
+
   .editor :global(.constant) {
     font-style: italic;
   }
 
   .editor :global(.builtin) {
     font-weight: bolder;
+  }
+
+  .editor :global(.modifier) {
+    color: var(--slime);
   }
 </style>

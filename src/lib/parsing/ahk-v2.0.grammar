@@ -1,42 +1,350 @@
-@top Program { expression* }
+@top Program { 
+  (Directive | statement)*
+}
 
-@skip { space | LineComment | BlockComment }
+Directive {
+  clipboardTimeoutDirective |
+  dllLoadDirective |
+  errorStdOutDirective |
+  hotIfDirective |
+  hotIfTimeoutDirective |
+  hotstringDirective |
+  includeDirective |
+  includeAgainDirective |
+  inputLevelDirective |
+  maxThreadsDirective |
+  maxThreadsBufferDirective |
+  maxThreadsPerHotkeyDirective |
+  noTrayIconDirective |
+  requiresDirective |
+  singleInstanceDirective |
+  suspendExemptDirective |
+  useHookDirective |
+  warnDirective |
+  winActivateForceDirective
+}
+
+@skip {} {
+  clipboardTimeoutDirective { "#" clipboardTimeout space+ Integer }
+
+  dllLoadDirective { "#" dllLoad space+ DirectiveString }
+
+  errorStdOutDirective { "#" errorStdOut space+ DirectiveString }
+
+  hotIfDirective { "#" hotIf space+ expression }
+
+  hotIfTimeoutDirective { "#" hotIfTimeout space+ Integer }
+
+  hotstringDirective {
+    "#" hotstring space+ noMouse |
+    "#" hotstring space+ endChars " " UnquotedDirectiveString |
+    "#" hotstring space+ UnquotedDirectiveString
+  }
+
+  includeDirective {
+    "#" include space+ DirectiveString |
+    "#" include space+ "<" IncludeDirectiveLibName ">"
+  }
+
+  includeAgainDirective {
+    "#" includeAgain space+ DirectiveString |
+    "#" includeAgain space+ "<" IncludeDirectiveLibName ">"
+  }
+
+  inputLevelDirective {
+    "#" inputLevel space+ Integer
+  }
+
+  maxThreadsDirective {
+    "#" maxThreads space+ Integer
+  }
+
+  maxThreadsBufferDirective {
+    "#" maxThreadsBuffer space+ DirectiveBoolean
+  }
+
+  maxThreadsPerHotkeyDirective {
+    "#" maxThreadsPerHotkey space+ Integer
+  }
+
+  noTrayIconDirective {
+    "#" noTrayIcon
+  }
+
+  requiresDirective {
+    "#" requires space+ UnquotedDirectiveString
+  }
+
+  singleInstanceDirective {
+    "#" singleInstance space+ (force | ignore | prompt | off)
+  }
+
+  suspendExemptDirective {
+    "#" suspendExempt space+ DirectiveBoolean
+  }
+
+  useHookDirective {
+    "#" useHook space+ DirectiveBoolean
+  }
+
+  warnDirective {
+    "#" warn space+ (varUnset | localSameAsGlobal | unreachable | all) space* "," space* (msgBox | stdOut | outputDebug | off)
+  }
+
+  winActivateForceDirective {
+    "#" winActivateForce
+  }
+}
+
+statement {
+  expression | classDeclaration
+}
+
+classDeclaration {
+  Class ClassName (Extends ClassName)? "{" classBody "}"
+}
+
+ClassName {
+  identifier
+}
+
+classBody {
+  ("\n" Static? (assignment | functionDeclaration | propertyDeclaration))*
+}
+
+functionDeclaration {
+  FunctionName { identifier } "(" parameters ")" "{" functionBody "}"
+}
+
+functionBody {
+  statement*
+}
+
+propertyDeclaration {
+  PropertyName { identifier } "[" parameters "]"
+  (FatArrow expression | "{" propertyBody "}")
+}
+
+propertyBody {
+  (
+    (Get | Set)
+    (FatArrow expression | "{" functionBody "}")
+  )*
+}
+
+parameters {
+  () | (parameter ("," parameter)*)
+}
+
+parameter {
+  ParameterName { identifier }
+  (":=" expression)?
+}
 
 expression {
-  ControlFlow { break | case | catch | continue | else | finally | for | goto | if | loop | return | switch | throw | try | until | while }
-  Identifier |
+  Integer |
   String |
-  Boolean |
-  Application { "(" expression* ")" }
+  Boolean
 }
+
+assignment { 
+  VariableName { identifier } ":=" expression
+}
+
+ControlFlow { break | case | catch | continue | else | finally | for | goto | if | loop | return | switch | throw | try | until | while }
 
 @external tokens controlFlowKeywords from "./ahk-v2.0.tokens" {
-  break, case, catch, continue, else, finally, for, goto, if, loop, return, switch, throw, try, until, while
+  break, case, catch, Class, continue, else, Extends, finally, for, goto, if, loop, return, switch, throw, try, until, while
 }
 
-@external specialize { Identifier } specializeIdentifier from "./ahk-v2.0.tokens" {
+@external tokens specialKeywords from "./ahk-v2.0.tokens" {
+  Static,
+  Get,
+  Set,
+  is,
+  in,
+  contains,
+  not,
+  and,
+  or,
+  isSet
+}
+
+@external tokens directiveKeywords from "./ahk-v2.0.tokens" {
+  clipboardTimeout,
+  dllLoad,
+  errorStdOut,
+  hotIf,
+  hotIfTimeout,
+  hotstring,
+  include,
+  includeAgain,
+  inputLevel,
+  maxThreads,
+  maxThreadsBuffer,
+  maxThreadsPerHotkey,
+  noTrayIcon,
+  requires,
+  singleInstance,
+  suspendExempt,
+  useHook,
+  warn,
+  winActivateForce
+  noMouse,
+  endChars,
+  force,
+  ignore,
+  prompt,
+  off,
+  varUnset,
+  localSameAsGlobal,
+  unreachable,
+  all,
+  msgBox,
+  stdOut,
+  outputDebug
+}
+
+DirectiveBoolean { Boolean | "0" | "1" }
+
+@external specialize { identifier } specializeIdentifier from "./ahk-v2.0.tokens" {
   BuiltinVariable
   BuiltinConstant
   BuiltinFunction
   BuiltinClass
+  Boolean
 }
 
-@tokens {
-  Identifier { $[a-zA-Z_\-0-9]+ }
+objectKeyValuePair {
+  (Name | percent expression percent)
+  colon
+  expression
+}
 
-  String { ( '"' (EscapeSequence | !["`])* '"' ) | ( "'" (EscapeSequence | !['`])* "'" ) }
+Dereference { percent expression percent }
+@skip {} { PartialNameSubstitution { Name percent space* expression space* percent } }
+@skip {} { Access { Name dot Name | Name dot percent space* expresion space* percent } }
+Operation {
+  prio0 {
+    parenthesis { "(" expression ")" } |
+    call { expression "(" (() | expression ("," expression)*) "*"? ")" } |
+    itemAccess { expression "[" expression "]" }
+    array { "[" (() | expression ("," expression)*) "]" }
+    object { "{" (() | objectKeyValuePair ("," objectKeyValuePair)*) "}" }
+  } |
+  prio1 {
+    increment { expression plusPlus | plusPlus expression } |
+    decrement { expression minusMinus | minusMinus expression }
+  } |
+  prio2 {
+    power { expression asteriskAsterisk expression }
+  } |
+  prio3 {
+    unaryMinus { minus expression } |
+    unaryPlus { plus expression } |
+    logicalNot { exclamation expression } |
+    bitwiseNot { tilde expression }
+  } |
+  prio4 {
+    multiply { expression asterisk expression } |
+    divide { slash } |
+    integerDivide { expression slashSlash expression }
+  } |
+  prio5 {
+    add { expression plus expression } |
+    subtract { expression minus expression }
+  } |
+  prio6 {
+    shiftLeft { expression lessLess expression } |
+    shiftRight { expression greaterGreater expression } |
+    logicalShiftRight { expression greaterGreaterGreater expression }
+  } |
+  prio7 {
+    bitwiseAnd { expression ampersand expression } |
+    bitwiseXor { expression circumflex expression } |
+    bitwiseOr { expression pipe expression }
+  } |
+  prio8 {
+    concatenate { expression dot expression }
+  }
+}
+
+FatArrow { equalGreater expression }
+
+Name { identifier }
+
+@tokens {
+  DirectiveString { UnquotedDirectiveString | QuotedDirectiveString }
+  UnquotedDirectiveString { ![\n \t<>;]+ }
+  QuotedDirectiveString { '"' ![\n"]* '"' }
+
+  IncludeDirectiveLibName { ![<> \t\n\r;]+ }
+
+  identifier { $[a-zA-Z_] $[a-z-A-Z_0-9]* }
+
+  @precedence { "static", identifier }
 
   EscapeSequence { "`" _ }
 
-  Boolean { "true" | "false" }
+  String { ('"' (EscapeSequence | !["`\n])* '"') | ("'" (EscapeSequence | !['`\n])* "'") }
 
-  @precedence { Boolean, Identifier }
+  Integer { $[0-9]+ }
 
   LineComment { ";" ![\n]* }
 
-  BlockComment { "/*" _* "*/" space? "\n" }
+  BlockComment { "/*" _* "*/" space* "\n" }
 
-  space { $[ \t\n\r]+ }
+  percent { "%" }
+  dot { "." }
+  question { "?" }
+  plusPlus { "++" }
+  minusMinus { "--" }
+  asteriskAsterisk { "**" }
+  minus { "-" }
+  plus { "+" }
+  exclamation { "!" }
+  tilde { "~" }
+  ampersand { "&" }
+  asterisk { "*" }
+  slash { "/" }
+  slashSlash { "//" }
+  lessLess { "<<" }
+  greaterGreater { ">>" }
+  greaterGreaterGreater { ">>>" }
+  circumflex { "^" }
+  pipe { "|" }
+  tildeEqual { "~=" }
+  greater { ">" }
+  less { "<" }
+  greaterEqual { ">=" }
+  lessEqual { "<=" }
+  equal { "=" }
+  equalEqual { "==" }
+  exclamationEqual { "!=" }
+  exclamationEqualEqual { "!==" }
+  ampersandAmpersand { "&&" }
+  pipePipe { "||" }
+  questionQuestion { "??" }
+  colon { ":" }
+  colonEqual { ":=" }
+  plusEqual { "+=" }
+  minusEqual { "-=" }
+  asteriskEqual { "*=" }
+  slashEqual { "/=" }
+  slashSlashEqual { "//=" }
+  dotEqual { ".=" }
+  pipeEqual { "|=" }
+  ampersandEqual { "&=" }
+  circumflexEqual { "^=" }
+  greaterGreaterEqual { ">>=" }
+  lessLessEqual { "<<=" }
+  greaterGreaterGreaterEqual { ">>>=" }
+  equalGreater { "=>" }
+  comma { "," }
+
+  space { $[ \t] }
 }
+
+@skip { space+ | LineComment | BlockComment }
 
 @detectDelim
