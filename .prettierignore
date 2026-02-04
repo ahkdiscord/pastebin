@@ -1,2 +1,4 @@
 bun.lock
 /node_modules/
+*.gen.ts
+*.gen.*.ts
