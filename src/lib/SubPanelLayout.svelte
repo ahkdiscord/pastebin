@@ -59,7 +59,7 @@
   let subpanel: HTMLElement;
 </script>
 
-<svelte:body onmouseup={endDrag} ontouchend={endDrag} />
+<svelte:window onmouseup={endDrag} ontouchend={endDrag} />
 
 <div
   class="panels"
@@ -110,6 +110,7 @@
     .drag-handle {
       transform: rotateZ(90deg);
       padding: 0.5em;
+      cursor: row-resize;
     }
   }
 
