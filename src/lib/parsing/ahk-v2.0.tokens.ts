@@ -1,4 +1,4 @@
-import { BuiltinConstant, BuiltinFunction, BuiltinVariable } from "./ahk-v2.0.terms";
+import { BuiltinConstant, BuiltinFunction, BuiltinVariable } from "./ahk-v2.0.gen.terms";
 
 const builtinVariables = new Set([
   "a_workingdir",
