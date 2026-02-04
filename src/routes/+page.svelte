@@ -4,7 +4,7 @@
   import Editor from "$lib/Editor.svelte";
   import Page from "$lib/Page.svelte";
   import Select from "$lib/Select.svelte";
-  import { versions, type Version } from "$lib/types";
+  import { Version } from "$lib/types";
   import Share from "@lucide/svelte/icons/share";
   import Play from "@lucide/svelte/icons/play";
   import Ellipsis from "@lucide/svelte/icons/ellipsis";
@@ -51,7 +51,7 @@
       {version}
 
       {#snippet options()}
-        {#each versions as v}
+        {#each Array.of(...Version.values).toSorted() as v}
           <Button color="clear" onclick={() => (version = v)}><span class="unimportant">use</span> {v}</Button>
         {/each}
       {/snippet}

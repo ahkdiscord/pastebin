@@ -1,6 +1,7 @@
-import { isVersion, type Version } from "$lib/types";
+import { Version } from "$lib/types";
 import { sql } from "bun";
 import { add } from "date-fns";
+import * as z from "zod";
 
 export interface Paste {
   id: string;
@@ -94,7 +95,7 @@ export async function getPaste(pasteId: string): Promise<Paste | null> {
 
   return {
     id,
-    version: isVersion(version) ? version : undefined,
+    version: Version.or(z.undefined()).catch(undefined).parse(version),
     content,
     creation: creation ? new Date(creation) : undefined,
     expiry: expiry ? new Date(expiry) : undefined,

@@ -1,5 +1,5 @@
 import { addPaste, getPaste } from "$lib/server/db.js";
-import { isVersion } from "$lib/types.js";
+import { Version } from "$lib/types.js";
 import { error, redirect } from "@sveltejs/kit";
 
 export async function load({ cookies }) {
@@ -16,10 +16,12 @@ export const actions = {
   async share({ request, cookies }) {
     const data = await request.formData();
 
-    const version = (() => {
-      const x = data.get("version");
-      return isVersion(x) ? x : error(400, "version is invalid");
-    })();
+    let version: Version;
+    try {
+      version = Version.parse(JSON.parse(data.get("version")?.toString() ?? ""));
+    } catch {
+      error(400, "version is invalid");
+    }
     const script = (() => {
       const x = data.get("script");
       return typeof x === "string" ? x : error(400, "script is required");

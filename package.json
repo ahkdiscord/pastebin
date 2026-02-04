@@ -45,6 +45,7 @@
     "@lezer/highlight": "^1.2.3",
     "@lucide/svelte": "^0.563.1",
     "codemirror": "^6.0.2",
-    "date-fns": "^4.1.0"
+    "date-fns": "^4.1.0",
+    "zod": "^4.3.6"
   }
 }

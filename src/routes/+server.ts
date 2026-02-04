@@ -1,14 +1,15 @@
 import { addPaste } from "$lib/server/db";
-import type { Version } from "$lib/types";
+import { Version } from "$lib/types";
 import { json } from "@sveltejs/kit";
+import { object, string } from "zod";
 
-interface PasteRequest {
-  version: Version;
-  script: string;
-}
+const PasteRequest = object({
+  version: Version,
+  script: string(),
+});
 
 export async function POST({ request }) {
-  const data: PasteRequest = await request.json();
+  const data = PasteRequest.parse(await request.json());
 
   return json({ id: await addPaste(data.version, data.script) });
 }
