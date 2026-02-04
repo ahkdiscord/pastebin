@@ -22,8 +22,6 @@ expression {
 }
 
 @tokens {
-  ControlFlow { break | case | catch | continue | else | finally | for | goto | if | loop | return | switch | throw | try | until | while }
-
   Identifier { $[a-zA-Z_\-0-9]+ }
 
   String { ( '"' (EscapeSequence | !["`])* '"' ) | ( "'" (EscapeSequence | !['`])* "'" ) }
