@@ -3,13 +3,20 @@ import { Version } from "$lib/types.js";
 import { redirect } from "@sveltejs/kit";
 import { string } from "zod";
 
-export async function load({ cookies }) {
+export async function load({ cookies, url }) {
   const edit = cookies.get("edit");
 
   cookies.delete("edit", { path: "/" });
 
+  if (edit) {
+    return {
+      paste: (await getPaste(edit)) ?? undefined,
+    };
+  }
+
   return {
-    paste: edit ? ((await getPaste(edit)) ?? undefined) : undefined,
+    script: url.searchParams.get("script") ?? undefined,
+    version: Version.optional().catch(undefined).parse(url.searchParams.get("version")) ?? undefined,
   };
 }
 

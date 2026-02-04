@@ -14,8 +14,8 @@
 
   const { data } = $props();
 
-  let script: string = $derived(data.paste?.content ?? "");
-  let version: Version | undefined = $derived(data.paste ? data.paste.version : "v2.0");
+  let script: string = $derived(data.paste ? data.paste.content : (data.script ?? ""));
+  let version: Version | undefined = $derived(data.paste ? data.paste.version : (data.version ?? "v2.0"));
 
   let running: boolean = $state(false);
   let output: string = $state("");
