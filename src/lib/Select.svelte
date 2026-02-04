@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import type { HTMLSelectAttributes } from "svelte/elements";
   import Button from "./Button.svelte";
   import { fly } from "svelte/transition";
   import { ChevronDown } from "@lucide/svelte";
