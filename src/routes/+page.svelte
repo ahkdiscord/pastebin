@@ -4,40 +4,31 @@
   import Editor from "$lib/Editor.svelte";
   import Page from "$lib/Page.svelte";
   import Select from "$lib/Select.svelte";
-  import { Version } from "$lib/types";
+  import { getDisplayNames, Language } from "$lib/Language.js";
   import Share from "@lucide/svelte/icons/share";
   import Play from "@lucide/svelte/icons/play";
   import Ellipsis from "@lucide/svelte/icons/ellipsis";
   import Output from "$lib/Output.svelte";
-  import type { Result } from "$lib/server/running.js";
   import SubPanelLayout from "$lib/SubPanelLayout.svelte";
+  import { isRunnable, runScript } from "$lib/client/running.js";
 
   const { data } = $props();
 
   let script: string = $derived(data.paste ? data.paste.content : (data.script ?? ""));
-  let version: Version | undefined = $derived(data.paste ? data.paste.version : (data.version ?? "v2.0"));
+  let language: Language = $derived(data.paste ? data.paste.language : (data.language ?? "ahkv2.0"));
 
   let running: boolean = $state(false);
   let output: string = $state("");
 
-  async function runScript() {
-    if (!version) return;
+  async function run() {
+    if (!isRunnable(language)) return;
 
     running = true;
-
     try {
-      const response = await fetch("/run", {
-        method: "POST",
-        body: JSON.stringify({ version, script }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const result: Result = await response.json();
-
-      output = result.output;
+      output = await runScript(script, language);
       panels.open();
+    } catch (e) {
+      output = `Sorry, an error occurred:\n${e}`;
     } finally {
       running = false;
     }
@@ -49,25 +40,25 @@
 <Page>
   {#snippet headerStart()}
     <Select>
-      {#if version}
-        <span class="unimportant">AutoHotkey</span>
-        {version}
-      {:else}
-        Plain Text
-      {/if}
+      {@const names = getDisplayNames(language)}
+      <span class="long">{names.long}</span>
+      <span class="short">{names.short}</span>
 
       {#snippet options()}
-        {#each Array.of(...Version.values).toSorted() as v}
-          <Button color="clear" onclick={() => (version = v)}><span class="unimportant">use</span> {v}</Button>
+        {#each Array.of(...Language.values).toSorted() as lang}
+          {@const names = getDisplayNames(lang)}
+          <Button color="clear" onclick={() => (language = lang)}>
+            <span class="long">{names.long}</span>
+            <span class="short">{names.short}</span>
+          </Button>
         {/each}
-        <Button color="clear" onclick={() => (version = undefined)}>Plain Text</Button>
       {/snippet}
     </Select>
   {/snippet}
 
   {#snippet headerEnd()}
     <form action="?/share" method="POST" use:enhance>
-      <input type="hidden" name="version" value={version} />
+      <input type="hidden" name="language" value={language} />
       <input type="hidden" name="script" value={script} />
       <Button
         onclick={event => {
@@ -81,10 +72,10 @@
       </Button>
     {:else}
       <Button
-        disabled={!version}
+        disabled={!isRunnable(language)}
         onclick={() => {
           if (!script) return;
-          runScript();
+          run();
         }}>
         <Play size={16} /> Run
       </Button>
@@ -93,7 +84,7 @@
 
   <SubPanelLayout bind:this={panels}>
     {#snippet left()}
-      <Editor bind:content={script} {version} />
+      <Editor bind:content={script} {language} />
     {/snippet}
 
     {#snippet right()}
@@ -103,9 +94,16 @@
 </Page>
 
 <style>
+  .short {
+    display: none;
+  }
+
   @media (width < 32em) {
-    .unimportant {
+    .long {
       display: none;
+    }
+    .short {
+      display: unset;
     }
   }
 

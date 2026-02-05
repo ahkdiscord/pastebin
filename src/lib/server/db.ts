@@ -1,11 +1,10 @@
-import { Version } from "$lib/types";
+import { Language } from "$lib/Language";
 import { sql } from "bun";
 import { add } from "date-fns";
-import * as z from "zod";
 
 export interface Paste {
   id: string;
-  version?: Version;
+  language: Language;
   content: string;
   creation?: Date;
   expiry?: Date;
@@ -13,17 +12,17 @@ export interface Paste {
 
 interface PasteEntity {
   id: string;
-  version: string | undefined;
+  language: string;
   content: string;
   creation: Date | number | undefined;
   expiry: Date | number | undefined;
 }
 
-function toEntity({ id, version, content, creation, expiry }: Paste): PasteEntity {
+function toEntity({ id, language, content, creation, expiry }: Paste): PasteEntity {
   if (sql.options.adapter === "sqlite") {
     return {
       id,
-      version,
+      language,
       content,
       creation: creation?.valueOf(),
       expiry: expiry?.valueOf(),
@@ -32,7 +31,7 @@ function toEntity({ id, version, content, creation, expiry }: Paste): PasteEntit
 
   return {
     id,
-    version,
+    language,
     content,
     creation,
     expiry,
@@ -43,7 +42,7 @@ export async function init() {
   await sql`
     CREATE TABLE IF NOT EXISTS pastes (
       id VARCHAR(8) PRIMARY KEY,
-      version TEXT,
+      language TEXT NOT NULL,
       content TEXT NOT NULL,
       creation TIMESTAMPTZ,
       expiry TIMESTAMPTZ
@@ -56,7 +55,7 @@ export async function init() {
   `;
 }
 
-export async function addPaste(version: Version | undefined, content: string): Promise<string> {
+export async function addPaste(language: Language, content: string): Promise<string> {
   const id = Bun.hash
     .cityHash32(
       Bun.randomUUIDv7("base64"), // time-based to avoid collisions
@@ -72,7 +71,7 @@ export async function addPaste(version: Version | undefined, content: string): P
     INSERT INTO pastes ${sql(
       toEntity({
         id,
-        version,
+        language,
         content,
         creation,
         expiry,
@@ -91,11 +90,11 @@ export async function getPaste(pasteId: string): Promise<Paste | null> {
   if (data.length === 0) return null;
   if (data.length > 1) console.error("More than one paste with id", pasteId, { data });
 
-  const { id, version, content, creation, expiry } = data[0];
+  const { id, language, content, creation, expiry } = data[0];
 
   return {
     id,
-    version: Version.or(z.undefined()).catch(undefined).parse(version),
+    language: Language.catch("none").parse(language),
     content,
     creation: creation ? new Date(creation) : undefined,
     expiry: expiry ? new Date(expiry) : undefined,

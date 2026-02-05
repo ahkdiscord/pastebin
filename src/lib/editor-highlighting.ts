@@ -3,7 +3,7 @@ import { LRParser } from "@lezer/lr";
 import { parser as ahkV11Parser } from "./parsing/ahk-v1.1.gen";
 import { parser as ahkV20Parser } from "./parsing/ahk-v2.0.gen";
 import { foldInside, foldNodeProp, indentNodeProp, LRLanguage } from "@codemirror/language";
-import type { Version } from "./types";
+import type { Language } from "./Language";
 
 function parserWithMetadata(baseParser: LRParser) {
   return baseParser.configure({
@@ -30,8 +30,7 @@ function parserWithMetadata(baseParser: LRParser) {
         "Class": tags.keyword,
         "Extends": tags.keyword,
         "Static": tags.modifier,
-        "Get": tags.function(tags.keyword),
-        "Set": tags.function(tags.keyword),
+        "Get Set": tags.function(tags.keyword),
         "{ }": tags.brace,
         "[ ]": tags.squareBracket,
         "( )": tags.paren,
@@ -46,16 +45,15 @@ function parserWithMetadata(baseParser: LRParser) {
   });
 }
 
-export function autohotkeyLanguage(version: Version) {
-  return LRLanguage.define({
-    parser:
-      version === "v1.1"
-        ? parserWithMetadata(ahkV11Parser)
-        : version === "v2.0"
-          ? parserWithMetadata(ahkV20Parser)
-          : (version satisfies never),
-    languageData: {
-      commentTokens: { line: ";" },
-    },
-  });
+export function getLrLanguage(language: Language) {
+  if (language === "ahkv1.1") {
+    return LRLanguage.define({
+      parser: parserWithMetadata(ahkV11Parser),
+    });
+  }
+  if (language === "ahkv2.0") {
+    return LRLanguage.define({
+      parser: parserWithMetadata(ahkV20Parser),
+    });
+  }
 }

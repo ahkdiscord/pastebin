@@ -8,33 +8,27 @@
   import Check from "@lucide/svelte/icons/check";
   import Ellipsis from "@lucide/svelte/icons/ellipsis";
   import { enhance } from "$app/forms";
-  import type { Result } from "$lib/server/running.js";
   import SubPanelLayout from "$lib/SubPanelLayout.svelte";
   import Output from "$lib/Output.svelte";
+  import { getDisplayNames } from "$lib/Language.js";
+  import { isRunnable, runScript } from "$lib/client/running.js";
 
   const { data } = $props();
 
-  const { content: script, version } = $derived(data.paste);
+  const { content: script, language } = $derived(data.paste);
 
   let running: boolean = $state(false);
   let output: string = $state("");
 
-  async function runScript() {
+  async function run() {
+    if (!isRunnable(language)) return;
+
     running = true;
-
     try {
-      const response = await fetch("/run", {
-        method: "POST",
-        body: JSON.stringify({ version, script }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const result: Result = await response.json();
-
-      output = result.output;
+      output = await runScript(script, language);
       panels.open();
+    } catch (e) {
+      output = `Sorry, an error occurred:\n${e}`;
     } finally {
       running = false;
     }
@@ -46,12 +40,9 @@
 <Page>
   {#snippet headerStart()}
     <Select disabled>
-      {#if version}
-        <span class="unimportant">AutoHotkey</span>
-        {version}
-      {:else}
-        Plain Text
-      {/if}
+      {@const names = getDisplayNames(language)}
+      <span class="long">{names.long}</span>
+      <span class="short">{names.short}</span>
     </Select>
   {/snippet}
 
@@ -66,9 +57,10 @@
       </Button>
     {:else}
       <Button
+        disabled={!isRunnable(language)}
         onclick={() => {
           if (!script) return;
-          runScript();
+          run();
         }}>
         <Play size={16} /> Run
       </Button>
@@ -77,7 +69,7 @@
 
   <SubPanelLayout bind:this={panels}>
     {#snippet left()}
-      <Editor readOnly content={script} {version} />
+      <Editor readOnly content={script} {language} />
     {/snippet}
 
     {#snippet right()}
@@ -95,9 +87,16 @@
 {/if}
 
 <style>
+  .short {
+    display: none;
+  }
+
   @media (width < 32em) {
-    .unimportant {
+    .long {
       display: none;
+    }
+    .short {
+      display: unset;
     }
   }
 

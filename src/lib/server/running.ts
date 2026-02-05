@@ -1,5 +1,5 @@
 import { CLOUDAHK_PASSWORD, CLOUDAHK_URL, CLOUDAHK_USERNAME } from "$env/static/private";
-import type { Version } from "$lib/types";
+import type { Language } from "$lib/Language";
 import { error } from "@sveltejs/kit";
 import type { Duration } from "date-fns";
 
@@ -8,11 +8,10 @@ export interface Result {
   output: string;
 }
 
-export async function runScript(script: string, version: Version): Promise<Result> {
-  const cloudahkVersion =
-    version === "v1.1" ? "ahk1" : version === "v2.0" ? "ahk2" : error(400, "version not supported by CloudAHK runner");
+export async function runScript(script: string, language: Language): Promise<Result> {
+  const cloudahkLanguage = getCloudahkLanguage(language) ?? error(400, "language not supported by CloudAHK runner");
 
-  const cloudahkUrl = new URL(`${cloudahkVersion}/run`, CLOUDAHK_URL);
+  const cloudahkUrl = new URL(`${cloudahkLanguage}/run`, CLOUDAHK_URL);
 
   const response = await fetch(cloudahkUrl, {
     body: script,
@@ -33,4 +32,14 @@ export async function runScript(script: string, version: Version): Promise<Resul
 interface CloudAhkResponse {
   time?: number;
   stdout: string;
+}
+
+function getCloudahkLanguage(language: Language): string | undefined {
+  switch (language) {
+    case "ahkv1.1":
+      return "ahk1";
+
+    case "ahkv2.0":
+      return "ahk2";
+  }
 }

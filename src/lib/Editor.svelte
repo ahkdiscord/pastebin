@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Compartment, EditorState } from "@codemirror/state";
+  import { Compartment, EditorState, type Extension } from "@codemirror/state";
   import { EditorView } from "codemirror";
   import {
     drawSelection,
@@ -22,18 +22,18 @@
   } from "@codemirror/language";
   import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
   import { highlightSelectionMatches } from "@codemirror/search";
-  import { autohotkeyLanguage } from "./editor-highlighting";
+  import { getLrLanguage } from "./editor-highlighting";
   import { tags } from "@lezer/highlight";
-  import type { Version } from "./types";
+  import type { Language } from "./Language";
 
   interface Props {
     content: string;
-    version: Version | undefined;
+    language: Language;
     readOnly?: boolean;
     tabSize?: number;
   }
 
-  let { content = $bindable(), version, readOnly = false, tabSize = 4 }: Props = $props();
+  let { content = $bindable(), language, readOnly = false, tabSize = 4 }: Props = $props();
 
   let wrapper: HTMLDivElement;
   let view: EditorView | undefined = $state(undefined);
@@ -55,16 +55,24 @@
   const languageSupportCompartment = new Compartment();
   $effect(() => {
     view?.dispatch({
-      effects: languageSupportCompartment.reconfigure(version ? new LanguageSupport(autohotkeyLanguage(version)) : []),
+      effects: languageSupportCompartment.reconfigure(getLanguageSupport(language)),
     });
   });
+
+  function getLanguageSupport(language: Language): Extension {
+    const lrLanguage = getLrLanguage(language);
+
+    if (!lrLanguage) return [];
+
+    return new LanguageSupport(lrLanguage);
+  }
 
   const editorState = EditorState.create({
     // svelte-ignore state_referenced_locally
     doc: content,
     extensions: [
       // svelte-ignore state_referenced_locally
-      languageSupportCompartment.of(version ? new LanguageSupport(autohotkeyLanguage(version)) : []),
+      languageSupportCompartment.of(getLanguageSupport(language)),
 
       lineNumbers(),
       foldGutter(),

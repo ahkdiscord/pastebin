@@ -1,5 +1,5 @@
 import { addPaste, getPaste } from "$lib/server/db.js";
-import { Version } from "$lib/types.js";
+import { Language } from "$lib/Language.js";
 import { redirect } from "@sveltejs/kit";
 import { string } from "zod";
 
@@ -16,7 +16,7 @@ export async function load({ cookies, url }) {
 
   return {
     script: url.searchParams.get("script") ?? undefined,
-    version: Version.optional().catch(undefined).parse(url.searchParams.get("version")) ?? undefined,
+    language: Language.optional().catch(undefined).parse(url.searchParams.get("language")),
   };
 }
 
@@ -24,10 +24,10 @@ export const actions = {
   async share({ request, cookies }) {
     const data = await request.formData();
 
-    const version = Version.optional().catch(undefined).parse(data.get("version"));
+    const language = Language.catch("none").parse(data.get("language"));
     const script = string().parse(data.get("script"));
 
-    const id = await addPaste(version, script);
+    const id = await addPaste(language, script);
 
     cookies.set("newly-pasted", "true", { path: "/" });
 
