@@ -169,6 +169,11 @@
     border-end-start-radius: 0.5em;
   }
 
+  .editor :global(.cm-line) {
+    position: relative;
+    z-index: 1;
+  }
+
   .editor :global(.cm-focused) {
     outline: none;
   }
@@ -179,6 +184,10 @@
 
   .editor :global(.cm-activeLine) {
     background-color: var(--slate);
+  }
+
+  .editor :global(.cm-selectionLayer) {
+    z-index: unset !important;
   }
 
   .editor :global(.cm-selectionBackground) {
