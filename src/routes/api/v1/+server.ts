@@ -4,12 +4,12 @@ import { json } from "@sveltejs/kit";
 import { object, string } from "zod";
 
 const PasteRequest = object({
-  language: Language,
+  language: Language.optional(),
   script: string(),
 });
 
 export async function POST({ request }) {
   const data = PasteRequest.parse(await request.json());
 
-  return json({ id: await addPaste(data.language, data.script) });
+  return json({ id: await addPaste(data.language ?? "none", data.script) });
 }
