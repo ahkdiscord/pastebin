@@ -329,7 +329,7 @@ Name { identifier }
 
   LineComment { ";" ![\n]* }
 
-  BlockComment { "/*" _* "*/" space* "\n" }
+  BlockComment { "/*" _* "*/" lineEnd }
 
   percent { "%" }
   dot { "." }
