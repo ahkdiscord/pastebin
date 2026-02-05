@@ -26,11 +26,15 @@ export const controlFlowKeywords = new ExternalTokenizer(input => {
     acceptIfMatch(input, "else", terms._else) ||
     acceptIfMatch(input, "extends", terms.Extends) ||
     acceptIfMatch(input, "finally", terms._finally) ||
+    acceptIfMatch(input, "files", terms.files) ||
     acceptIfMatch(input, "for", terms._for) ||
     acceptIfMatch(input, "goto", terms.goto) ||
     acceptIfMatch(input, "if", terms._if) ||
     acceptIfMatch(input, "in", terms._in) ||
     acceptIfMatch(input, "loop", terms.loop) ||
+    acceptIfMatch(input, "parse", terms.parse) ||
+    acceptIfMatch(input, "read", terms.read) ||
+    acceptIfMatch(input, "reg", terms.reg) ||
     acceptIfMatch(input, "return", terms._return) ||
     acceptIfMatch(input, "switch", terms._switch) ||
     acceptIfMatch(input, "throw", terms._throw) ||

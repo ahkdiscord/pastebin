@@ -138,6 +138,10 @@ variable {
   VariableName { identifier ~name }
 }
 
+block {
+  lineEnd statement | "{" statement* "}"
+}
+
 breakStatement {
   ControlFlowKeyword { break }
 }
@@ -145,17 +149,23 @@ continueStatement {
   ControlFlowKeyword { continue }
 }
 forStatement {
-  ControlFlowKeyword { for } (variables | "(" variables ")") ControlFlowKeyword { in } (lineEnd statement | "{" statement* "}")
+  ControlFlowKeyword { for } (variables | "(" variables ")") ControlFlowKeyword { in } block
   untilStatement?
 }
 gotoStatement {
   ControlFlowKeyword { goto } (LabelName { identifier ~name } | parenthesis)
 }
 ifStatement {
-  ControlFlowKeyword { if } expression "{" statement* "}"
+  ControlFlowKeyword { if } expression block
 }
 loopStatement {
-  ControlFlowKeyword { loop } expression (lineEnd statement | "{" statement* "}")
+  (
+    ControlFlowKeyword { loop } expression block |
+    ControlFlowKeyword { loop files } expression (comma expression)? block |
+    ControlFlowKeyword { loop parse } expression (comma expression)? (comma expression)? block |
+    ControlFlowKeyword { loop read } expression (comma expression)? block
+    ControlFlowKeyword { loop reg } expression (comma expression)? block
+  )
   untilStatement?
 }
 returnStatement {
@@ -174,7 +184,7 @@ tryStatement {
   (ControlFlowKeyword { finally } (statement | "{" statement* "}"))?
 }
 whileStatement {
-  ControlFlowKeyword { while } expression (lineEnd statement | "{" statement* "}")
+  ControlFlowKeyword { while } expression block
   untilStatement?
 }
 untilStatement {
@@ -243,7 +253,7 @@ expression {
 }
 
 @external tokens controlFlowKeywords from "./ahk-v2.0.tokens" {
-  as, break, case, catch, Class, continue, default, else, Extends, finally, for, goto, if, in, loop, return, switch, throw, try, until, while
+  as, break, case, catch, Class, continue, default, else, Extends, finally, files, for, goto, if, in, loop, parse, read, reg, return, switch, throw, try, until, while
 }
 
 @external tokens specialKeywords from "./ahk-v2.0.tokens" {
