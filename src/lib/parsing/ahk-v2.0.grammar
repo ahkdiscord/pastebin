@@ -102,6 +102,7 @@ statement {
     classDeclaration |
     functionDeclaration |
     controlFlowStatement |
+    labelStatement |
     expression
   ) lineEnd
 }
@@ -209,6 +210,10 @@ switchBody {
     ControlFlowKeyword { case } expression colon statement* (returnStatement | breakStatement) |
     ControlFlowKeyword { default } colon statement*
   )*
+}
+
+labelStatement {
+  LabelName { identifier ~name } colon
 }
 
 propertyDeclaration {
