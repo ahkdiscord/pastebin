@@ -16,17 +16,20 @@ export function specializeIdentifier(name: string) {
 // This is better, unless it causes actual performance issues.
 export const controlFlowKeywords = new ExternalTokenizer(input => {
   return (
+    acceptIfMatch(input, "as", terms.as) ||
     acceptIfMatch(input, "break", terms._break) ||
     acceptIfMatch(input, "case", terms._case) ||
     acceptIfMatch(input, "catch", terms._catch) ||
     acceptIfMatch(input, "class", terms.Class) ||
     acceptIfMatch(input, "continue", terms._continue) ||
+    acceptIfMatch(input, "default", terms._default) ||
     acceptIfMatch(input, "else", terms._else) ||
     acceptIfMatch(input, "extends", terms.Extends) ||
     acceptIfMatch(input, "finally", terms._finally) ||
     acceptIfMatch(input, "for", terms._for) ||
     acceptIfMatch(input, "goto", terms.goto) ||
     acceptIfMatch(input, "if", terms._if) ||
+    acceptIfMatch(input, "in", terms._in) ||
     acceptIfMatch(input, "loop", terms.loop) ||
     acceptIfMatch(input, "return", terms._return) ||
     acceptIfMatch(input, "switch", terms._switch) ||

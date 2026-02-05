@@ -97,7 +97,13 @@ Directive {
 }
 
 statement {
-  (callStatement | classDeclaration | functionDeclaration | expression) lineEnd
+  (
+    callStatement |
+    classDeclaration |
+    functionDeclaration |
+    controlFlowStatement |
+    expression
+  ) lineEnd
 }
 
 callStatement[@dynamicPrecedence=1] {
@@ -122,6 +128,77 @@ functionDeclaration {
 
 functionBody {
   statement*
+}
+
+variables {
+  variable (comma variable)*
+}
+
+variable {
+  VariableName { identifier ~name }
+}
+
+breakStatement {
+  ControlFlowKeyword { break }
+}
+continueStatement {
+  ControlFlowKeyword { continue }
+}
+forStatement {
+  ControlFlowKeyword { for } (variables | "(" variables ")") ControlFlowKeyword { in } (lineEnd statement | "{" statement* "}")
+  untilStatement?
+}
+gotoStatement {
+  ControlFlowKeyword { goto } (LabelName { identifier ~name } | parenthesis)
+}
+ifStatement {
+  ControlFlowKeyword { if } expression "{" statement* "}"
+}
+loopStatement {
+  ControlFlowKeyword { loop } expression (lineEnd statement | "{" statement* "}")
+  untilStatement?
+}
+returnStatement {
+  ControlFlowKeyword { return } expression
+}
+switchStatement {
+  ControlFlowKeyword { switch } expression "{" switchBody "}"
+}
+throwStatement {
+  ControlFlowKeyword { throw } expression?
+}
+tryStatement {
+  ControlFlowKeyword { try } (statement | "{" statement* "}")
+  (ControlFlowKeyword { catch } (ClassName { identifier })? (as VariableName { identifier })? (statement | "{" statement* "}") )?
+  (ControlFlowKeyword { else } (statement | "{" statement* "}"))?
+  (ControlFlowKeyword { finally } (statement | "{" statement* "}"))?
+}
+whileStatement {
+  ControlFlowKeyword { while } expression (lineEnd statement | "{" statement* "}")
+  untilStatement?
+}
+untilStatement {
+  ControlFlowKeyword { until } expression
+}
+
+controlFlowStatement {
+  breakStatement |
+  continueStatement |
+  forStatement |
+  gotoStatement |
+  ifStatement |
+  loopStatement |
+  returnStatement |
+  switchStatement |
+  throwStatement |
+  whileStatement
+}
+
+switchBody {
+  (
+    ControlFlowKeyword { case } expression colon statement* (returnStatement | breakStatement) |
+    ControlFlowKeyword { default } colon statement*
+  )*
 }
 
 propertyDeclaration {
@@ -165,10 +242,8 @@ expression {
   VariableName { identifier ~name }
 }
 
-ControlFlow { break | case | catch | continue | else | finally | for | goto | if | loop | return | switch | throw | try | until | while }
-
 @external tokens controlFlowKeywords from "./ahk-v2.0.tokens" {
-  break, case, catch, Class, continue, else, Extends, finally, for, goto, if, loop, return, switch, throw, try, until, while
+  as, break, case, catch, Class, continue, default, else, Extends, finally, for, goto, if, in, loop, return, switch, throw, try, until, while
 }
 
 @external tokens specialKeywords from "./ahk-v2.0.tokens" {
@@ -221,9 +296,9 @@ ControlFlow { break | case | catch | continue | else | finally | for | goto | if
 DirectiveBoolean { Boolean | "0" | "1" }
 
 @external specialize { identifier } specializeIdentifier from "./ahk-v2.0.tokens" {
-  BuiltinVariable
-  BuiltinConstant
-  BuiltinFunction
+  BuiltinVariable,
+  BuiltinConstant,
+  BuiltinFunction,
   BuiltinClass
 }
 
@@ -234,7 +309,7 @@ objectKeyValuePair {
 }
 
 @precedence {
-  statement @cut,
+  block,
   tightSuffix @left,
   looseSuffix @left,
   exponentiation @right,

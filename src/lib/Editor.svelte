@@ -124,6 +124,7 @@
           { tag: tags.controlKeyword, class: "keyword" },
           { tag: tags.variableName, class: "variable" },
           { tag: tags.propertyName, class: "variable" },
+          { tag: tags.labelName, class: "label" },
           { tag: tags.integer, class: "number" },
           { tag: tags.string, class: "string" },
           { tag: tags.escape, class: "escape" },
@@ -270,5 +271,9 @@
 
   .editor :global(.definition.operator) {
     font-weight: bolder;
+  }
+
+  .editor :global(.label) {
+    color: var(--slime);
   }
 </style>
