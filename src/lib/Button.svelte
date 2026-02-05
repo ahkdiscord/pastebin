@@ -22,6 +22,9 @@
     padding-block: 0.5em;
     padding-inline: 1em;
 
+    min-height: 1lh;
+    box-sizing: content-box;
+
     display: flex;
     flex-direction: row;
     justify-content: center;

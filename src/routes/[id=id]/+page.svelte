@@ -48,12 +48,12 @@
 
   {#snippet headerEnd()}
     <form action="?/edit" method="POST" use:enhance>
-      <Button><Pen size={16} /> Edit</Button>
+      <Button><Pen size={16} /><span class="long">Edit</span></Button>
     </form>
 
     {#if running}
       <Button disabled>
-        <Ellipsis size={16} /> Running
+        <Ellipsis size={16} /><span class="long">Running</span>
       </Button>
     {:else}
       <Button
@@ -62,7 +62,7 @@
           if (!script) return;
           run();
         }}>
-        <Play size={16} /> Run
+        <Play size={16} /><span class="long">Run</span>
       </Button>
     {/if}
   {/snippet}
