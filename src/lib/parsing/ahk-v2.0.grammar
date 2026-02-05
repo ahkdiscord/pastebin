@@ -88,7 +88,7 @@ Directive {
   }
 
   warnDirective {
-    "#" warn space+ (varUnset | localSameAsGlobal | unreachable | all) space* "," space* (msgBox | stdOut | outputDebug | off)
+    "#" warn space+ (varUnset | localSameAsGlobal | unreachable | all) space* comma space* (msgBox | stdOut | outputDebug | off)
   }
 
   winActivateForceDirective {
@@ -97,7 +97,11 @@ Directive {
 }
 
 statement {
-  expression | classDeclaration
+  (callStatement | classDeclaration | functionDeclaration | expression) lineEnd
+}
+
+callStatement[@dynamicPrecedence=1] {
+  FunctionName { identifier ~name } arguments
 }
 
 classDeclaration {
@@ -105,15 +109,15 @@ classDeclaration {
 }
 
 ClassName {
-  identifier
+  identifier ~name
 }
 
 classBody {
-  ("\n" Static? (assignment | functionDeclaration | propertyDeclaration))*
+  (Static? (assignment | functionDeclaration | propertyDeclaration) lineEnd)*
 }
 
 functionDeclaration {
-  FunctionName { identifier } "(" parameters ")" "{" functionBody "}"
+  FunctionName { identifier ~name } "(" parameters ")" "{" functionBody "}"
 }
 
 functionBody {
@@ -121,7 +125,7 @@ functionBody {
 }
 
 propertyDeclaration {
-  PropertyName { identifier } "[" parameters "]"
+  PropertyName { identifier ~name } "[" parameters "]"
   (FatArrow expression | "{" propertyBody "}")
 }
 
@@ -133,22 +137,32 @@ propertyBody {
 }
 
 parameters {
-  () | (parameter ("," parameter)*)
+  () | (parameter (comma parameter)*)
 }
 
 parameter {
+  !loosePrefix ByRef { ampersand? }
   ParameterName { identifier }
-  (":=" expression)?
+  !looseSuffix (
+    question |
+    (colonEqual expression)
+  )?
+}
+
+arguments {
+  () | argument (comma argument)*
+}
+
+argument {
+  expression
 }
 
 expression {
+  Operation |
   Integer |
   String |
-  Boolean
-}
-
-assignment { 
-  VariableName { identifier } ":=" expression
+  Boolean |
+  VariableName { identifier ~name }
 }
 
 ControlFlow { break | case | catch | continue | else | finally | for | goto | if | loop | return | switch | throw | try | until | while }
@@ -161,13 +175,12 @@ ControlFlow { break | case | catch | continue | else | finally | for | goto | if
   Static,
   Get,
   Set,
-  is,
-  in,
-  contains,
-  not,
-  and,
-  or,
-  isSet
+  ContainmentOperator,
+  Not,
+  And,
+  Or,
+  IsSet,
+  Boolean
 }
 
 @external tokens directiveKeywords from "./ahk-v2.0.tokens" {
@@ -212,7 +225,6 @@ DirectiveBoolean { Boolean | "0" | "1" }
   BuiltinConstant
   BuiltinFunction
   BuiltinClass
-  Boolean
 }
 
 objectKeyValuePair {
@@ -221,53 +233,80 @@ objectKeyValuePair {
   expression
 }
 
-Dereference { percent expression percent }
-@skip {} { PartialNameSubstitution { Name percent space* expression space* percent } }
-@skip {} { Access { Name dot Name | Name dot percent space* expresion space* percent } }
-Operation {
-  prio0 {
-    parenthesis { "(" expression ")" } |
-    call { expression "(" (() | expression ("," expression)*) "*"? ")" } |
-    itemAccess { expression "[" expression "]" }
-    array { "[" (() | expression ("," expression)*) "]" }
-    object { "{" (() | objectKeyValuePair ("," objectKeyValuePair)*) "}" }
-  } |
-  prio1 {
-    increment { expression plusPlus | plusPlus expression } |
-    decrement { expression minusMinus | minusMinus expression }
-  } |
-  prio2 {
-    power { expression asteriskAsterisk expression }
-  } |
-  prio3 {
-    unaryMinus { minus expression } |
-    unaryPlus { plus expression } |
-    logicalNot { exclamation expression } |
-    bitwiseNot { tilde expression }
-  } |
-  prio4 {
-    multiply { expression asterisk expression } |
-    divide { slash } |
-    integerDivide { expression slashSlash expression }
-  } |
-  prio5 {
-    add { expression plus expression } |
-    subtract { expression minus expression }
-  } |
-  prio6 {
-    shiftLeft { expression lessLess expression } |
-    shiftRight { expression greaterGreater expression } |
-    logicalShiftRight { expression greaterGreaterGreater expression }
-  } |
-  prio7 {
-    bitwiseAnd { expression ampersand expression } |
-    bitwiseXor { expression circumflex expression } |
-    bitwiseOr { expression pipe expression }
-  } |
-  prio8 {
-    concatenate { expression dot expression }
-  }
+@precedence {
+  statement @cut,
+  tightSuffix @left,
+  looseSuffix @left,
+  exponentiation @right,
+  tightPrefix @right,
+  multiplication @left,
+  addition @left,
+  shift @left,
+  combination @left,
+  concatenation @left,
+  regexComparison @left,
+  numericComparison @left,
+  equalityComparison @left,
+  containmentCheck @left,
+  loosePrefix @right,
+  andCombination @left,
+  orCombination @left,
+  maybeAlternation @left,
+  ternaryFirst @left,
+  ternarySecond @left,
+  assignment @right,
+  alternation @left
 }
+
+dereference { percent expression percent }
+@skip {} { partialNameSubstitution { Name percent space* expression space* percent } }
+@skip {} { access { Name dot Name | Name dot percent space* expression space* percent } }
+parenthesis { "(" expression ~parenthesized ")" }
+Operation {
+  parenthesis |
+  call { FunctionName { identifier ~name } !tightSuffix "(" arguments asterisk? ")" } |
+  dynamicCall { parenthesis !tightSuffix "(" arguments asterisk? ")" } |
+  itemAccess { expression !tightSuffix "[" expression "]" } |
+  array { "[" (() | expression (comma expression)*) "]" } |
+  object { "{" (() | objectKeyValuePair (comma objectKeyValuePair)*) "}" } |
+  increment { plusPlus expression | expression !loosePrefix plusPlus } |
+  decrement { minusMinus expression | expression !loosePrefix minusMinus } |
+  power { expression !exponentiation asteriskAsterisk expression } |
+  unaryMinus { !tightPrefix minus expression } |
+  unaryPlus { !tightPrefix plus expression } |
+  logicalNot { !tightPrefix exclamation expression } |
+  bitwiseNot { !tightPrefix tilde expression } |
+  multiply { expression !multiplication asterisk expression } |
+  divide { expression !multiplication slash expression } |
+  integerDivide { expression !multiplication slashSlash expression } |
+  add { expression !addition plus expression } |
+  subtract { expression !addition minus expression } |
+  shiftLeft { expression !shift lessLess expression } |
+  shiftRight { expression !shift greaterGreater expression } |
+  logicalShiftRight { expression !shift greaterGreaterGreater expression } |
+  bitwiseAnd { expression !combination ampersand expression } |
+  bitwiseXor { expression !combination circumflex expression } |
+  bitwiseOr { expression !combination pipe expression } |
+  concatenate { expression !concatenation dot expression } |
+  match { expression !regexComparison tildeEqual expression } |
+  greaterThan { expression !numericComparison greater expression } |
+  lessThan { expression !numericComparison less expression } |
+  greaterThanOrEqualTo { expression !numericComparison greaterEqual expression } |
+  lessThanOrEqualTo { expression !numericComparison lessEqual expression } |
+  equalTo { expression !equalityComparison (equal | equalEqual) expression } |
+  unequalTo { expression !equalityComparison (exclamationEqual | exclamationEqualEqual) expression } |
+  containment { expression !containmentCheck ContainmentOperator expression } |
+  logicalNotWord { !loosePrefix Not expression } |
+  booleanAnd { expression !andCombination (ampersandAmpersand | And) expression } |
+  booleanOr { expression !orCombination (pipePipe | Or) expression } |
+  maybe { expression !maybeAlternation questionQuestion expression } |
+  assignment |
+  ternary { expression !ternaryFirst question expression !ternarySecond colon expression } |
+  functionExpression { (FunctionName { identifier ~name })? "(" parameters ~parenthesized ")" FatArrow } |
+  multi { expression !alternation comma expression }
+}
+
+assignment { expression !assignment (colonEqual | plusEqual | minusEqual | asteriskAsterisk | slashEqual | slashSlashEqual | dotEqual | pipeEqual | ampersandEqual | circumflexEqual | greaterGreaterEqual | lessLessEqual | greaterGreaterGreaterEqual) expression }
 
 FatArrow { equalGreater expression }
 
@@ -281,8 +320,6 @@ Name { identifier }
   IncludeDirectiveLibName { ![<> \t\n\r;]+ }
 
   identifier { $[a-zA-Z_] $[a-z-A-Z_0-9]* }
-
-  @precedence { "static", identifier }
 
   EscapeSequence { "`" _ }
 
@@ -343,6 +380,8 @@ Name { identifier }
   comma { "," }
 
   space { $[ \t] }
+
+  lineEnd { "\n" | "\r\n" | @eof }
 }
 
 @skip { space+ | LineComment | BlockComment }

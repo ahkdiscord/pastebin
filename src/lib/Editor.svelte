@@ -130,8 +130,9 @@
           { tag: tags.className, class: "class" },
           { tag: tags.modifier, class: "modifier" },
           { tag: tags.name, class: "name" },
+          { tag: tags.definitionOperator, class: "definition operator" },
           { tag: tags.standard(tags.className), class: "builtin class constant" },
-          { tag: tags.function(tags.variableName), class: "function" },
+          { tag: tags.function(tags.name), class: "function" },
           { tag: tags.function(tags.keyword), class: "function keyword" },
           { tag: tags.standard(tags.variableName), class: "builtin variable" },
           { tag: tags.standard(tags.constant(tags.variableName)), class: "builtin constant" },
@@ -261,5 +262,13 @@
 
   .editor :global(.modifier) {
     color: var(--slime);
+  }
+
+  .editor :global(.operator) {
+    color: var(--white);
+  }
+
+  .editor :global(.definition.operator) {
+    font-weight: bolder;
   }
 </style>
