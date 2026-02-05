@@ -49,6 +49,7 @@
   .dropdown {
     z-index: 1;
     min-width: 100%;
+    width: max-content;
     position: absolute;
     bottom: 0;
     transform: translateY(100%);
