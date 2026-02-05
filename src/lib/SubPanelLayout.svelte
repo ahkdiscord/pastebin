@@ -68,13 +68,13 @@
   role="none"
   style={`--width: ${width}px; --height: ${height}px`}
   bind:this={host}>
-  <section>
+  <section class="main-panel">
     {@render left()}
   </section>
   <div class="drag-handle" onmousedown={startDrag} ontouchstart={startDrag} role="button" tabindex="-1">
     <EllipsisVertical size="16" />
   </div>
-  <section bind:this={subpanel}>
+  <section class="sub-panel" bind:this={subpanel}>
     {@render right()}
   </section>
 </div>
@@ -101,6 +101,20 @@
     display: flex;
   }
 
+  section {
+    overflow: clip;
+  }
+
+  .main-panel {
+    border-start-end-radius: 0.5em;
+    border-end-end-radius: 0.5em;
+  }
+
+  .sub-panel {
+    border-start-start-radius: 0.5em;
+    border-end-start-radius: 0.5em;
+  }
+
   @media (width < 48rem) {
     .panels {
       grid-template-columns: 1fr;
@@ -111,6 +125,11 @@
       transform: rotateZ(90deg);
       padding: 0.5em;
       cursor: row-resize;
+    }
+
+    .main-panel,
+    .sub-panel {
+      border-radius: 0;
     }
   }
 

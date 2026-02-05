@@ -161,7 +161,12 @@
 
   .editor :global(.cm-editor) {
     height: 100%;
+  }
+
+  .editor :global(.cm-content) {
     background-color: var(--night);
+    border-start-start-radius: 0.5em;
+    border-end-start-radius: 0.5em;
   }
 
   .editor :global(.cm-focused) {
