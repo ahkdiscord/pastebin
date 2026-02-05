@@ -3,14 +3,14 @@
   import Button from "$lib/Button.svelte";
   import Editor from "$lib/Editor.svelte";
   import Page from "$lib/Page.svelte";
-  import Select from "$lib/Select.svelte";
-  import { getDisplayNames, Language } from "$lib/Language.js";
+  import { Language } from "$lib/Language.js";
   import Share from "@lucide/svelte/icons/share";
   import Play from "@lucide/svelte/icons/play";
   import Ellipsis from "@lucide/svelte/icons/ellipsis";
   import Output from "$lib/Output.svelte";
   import SubPanelLayout from "$lib/SubPanelLayout.svelte";
   import { isRunnable, runScript } from "$lib/client/running.js";
+  import LanguageSelect from "$lib/LanguageSelect.svelte";
 
   const { data } = $props();
 
@@ -39,21 +39,7 @@
 
 <Page>
   {#snippet headerStart()}
-    <Select>
-      {@const names = getDisplayNames(language)}
-      <span class="long">{names.long}</span>
-      <span class="short">{names.short}</span>
-
-      {#snippet options()}
-        {#each Array.of(...Language.values).toSorted() as lang}
-          {@const names = getDisplayNames(lang)}
-          <Button color="clear" onclick={() => (language = lang)}>
-            <span class="long">{names.long}</span>
-            <span class="short">{names.short}</span>
-          </Button>
-        {/each}
-      {/snippet}
-    </Select>
+    <LanguageSelect bind:language />
   {/snippet}
 
   {#snippet headerEnd()}
@@ -94,16 +80,9 @@
 </Page>
 
 <style>
-  .short {
-    display: none;
-  }
-
   @media (width < 32em) {
     .long {
       display: none;
-    }
-    .short {
-      display: unset;
     }
   }
 

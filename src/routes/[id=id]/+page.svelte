@@ -2,7 +2,6 @@
   import Button from "$lib/Button.svelte";
   import Editor from "$lib/Editor.svelte";
   import Page from "$lib/Page.svelte";
-  import Select from "$lib/Select.svelte";
   import Pen from "@lucide/svelte/icons/pen";
   import Play from "@lucide/svelte/icons/play";
   import Check from "@lucide/svelte/icons/check";
@@ -10,12 +9,12 @@
   import { enhance } from "$app/forms";
   import SubPanelLayout from "$lib/SubPanelLayout.svelte";
   import Output from "$lib/Output.svelte";
-  import { getDisplayNames } from "$lib/Language.js";
   import { isRunnable, runScript } from "$lib/client/running.js";
+  import LanguageSelect from "$lib/LanguageSelect.svelte";
 
   const { data } = $props();
 
-  const { content: script, language } = $derived(data.paste);
+  let { content: script, language } = $derived(data.paste);
 
   let running: boolean = $state(false);
   let output: string = $state("");
@@ -39,11 +38,7 @@
 
 <Page>
   {#snippet headerStart()}
-    <Select disabled>
-      {@const names = getDisplayNames(language)}
-      <span class="long">{names.long}</span>
-      <span class="short">{names.short}</span>
-    </Select>
+    <LanguageSelect bind:language />
   {/snippet}
 
   {#snippet headerEnd()}
@@ -87,16 +82,9 @@
 {/if}
 
 <style>
-  .short {
-    display: none;
-  }
-
   @media (width < 32em) {
     .long {
       display: none;
-    }
-    .short {
-      display: unset;
     }
   }
 
