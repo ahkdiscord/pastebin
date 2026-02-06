@@ -107,7 +107,7 @@ statement {
 }
 
 callStatement[@dynamicPrecedence=1] {
-  FunctionName { identifier ~name } arguments
+  FunctionName { identifier ~name | BuiltinFunction ~name } arguments
 }
 
 classDeclaration {
