@@ -402,6 +402,20 @@ FatArrow { equalGreater expression }
 
 Name { identifier }
 
+@local tokens {
+  doubleQuote { '"' }
+  singleQuote { "'" }
+  EscapeSequence { "`" _ }
+  @else stringContent
+}
+
+@skip {} {
+  String {
+    '"' (stringContent | EscapeSequence)* doubleQuote |
+    "'" (stringContent | EscapeSequence)* singleQuote
+  }
+}
+
 @tokens {
   DirectiveString { UnquotedDirectiveString | QuotedDirectiveString }
   UnquotedDirectiveString { ![\n \t<>;]+ }
@@ -410,10 +424,6 @@ Name { identifier }
   IncludeDirectiveLibName { ![<> \t\n\r;]+ }
 
   identifier { $[a-zA-Z_] $[a-z-A-Z_0-9]* }
-
-  EscapeSequence { "`" _ }
-
-  String { ('"' (EscapeSequence | !["`\n])* '"') | ("'" (EscapeSequence | !['`\n])* "'") }
 
   Integer { $[0-9]+ }
 
