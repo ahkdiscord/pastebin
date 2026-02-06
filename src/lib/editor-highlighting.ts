@@ -18,6 +18,7 @@ function parserWithMetadata(baseParser: LRParser) {
         "Boolean": tags.bool,
         "DirectiveBoolean": tags.bool,
         "Integer": tags.integer,
+        "Float": tags.float,
         "String": tags.string,
         "EscapeSequence": tags.escape,
         "LineComment": tags.lineComment,
