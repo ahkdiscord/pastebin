@@ -3,97 +3,98 @@
 }
 
 Directive {
-  clipboardTimeoutDirective |
-  dllLoadDirective |
-  errorStdOutDirective |
-  hotIfDirective |
-  hotIfTimeoutDirective |
-  hotstringDirective |
-  includeDirective |
-  includeAgainDirective |
-  inputLevelDirective |
-  maxThreadsDirective |
-  maxThreadsBufferDirective |
-  maxThreadsPerHotkeyDirective |
-  noTrayIconDirective |
-  requiresDirective |
-  singleInstanceDirective |
-  suspendExemptDirective |
-  useHookDirective |
-  warnDirective |
-  winActivateForceDirective
+  (
+    hash |
+    clipboardTimeoutDirective |
+    dllLoadDirective |
+    errorStdOutDirective |
+    hotIfDirective |
+    hotIfTimeoutDirective |
+    hotstringDirective |
+    includeDirective |
+    includeAgainDirective |
+    inputLevelDirective |
+    maxThreadsDirective |
+    maxThreadsBufferDirective |
+    maxThreadsPerHotkeyDirective |
+    noTrayIconDirective |
+    requiresDirective |
+    singleInstanceDirective |
+    suspendExemptDirective |
+    useHookDirective |
+    warnDirective |
+    winActivateForceDirective
+  ) lineEnd
 }
 
-@skip {} {
-  clipboardTimeoutDirective { "#" clipboardTimeout space+ Integer }
+clipboardTimeoutDirective { clipboardTimeout Integer }
 
-  dllLoadDirective { "#" dllLoad space+ DirectiveString }
+dllLoadDirective { dllLoad DirectiveString }
 
-  errorStdOutDirective { "#" errorStdOut space+ DirectiveString }
+errorStdOutDirective { errorStdOut DirectiveString }
 
-  hotIfDirective { "#" hotIf space+ expression }
+hotIfDirective { hotIf expression }
 
-  hotIfTimeoutDirective { "#" hotIfTimeout space+ Integer }
+hotIfTimeoutDirective { hotIfTimeout Integer }
 
-  hotstringDirective {
-    "#" hotstring space+ noMouse |
-    "#" hotstring space+ endChars " " UnquotedDirectiveString |
-    "#" hotstring space+ UnquotedDirectiveString
-  }
+hotstringDirective {
+  hotstring noMouse |
+  hotstring endChars UnquotedDirectiveString |
+  hotstring UnquotedDirectiveString
+}
 
-  includeDirective {
-    "#" include space+ DirectiveString |
-    "#" include space+ "<" IncludeDirectiveLibName ">"
-  }
+includeDirective {
+  include DirectiveString |
+  include "<" IncludeDirectiveLibName ">"
+}
 
-  includeAgainDirective {
-    "#" includeAgain space+ DirectiveString |
-    "#" includeAgain space+ "<" IncludeDirectiveLibName ">"
-  }
+includeAgainDirective {
+  includeAgain DirectiveString |
+  includeAgain "<" IncludeDirectiveLibName ">"
+}
 
-  inputLevelDirective {
-    "#" inputLevel space+ Integer
-  }
+inputLevelDirective {
+  inputLevel Integer
+}
 
-  maxThreadsDirective {
-    "#" maxThreads space+ Integer
-  }
+maxThreadsDirective {
+  maxThreads Integer
+}
 
-  maxThreadsBufferDirective {
-    "#" maxThreadsBuffer space+ DirectiveBoolean
-  }
+maxThreadsBufferDirective {
+  maxThreadsBuffer DirectiveBoolean
+}
 
-  maxThreadsPerHotkeyDirective {
-    "#" maxThreadsPerHotkey space+ Integer
-  }
+maxThreadsPerHotkeyDirective {
+  maxThreadsPerHotkey Integer
+}
 
-  noTrayIconDirective {
-    "#" noTrayIcon
-  }
+noTrayIconDirective {
+  noTrayIcon
+}
 
-  requiresDirective {
-    "#" requires space+ UnquotedDirectiveString
-  }
+requiresDirective {
+  requires UnquotedDirectiveString+
+}
 
-  singleInstanceDirective {
-    "#" singleInstance space+ (force | ignore | prompt | off)
-  }
+singleInstanceDirective {
+  singleInstance (force | ignore | prompt | off)
+}
 
-  suspendExemptDirective {
-    "#" suspendExempt space+ DirectiveBoolean
-  }
+suspendExemptDirective {
+  suspendExempt DirectiveBoolean
+}
 
-  useHookDirective {
-    "#" useHook space+ DirectiveBoolean
-  }
+useHookDirective {
+  useHook DirectiveBoolean
+}
 
-  warnDirective {
-    "#" warn space+ (varUnset | localSameAsGlobal | unreachable | all) space* comma space* (msgBox | stdOut | outputDebug | off)
-  }
+warnDirective {
+  warn DirectiveKeyword { varUnset | localSameAsGlobal | unreachable | all } comma DirectiveKeyword { msgBox | stdOut | outputDebug | off }
+}
 
-  winActivateForceDirective {
-    "#" winActivateForce
-  }
+winActivateForceDirective {
+  winActivateForce
 }
 
 statement {
@@ -446,7 +447,7 @@ Name { identifier }
 
 @tokens {
   DirectiveString { UnquotedDirectiveString | QuotedDirectiveString }
-  UnquotedDirectiveString { ![\n \t<>;]+ }
+  UnquotedDirectiveString { ![\n\r \t<>]+ }
   QuotedDirectiveString { '"' ![\n"]* '"' }
 
   IncludeDirectiveLibName { ![<> \t\n\r;]+ }
@@ -518,11 +519,11 @@ Name { identifier }
   equalGreater { "=>" }
   comma { "," }
 
+  hash { "#" }
+
   space { $[ \t] }
 
   lineEnd { "\n" | "\r\n" | @eof }
 }
 
-@skip { space+ | LineComment | BlockComment }
-
-@detectDelim
+@skip { space+ }

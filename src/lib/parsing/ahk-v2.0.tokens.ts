@@ -46,25 +46,38 @@ export const controlFlowKeywords = new ExternalTokenizer(input => {
 
 export const directiveKeywords = new ExternalTokenizer(input => {
   return (
-    acceptIfMatch(input, "clipboardtimeout", terms.clipboardTimeout) ||
-    acceptIfMatch(input, "dllload", terms.dllLoad) ||
-    acceptIfMatch(input, "errorstdout", terms.errorStdOut) ||
-    acceptIfMatch(input, "hotif", terms.hotIf) ||
-    acceptIfMatch(input, "hotiftimeout", terms.hotIfTimeout) ||
-    acceptIfMatch(input, "hotstring", terms.hotstring) ||
-    acceptIfMatch(input, "include", terms.include) ||
-    acceptIfMatch(input, "includeagain", terms.includeAgain) ||
-    acceptIfMatch(input, "inputlevel", terms.inputLevel) ||
-    acceptIfMatch(input, "maxthreads", terms.maxThreads) ||
-    acceptIfMatch(input, "maxthreadsbuffer", terms.maxThreadsBuffer) ||
-    acceptIfMatch(input, "maxthreadsperhotkey", terms.maxThreadsPerHotkey) ||
-    acceptIfMatch(input, "notrayicon", terms.noTrayIcon) ||
-    acceptIfMatch(input, "requires", terms.requires) ||
-    acceptIfMatch(input, "singleinstance", terms.singleInstance) ||
-    acceptIfMatch(input, "suspendexempt", terms.suspendExempt) ||
-    acceptIfMatch(input, "usehook", terms.useHook) ||
-    acceptIfMatch(input, "warn", terms.warn) ||
-    acceptIfMatch(input, "winactivateforce", terms.winActivateForce)
+    acceptIfMatch(input, "#clipboardtimeout", terms.clipboardTimeout) ||
+    acceptIfMatch(input, "#dllload", terms.dllLoad) ||
+    acceptIfMatch(input, "#errorstdout", terms.errorStdOut) ||
+    acceptIfMatch(input, "#hotif", terms.hotIf) ||
+    acceptIfMatch(input, "#hotiftimeout", terms.hotIfTimeout) ||
+    acceptIfMatch(input, "#hotstring", terms.hotstring) ||
+    acceptIfMatch(input, "#includeagain", terms.includeAgain) ||
+    acceptIfMatch(input, "#include", terms.include) ||
+    acceptIfMatch(input, "#inputlevel", terms.inputLevel) ||
+    acceptIfMatch(input, "#maxthreads", terms.maxThreads) ||
+    acceptIfMatch(input, "#maxthreadsbuffer", terms.maxThreadsBuffer) ||
+    acceptIfMatch(input, "#maxthreadsperhotkey", terms.maxThreadsPerHotkey) ||
+    acceptIfMatch(input, "#notrayicon", terms.noTrayIcon) ||
+    acceptIfMatch(input, "#requires", terms.requires) ||
+    acceptIfMatch(input, "#singleinstance", terms.singleInstance) ||
+    acceptIfMatch(input, "#suspendexempt", terms.suspendExempt) ||
+    acceptIfMatch(input, "#usehook", terms.useHook) ||
+    acceptIfMatch(input, "#warn", terms.warn) ||
+    acceptIfMatch(input, "#winactivateforce", terms.winActivateForce) ||
+    acceptIfMatch(input, "noMouse", terms.noMouse) ||
+    acceptIfMatch(input, "endChars", terms.endChars) ||
+    acceptIfMatch(input, "force", terms.force) ||
+    acceptIfMatch(input, "ignore", terms.ignore) ||
+    acceptIfMatch(input, "prompt", terms.prompt) ||
+    acceptIfMatch(input, "off", terms.off) ||
+    acceptIfMatch(input, "varUnset", terms.varUnset) ||
+    acceptIfMatch(input, "localSameAsGlobal", terms.localSameAsGlobal) ||
+    acceptIfMatch(input, "unreachable", terms.unreachable) ||
+    acceptIfMatch(input, "all", terms.all) ||
+    acceptIfMatch(input, "msgBox", terms.msgBox) ||
+    acceptIfMatch(input, "stdOut", terms.stdOut) ||
+    acceptIfMatch(input, "outputDebug", terms.outputDebug)
   );
 });
 
