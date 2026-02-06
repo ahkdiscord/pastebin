@@ -454,6 +454,8 @@ Name { identifier }
 
   IncludeDirectiveLibName { ![<> \t\n\r;]+ }
 
+  @precedence { LineComment, "/*", DirectiveString, UnquotedDirectiveString, IncludeDirectiveLibName }
+
   identifier { $[a-zA-Z_] $[a-z-A-Z_0-9]* }
 
   Integer { simpleInteger | hexadecimalInteger }
@@ -528,4 +530,4 @@ Name { identifier }
   lineEnd { "\n" | "\r\n" | @eof }
 }
 
-@skip { space+ }
+@skip { space+ | LineComment | BlockComment }
