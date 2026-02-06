@@ -46,9 +46,9 @@
     <span>The new ahkbin! <span>(version {__BUILD_INFO__.version})</span></span>
     <Heart fill="currentColor" size={32} />
   </div>
-  <span>Made by SimplyMika, with lots of help from G33k and vieira.</span>
+  <span>Made by SimplyMika, with lots of help from:<br />Geek, vieira, ShambleS, Florence, and Descolada.</span>
   <span>Made for the wonderful AutoHotkey community.</span>
-  <span></span>
+  <hr />
   <span> For any suggestions, bug reports, or general feedback: </span>
   <span>
     <Link color="slate" href="mailto:ahkbin@simplymika.com"><AtSign size={16} /> E-mail me</Link>
@@ -115,5 +115,13 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5em;
+    text-align: center;
+  }
+
+  hr {
+    margin-inline: 2em;
+    border: none;
+    height: 1px;
+    background-color: var(--smoke);
   }
 </style>
