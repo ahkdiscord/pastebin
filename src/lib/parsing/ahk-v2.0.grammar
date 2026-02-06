@@ -437,7 +437,7 @@ Name { identifier }
 
   identifier { $[a-zA-Z_] $[a-z-A-Z_0-9]* }
 
-  Integer { $[0-9]+ }
+  Integer { $[0-9]+ | "0x" $[0-9a-fA-F]* }
 
   LineComment { ";" ![\n]* }
 
