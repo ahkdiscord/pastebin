@@ -171,7 +171,7 @@ returnStatement {
   ControlFlowKeyword { return } expression
 }
 switchStatement {
-  ControlFlowKeyword { switch } expression "{" ~blockOrObject switchBody "}"
+  ControlFlowKeyword { switch } expression? "{" ~blockOrObject switchBody "}"
 }
 throwStatement {
   ControlFlowKeyword { throw } expression?
