@@ -406,13 +406,14 @@ Name { identifier }
   doubleQuote { '"' }
   singleQuote { "'" }
   EscapeSequence { "`" _ }
+  newLine { "\n" | @eof }
   @else stringContent
 }
 
 @skip {} {
   String {
-    '"' (stringContent | EscapeSequence)* doubleQuote |
-    "'" (stringContent | EscapeSequence)* singleQuote
+    '"' (stringContent | EscapeSequence)* (newLine | doubleQuote) |
+    "'" (stringContent | EscapeSequence)* (newLine | singleQuote)
   }
 }
 
