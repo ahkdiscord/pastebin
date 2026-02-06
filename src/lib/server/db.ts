@@ -1,42 +1,30 @@
 import { Language } from "$lib/Language";
 import { sql } from "bun";
 import { add } from "date-fns";
+import z, { codec, date, hex, number, object, string } from "zod";
 
-export interface Paste {
-  id: string;
-  language: Language;
-  content: string;
-  creation?: Date;
-  expiry?: Date;
-}
+const DateNumber = codec(number(), date(), {
+  decode: number => new Date(number),
+  encode: date => date.valueOf(),
+});
 
-interface PasteEntity {
-  id: string;
-  language: string;
-  content: string;
-  creation: Date | number | undefined;
-  expiry: Date | number | undefined;
-}
+export const Paste = object({
+  id: hex().length(8),
+  language: Language,
+  content: string(),
+  creation: date(),
+  expiry: date(),
+});
+export type Paste = z.infer<typeof Paste>;
 
-function toEntity({ id, language, content, creation, expiry }: Paste): PasteEntity {
-  if (sql.options.adapter === "sqlite") {
-    return {
-      id,
-      language,
-      content,
-      creation: creation?.valueOf(),
-      expiry: expiry?.valueOf(),
-    };
-  }
-
-  return {
-    id,
-    language,
-    content,
-    creation,
-    expiry,
-  };
-}
+export const PasteEntity = object({
+  id: hex().length(8),
+  language: Language,
+  content: string(),
+  creation: number(),
+  expiry: number(),
+});
+export type PasteEntity = z.infer<typeof PasteEntity>;
 
 export async function init() {
   await sql`
@@ -44,11 +32,10 @@ export async function init() {
       id VARCHAR(8) PRIMARY KEY,
       language TEXT NOT NULL,
       content TEXT NOT NULL,
-      creation TIMESTAMPTZ,
-      expiry TIMESTAMPTZ
+      creation TIMESTAMPTZ NOT NULL,
+      expiry TIMESTAMPTZ NOT NULL
     )
   `;
-
   await sql`
     CREATE INDEX IF NOT EXISTS pastes_expiry
     ON pastes (expiry)
@@ -69,13 +56,13 @@ export async function addPaste(language: Language, content: string): Promise<str
 
   await sql`
     INSERT INTO pastes ${sql(
-      toEntity({
+      PasteEntity.parse({
         id,
         language,
         content,
-        creation,
-        expiry,
-      }),
+        creation: DateNumber.encode(creation),
+        expiry: DateNumber.encode(expiry),
+      } satisfies PasteEntity),
     )}
   `;
 
@@ -92,13 +79,13 @@ export async function getPaste(pasteId: string): Promise<Paste | null> {
 
   const { id, language, content, creation, expiry } = data[0];
 
-  return {
+  return Paste.parse({
     id,
     language: Language.catch("none").parse(language),
     content,
-    creation: creation ? new Date(creation) : undefined,
-    expiry: expiry ? new Date(expiry) : undefined,
-  };
+    creation: DateNumber.decode(creation),
+    expiry: DateNumber.decode(expiry),
+  } satisfies Paste);
 }
 
 export async function deleteExpiredPastes(expiry: Date): Promise<number> {
