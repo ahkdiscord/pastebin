@@ -2,7 +2,6 @@ import { ExternalTokenizer, InputStream } from "@lezer/lr";
 import * as terms from "./ahk-v2.0.gen.terms";
 
 export function specializeIdentifier(name: string) {
-  if (name.toLowerCase() === "true" || name.toLowerCase() === "false") return terms.Boolean;
   if (builtinVariables.has(name.toLowerCase())) return terms.BuiltinVariable;
   if (builtinConstants.has(name.toLowerCase())) return terms.BuiltinConstant;
   if (builtinFunctions.has(name.toLowerCase())) return terms.BuiltinFunction;
@@ -246,8 +245,6 @@ const builtinConstants = new Set([
   "a_loopregtimemodified",
   "a_loopreadline",
   "a_loopfield",
-  "true",
-  "false",
 ]);
 
 const builtinFunctions = new Set([
