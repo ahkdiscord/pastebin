@@ -98,18 +98,21 @@ export const specialKeywords = new ExternalTokenizer(input => {
   );
 });
 
-function isNext(inputStream: InputStream, string: string): boolean {
+function isNextWord(inputStream: InputStream, string: string): boolean {
   let input: string = "";
 
   for (let i = 0; i < string.length; i++) {
     input += String.fromCharCode(inputStream.peek(i));
   }
 
+  const after = String.fromCharCode(inputStream.peek(string.length));
+  if (after.match(/\w/)) return false;
+
   return input.toLowerCase() === string.toLowerCase();
 }
 
 function acceptIfMatch(inputStream: InputStream, string: string, token: number): boolean {
-  if (isNext(inputStream, string)) {
+  if (isNextWord(inputStream, string)) {
     inputStream.acceptToken(token, string.length);
     return true;
   }
