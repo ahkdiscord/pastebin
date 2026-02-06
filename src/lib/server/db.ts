@@ -1,12 +1,7 @@
 import { Language } from "$lib/Language";
 import { sql } from "bun";
 import { add } from "date-fns";
-import z, { codec, date, hex, number, object, string } from "zod";
-
-const DateNumber = codec(number(), date(), {
-  decode: number => new Date(number),
-  encode: date => date.valueOf(),
-});
+import z, { date, hex, object, string } from "zod";
 
 export const Paste = object({
   id: hex().length(8),
@@ -16,15 +11,6 @@ export const Paste = object({
   expiry: date(),
 });
 export type Paste = z.infer<typeof Paste>;
-
-export const PasteEntity = object({
-  id: hex().length(8),
-  language: Language,
-  content: string(),
-  creation: number(),
-  expiry: number(),
-});
-export type PasteEntity = z.infer<typeof PasteEntity>;
 
 export async function init() {
   await sql`
@@ -56,13 +42,13 @@ export async function addPaste(language: Language, content: string): Promise<str
 
   await sql`
     INSERT INTO pastes ${sql(
-      PasteEntity.parse({
+      Paste.parse({
         id,
         language,
         content,
-        creation: DateNumber.encode(creation),
-        expiry: DateNumber.encode(expiry),
-      } satisfies PasteEntity),
+        creation,
+        expiry,
+      } satisfies Paste),
     )}
   `;
 
@@ -70,7 +56,7 @@ export async function addPaste(language: Language, content: string): Promise<str
 }
 
 export async function getPaste(pasteId: string): Promise<Paste | null> {
-  const data: PasteEntity[] = await sql`
+  const data: Paste[] = await sql`
     SELECT * FROM pastes WHERE id = ${pasteId}
   `;
 
@@ -83,8 +69,8 @@ export async function getPaste(pasteId: string): Promise<Paste | null> {
     id,
     language: Language.catch("none").parse(language),
     content,
-    creation: DateNumber.decode(creation),
-    expiry: DateNumber.decode(expiry),
+    creation,
+    expiry,
   } satisfies Paste);
 }
 
