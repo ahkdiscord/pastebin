@@ -404,17 +404,23 @@ Name { identifier }
 
 @local tokens {
   doubleQuote { '"' }
+  doubleQuotedEscapeSequence { "`" _ }
+  doubleQuotedNewLine { "\n" | @eof }
+  @else doubleQuotedStringContent
+}
+
+@local tokens {
   singleQuote { "'" }
-  EscapeSequence { "`" _ }
-  newLine { "\n" | @eof }
-  @else stringContent
+  singleQuotedEscapeSequence { "`" _ }
+  singleQuotedNewLine { "\n" | @eof }
+  @else singleQuotedStringContent
 }
 
 @skip {} {
-  String {
-    '"' (stringContent | EscapeSequence)* (newLine | doubleQuote) |
-    "'" (stringContent | EscapeSequence)* (newLine | singleQuote)
-  }
+  doubleQuotedString { '"' (EscapeSequence { doubleQuotedEscapeSequence } | doubleQuotedStringContent)* doubleQuote }
+  singleQuotedString { "'" (EscapeSequence { singleQuotedEscapeSequence } | singleQuotedStringContent)* singleQuote }
+
+  String { doubleQuotedString | singleQuotedString }
 }
 
 @local tokens {
