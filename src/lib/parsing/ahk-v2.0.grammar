@@ -1,5 +1,5 @@
 @top Program { 
-  (Directive | statement)*
+  (Directive | statement | labelDeclaration | hotkeyDeclaration | hotstringDeclaration)*
 }
 
 Directive {
@@ -102,7 +102,6 @@ statement {
     classDeclaration |
     functionDeclaration |
     controlFlowStatement |
-    labelStatement |
     expression
   ) lineEnd
 }
@@ -140,7 +139,7 @@ variable {
 }
 
 block {
-  lineEnd statement | "{" statement* "}"
+  lineEnd statement | "{" ~blockOrObject statement+ "}"
 }
 
 breakStatement {
@@ -173,7 +172,7 @@ returnStatement {
   ControlFlowKeyword { return } expression
 }
 switchStatement {
-  ControlFlowKeyword { switch } expression "{" switchBody "}"
+  ControlFlowKeyword { switch } expression "{" ~blockOrObject switchBody "}"
 }
 throwStatement {
   ControlFlowKeyword { throw } expression?
@@ -212,8 +211,16 @@ switchBody {
   )*
 }
 
-labelStatement {
+labelDeclaration {
   LabelName { identifier ~name } colon
+}
+
+hotkeyDeclaration {
+  "°todo::"
+}
+
+hotstringDeclaration {
+  "°::todo::"
 }
 
 propertyDeclaration {
@@ -324,7 +331,6 @@ objectKeyValuePair {
 }
 
 @precedence {
-  block,
   tightSuffix @left,
   looseSuffix @left,
   exponentiation @right,
@@ -358,7 +364,7 @@ Operation {
   dynamicCall { parenthesis !tightSuffix "(" arguments asterisk? ")" } |
   itemAccess { expression !tightSuffix "[" expression "]" } |
   array { "[" (() | expression (comma expression)*) "]" } |
-  object { "{" (() | objectKeyValuePair (comma objectKeyValuePair)*) "}" } |
+  object { "{" ~blockOrObject (() | objectKeyValuePair (comma objectKeyValuePair)*) "}" } |
   increment { plusPlus expression | expression !loosePrefix plusPlus } |
   decrement { minusMinus expression | expression !loosePrefix minusMinus } |
   power { expression !exponentiation asteriskAsterisk expression } |
@@ -377,7 +383,7 @@ Operation {
   bitwiseAnd { expression !combination ampersand expression } |
   bitwiseXor { expression !combination circumflex expression } |
   bitwiseOr { expression !combination pipe expression } |
-  concatenate { expression !concatenation dot expression } |
+  concatenate { expression !concatenation dot? expression } |
   match { expression !regexComparison tildeEqual expression } |
   greaterThan { expression !numericComparison greater expression } |
   lessThan { expression !numericComparison less expression } |
