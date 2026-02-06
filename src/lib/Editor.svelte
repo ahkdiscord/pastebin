@@ -136,7 +136,7 @@
           { tag: tags.function(tags.name), class: "function" },
           { tag: tags.function(tags.keyword), class: "function keyword" },
           { tag: tags.standard(tags.variableName), class: "builtin variable" },
-          { tag: tags.standard(tags.constant(tags.variableName)), class: "builtin constant" },
+          { tag: tags.standard(tags.constant(tags.variableName)), class: "builtin constant variable" },
           { tag: tags.standard(tags.function(tags.variableName)), class: "builtin function" },
         ]),
       ),
