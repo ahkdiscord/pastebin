@@ -38,6 +38,7 @@ function parserWithMetadata(baseParser: LRParser) {
         "Extends": tags.keyword,
         "Static": tags.modifier,
         "Get Set": tags.function(tags.keyword),
+        "Not And Or": tags.logicOperator,
         "IsSet": tags.operatorKeyword,
         "Reference": tags.definitionOperator,
         "{ }": tags.brace,

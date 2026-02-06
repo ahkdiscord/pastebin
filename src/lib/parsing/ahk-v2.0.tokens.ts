@@ -90,7 +90,10 @@ export const specialKeywords = new ExternalTokenizer(input => {
     acceptIfMatch(input, "isset", terms.IsSet) ||
     acceptIfMatch(input, "is", terms.ContainmentOperator) ||
     acceptIfMatch(input, "in", terms.ContainmentOperator) ||
-    acceptIfMatch(input, "contains", terms.ContainmentOperator)
+    acceptIfMatch(input, "contains", terms.ContainmentOperator) ||
+    acceptIfMatch(input, "not", terms.Not) ||
+    acceptIfMatch(input, "and", terms.And) ||
+    acceptIfMatch(input, "or", terms.Or)
   );
 });
 

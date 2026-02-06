@@ -275,12 +275,12 @@ expression {
   Static,
   Get,
   Set,
+  Boolean,
+  IsSet,
   ContainmentOperator,
   Not,
   And,
-  Or,
-  IsSet,
-  Boolean
+  Or
 }
 
 @external tokens directiveKeywords from "./ahk-v2.0.tokens" {
