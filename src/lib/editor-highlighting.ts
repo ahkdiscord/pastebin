@@ -40,6 +40,7 @@ function parserWithMetadata(baseParser: LRParser) {
         "Get Set": tags.function(tags.keyword),
         "Not And Or": tags.logicOperator,
         "IsSet": tags.operatorKeyword,
+        "Unset": tags.null,
         "Reference": tags.definitionOperator,
         "{ }": tags.brace,
         "[ ]": tags.squareBracket,

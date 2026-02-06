@@ -132,6 +132,7 @@
           { tag: tags.escape, class: "escape" },
           { tag: tags.className, class: "class" },
           { tag: tags.modifier, class: "modifier" },
+          { tag: tags.null, class: "unset" },
           { tag: tags.name, class: "name" },
           { tag: tags.definitionOperator, class: "definition operator" },
           { tag: tags.standard(tags.className), class: "builtin class constant" },
@@ -277,5 +278,9 @@
 
   .editor :global(.label) {
     color: var(--slime);
+  }
+
+  .editor :global(.unset) {
+    color: var(--berry);
   }
 </style>

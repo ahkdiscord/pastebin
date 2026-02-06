@@ -246,7 +246,7 @@ parameter {
   ParameterName { identifier }
   !looseSuffix (
     question |
-    (colonEqual expression)
+    (colonEqual (expression | Unset))
   )?
 }
 
@@ -280,7 +280,8 @@ expression {
   ContainmentOperator,
   Not,
   And,
-  Or
+  Or,
+  Unset
 }
 
 @external tokens directiveKeywords from "./ahk-v2.0.tokens" {
