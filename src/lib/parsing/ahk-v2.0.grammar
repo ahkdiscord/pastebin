@@ -149,24 +149,22 @@ continueStatement {
   ControlFlowKeyword { continue }
 }
 forStatement {
-  ControlFlowKeyword { for } (variables | "(" variables ")") ControlFlowKeyword { in } block
-  untilStatement?
+  ControlFlowKeyword { for } (variables | "(" variables ")") ControlFlowKeyword { in } expression loopBlock
 }
 gotoStatement {
   ControlFlowKeyword { goto } (LabelName { identifier ~name } | parenthesis)
 }
 ifStatement {
   ControlFlowKeyword { if } expression block
+  (ControlFlowKeyword { else if } expression block)*
+  (ControlFlowKeyword { else } block)?
 }
 loopStatement {
-  (
-    ControlFlowKeyword { loop } expression block |
-    ControlFlowKeyword { loop files } expression (comma expression)? block |
-    ControlFlowKeyword { loop parse } expression (comma expression)? (comma expression)? block |
-    ControlFlowKeyword { loop read } expression (comma expression)? block
-    ControlFlowKeyword { loop reg } expression (comma expression)? block
-  )
-  untilStatement?
+  ControlFlowKeyword { loop } expression loopBlock |
+  ControlFlowKeyword { loop files } expression (comma expression)? loopBlock |
+  ControlFlowKeyword { loop parse } expression (comma expression)? (comma expression)? loopBlock |
+  ControlFlowKeyword { loop read } expression (comma expression)? loopBlock |
+  ControlFlowKeyword { loop reg } expression (comma expression)? loopBlock
 }
 returnStatement {
   ControlFlowKeyword { return } expression
@@ -184,11 +182,14 @@ tryStatement {
   (ControlFlowKeyword { finally } (statement | "{" statement* "}"))?
 }
 whileStatement {
-  ControlFlowKeyword { while } expression block
-  untilStatement?
+  ControlFlowKeyword { while } expression loopBlock
 }
 untilStatement {
   ControlFlowKeyword { until } expression
+}
+
+loopBlock {
+  block untilStatement?
 }
 
 controlFlowStatement {
