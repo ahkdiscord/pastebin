@@ -364,6 +364,7 @@ parenthesis { "(" expression ~parenthesized ")" }
 Operation {
   parenthesis |
   call { FunctionName { identifier ~name } !tightSuffix "(" arguments asterisk? ")" } |
+  isSetCall { IsSet !tightSuffix "(" VariableName { identifier } ")" } |
   dynamicCall { parenthesis !tightSuffix "(" arguments asterisk? ")" } |
   itemAccess { expression !tightSuffix "[" expression "]" } |
   array { "[" (() | expression (comma expression)*) "]" } |

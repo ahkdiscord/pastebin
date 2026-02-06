@@ -87,6 +87,7 @@ export const specialKeywords = new ExternalTokenizer(input => {
     acceptIfMatch(input, "set", terms.Set) ||
     acceptIfMatch(input, "true", terms.Boolean) ||
     acceptIfMatch(input, "false", terms.Boolean) ||
+    acceptIfMatch(input, "isset", terms.IsSet) ||
     acceptIfMatch(input, "is", terms.ContainmentOperator) ||
     acceptIfMatch(input, "in", terms.ContainmentOperator) ||
     acceptIfMatch(input, "contains", terms.ContainmentOperator)

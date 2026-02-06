@@ -122,6 +122,7 @@
           { tag: tags.bool, class: "bool" },
           { tag: tags.keyword, class: "keyword" },
           { tag: tags.controlKeyword, class: "keyword" },
+          { tag: tags.operatorKeyword, class: "keyword" },
           { tag: tags.variableName, class: "variable" },
           { tag: tags.propertyName, class: "variable" },
           { tag: tags.labelName, class: "label" },
