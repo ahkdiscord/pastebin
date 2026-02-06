@@ -59,15 +59,9 @@
   let subpanel: HTMLElement;
 </script>
 
-<svelte:window onmouseup={endDrag} ontouchend={endDrag} />
+<svelte:window onmouseup={endDrag} ontouchend={endDrag} onmousemove={mouseDrag} ontouchmove={touchDrag} />
 
-<div
-  class="panels"
-  onmousemove={mouseDrag}
-  ontouchmove={touchDrag}
-  role="none"
-  style={`--width: ${width}px; --height: ${height}px`}
-  bind:this={host}>
+<div class="panels" role="none" style={`--width: ${width}px; --height: ${height}px`} bind:this={host}>
   <section class="main-panel">
     {@render left()}
   </section>
