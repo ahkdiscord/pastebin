@@ -416,6 +416,17 @@ Name { identifier }
   }
 }
 
+@local tokens {
+  asteriskSlash { "*/" }
+  @else blockCommentContent
+}
+
+@skip {} {
+  BlockComment {
+    "/*" blockCommentContent asteriskSlash
+  }
+}
+
 @tokens {
   DirectiveString { UnquotedDirectiveString | QuotedDirectiveString }
   UnquotedDirectiveString { ![\n \t<>;]+ }
@@ -428,8 +439,6 @@ Name { identifier }
   Integer { $[0-9]+ }
 
   LineComment { ";" ![\n]* }
-
-  BlockComment { "/*" _* "*/" lineEnd }
 
   percent { "%" }
   dot { "." }
