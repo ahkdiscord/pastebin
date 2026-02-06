@@ -2,7 +2,7 @@ import { styleTags, tags } from "@lezer/highlight";
 import { LRParser } from "@lezer/lr";
 import { parser as ahkV11Parser } from "./parsing/ahk-v1.1.gen";
 import { parser as ahkV20Parser } from "./parsing/ahk-v2.0.gen";
-import { foldInside, foldNodeProp, indentNodeProp, LRLanguage } from "@codemirror/language";
+import { LRLanguage } from "@codemirror/language";
 import type { Language } from "./Language";
 
 function parserWithMetadata(baseParser: LRParser) {
@@ -45,12 +45,6 @@ function parserWithMetadata(baseParser: LRParser) {
         "UnquotedDirectiveString": tags.string,
         "Unset": tags.null,
         "VariableName": tags.variableName,
-      }),
-      indentNodeProp.add({
-        Application: context => context.column(context.node.from) + context.unit,
-      }),
-      foldNodeProp.add({
-        Application: foldInside,
       }),
     ],
   });
