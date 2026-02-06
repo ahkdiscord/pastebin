@@ -208,7 +208,7 @@ controlFlowStatement {
 
 switchBody {
   (
-    ControlFlowKeyword { case } expression colon statement* (returnStatement | breakStatement) |
+    ControlFlowKeyword { case } expression colon statement |
     ControlFlowKeyword { default } colon statement*
   )*
 }
