@@ -434,7 +434,7 @@ Operation {
   multi { expression !alternation comma expression }
 }
 
-assignment { expression !assignment (colonEqual | plusEqual | minusEqual | asteriskAsterisk | slashEqual | slashSlashEqual | dotEqual | pipeEqual | ampersandEqual | circumflexEqual | greaterGreaterEqual | lessLessEqual | greaterGreaterGreaterEqual) expression }
+assignment { expression !assignment (colonEqual | plusEqual | minusEqual | asteriskEqual | slashEqual | slashSlashEqual | dotEqual | pipeEqual | ampersandEqual | circumflexEqual | greaterGreaterEqual | lessLessEqual | greaterGreaterGreaterEqual) expression }
 
 FatArrow { equalGreater expression }
 
