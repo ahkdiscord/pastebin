@@ -175,3 +175,12 @@ export async function deleteExpiredSessions(expiry: Date): Promise<number> {
 
   return x.count ?? 0;
 }
+
+export async function deleteSession(id: number): Promise<number> {
+  const x = await sql`
+    DELETE FROM sessions
+    WHERE id = ${id}
+  `;
+
+  return x.count ?? 0;
+}

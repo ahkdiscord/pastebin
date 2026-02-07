@@ -1,8 +1,17 @@
-import { getUserByName, startSession } from "$lib/server/db";
+import { deleteSession, getUserByName, startSession } from "$lib/server/db";
 import { error, isRedirect, redirect } from "@sveltejs/kit";
 import { add } from "date-fns";
 
 export async function load({ cookies }) {
+  const sessionId = cookies.get("sessionId");
+
+  if (sessionId) {
+    const number = Number.parseInt(sessionId);
+    if (!Number.isFinite(number)) return;
+
+    await deleteSession(number);
+  }
+
   cookies.delete("sessionId", { path: "/" });
 }
 
