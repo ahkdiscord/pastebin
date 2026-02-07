@@ -1,5 +1,5 @@
-import { addPaste, getPaste } from "$lib/server/db.js";
-import { Language } from "$lib/Language.js";
+import { addPaste, getPaste } from "$lib/server/db";
+import { Language } from "$lib/Language";
 import { redirect } from "@sveltejs/kit";
 import { string } from "zod";
 

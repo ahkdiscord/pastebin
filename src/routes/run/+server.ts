@@ -1,4 +1,4 @@
-import { runScript } from "$lib/server/running.js";
+import { runScript } from "$lib/server/running";
 import { Language } from "$lib/Language";
 import { json } from "@sveltejs/kit";
 import { object, string } from "zod";
