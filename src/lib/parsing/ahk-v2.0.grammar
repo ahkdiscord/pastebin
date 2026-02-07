@@ -29,11 +29,11 @@ Directive {
 
 clipboardTimeoutDirective { clipboardTimeout Integer }
 
-dllLoadDirective { dllLoad DirectiveString }
+dllLoadDirective { dllLoad DirectiveString? }
 
-errorStdOutDirective { errorStdOut DirectiveString }
+errorStdOutDirective { errorStdOut DirectiveString? }
 
-hotIfDirective { hotIf expression }
+hotIfDirective { hotIf expression? }
 
 hotIfTimeoutDirective { hotIfTimeout Integer }
 
@@ -54,7 +54,7 @@ includeAgainDirective {
 }
 
 inputLevelDirective {
-  inputLevel Integer
+  inputLevel Integer?
 }
 
 maxThreadsDirective {
@@ -62,7 +62,7 @@ maxThreadsDirective {
 }
 
 maxThreadsBufferDirective {
-  maxThreadsBuffer DirectiveBoolean
+  maxThreadsBuffer DirectiveBoolean?
 }
 
 maxThreadsPerHotkeyDirective {
@@ -78,19 +78,19 @@ requiresDirective {
 }
 
 singleInstanceDirective {
-  singleInstance (force | ignore | prompt | off)
+  singleInstance (force | ignore | prompt | off)?
 }
 
 suspendExemptDirective {
-  suspendExempt DirectiveBoolean
+  suspendExempt DirectiveBoolean?
 }
 
 useHookDirective {
-  useHook DirectiveBoolean
+  useHook DirectiveBoolean?
 }
 
 warnDirective {
-  warn DirectiveKeyword { varUnset | localSameAsGlobal | unreachable | all } comma DirectiveKeyword { msgBox | stdOut | outputDebug | off }
+  warn (DirectiveKeyword { varUnset | localSameAsGlobal | unreachable | all } (comma DirectiveKeyword { msgBox | stdOut | outputDebug | off })?)?
 }
 
 winActivateForceDirective {
