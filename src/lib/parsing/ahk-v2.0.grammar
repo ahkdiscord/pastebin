@@ -4,7 +4,7 @@
 
 Directive {
   (
-    hash |
+    "#" |
     clipboardTimeoutDirective |
     dllLoadDirective |
     errorStdOutDirective |
@@ -90,7 +90,7 @@ useHookDirective {
 }
 
 warnDirective {
-  warn (DirectiveKeyword { varUnset | localSameAsGlobal | unreachable | all } (comma DirectiveKeyword { msgBox | stdOut | outputDebug | off })?)?
+  warn (DirectiveKeyword { varUnset | localSameAsGlobal | unreachable | all } ("," DirectiveKeyword { msgBox | stdOut | outputDebug | off })?)?
 }
 
 winActivateForceDirective {
@@ -132,7 +132,7 @@ functionBody {
 }
 
 variables {
-  variable (comma variable)*
+  variable ("," variable)*
 }
 
 variable {
@@ -162,10 +162,10 @@ ifStatement {
 }
 loopStatement {
   ControlFlowKeyword { loop } expression loopBlock |
-  ControlFlowKeyword { loop files } expression (comma expression)? loopBlock |
-  ControlFlowKeyword { loop parse } expression (comma expression)? (comma expression)? loopBlock |
-  ControlFlowKeyword { loop read } expression (comma expression)? loopBlock |
-  ControlFlowKeyword { loop reg } expression (comma expression)? loopBlock
+  ControlFlowKeyword { loop files } expression ("," expression)? loopBlock |
+  ControlFlowKeyword { loop parse } expression ("," expression)? ("," expression)? loopBlock |
+  ControlFlowKeyword { loop read } expression ("," expression)? loopBlock |
+  ControlFlowKeyword { loop reg } expression ("," expression)? loopBlock
 }
 returnStatement {
   ControlFlowKeyword { return } expression
@@ -209,13 +209,13 @@ controlFlowStatement[@name=controlFlowStatement] {
 
 switchBody {
   (
-    ControlFlowKeyword { case } expression colon statement |
-    ControlFlowKeyword { default } colon statement*
+    ControlFlowKeyword { case } expression ":" statement |
+    ControlFlowKeyword { default } ":" statement*
   )*
 }
 
 labelDeclaration {
-  LabelName { identifier ~name } colon
+  LabelName { identifier ~name } ":"
 }
 
 hotkeyDeclaration {
@@ -239,20 +239,20 @@ propertyBody {
 }
 
 parameters {
-  () | (parameter (comma parameter)*)
+  () | (parameter ("," parameter)*)
 }
 
 parameter {
-  !loosePrefix ByRef { ampersand? }
+  !loosePrefix ByRef { "&"? }
   ParameterName { identifier }
   !looseSuffix (
-    question |
-    (colonEqual (expression | Unset))
+    "?" |
+    (":=" (expression | Unset))
   )?
 }
 
 arguments {
-  () | argument (comma argument)*
+  () | argument ("," argument)*
 }
 
 argument {
@@ -354,8 +354,8 @@ DirectiveBoolean { Boolean | "0" | "1" }
 }
 
 objectKeyValuePair {
-  (Name | percent expression percent)
-  colon
+  (Name | "%" expression "%")
+  ":"
   expression
 }
 
@@ -385,58 +385,58 @@ objectKeyValuePair {
   alternation @left
 }
 
-dereference { percent expression percent }
-@skip {} { partialNameSubstitution { Name percent space* expression space* percent } }
-@skip {} { access { Name dot Name | Name dot percent space* expression space* percent } }
+dereference { "%" expression "%" }
+@skip {} { partialNameSubstitution { Name "%" space* expression space* "%" } }
+@skip {} { access { Name "." Name | Name "." "%" space* expression space* "%" } }
 parenthesis { "(" expression ~parenthesized ")" }
 Operation {
   parenthesis |
-  call { FunctionName { identifier ~name } !tightSuffix "(" arguments asterisk? ")" } |
+  call { FunctionName { identifier ~name } !tightSuffix "(" arguments "*"? ")" } |
   isSetCall { IsSet !tightSuffix "(" VariableName { identifier } ")" } |
-  dynamicCall { parenthesis !tightSuffix "(" arguments asterisk? ")" } |
+  dynamicCall { parenthesis !tightSuffix "(" arguments "*"? ")" } |
   itemAccess { expression !tightSuffix "[" expression "]" } |
-  array { "[" (() | expression (comma expression)*) "]" } |
-  object { !object "{" ~blockOrObject (() | objectKeyValuePair (comma objectKeyValuePair)*) "}" } |
-  increment { plusPlus expression | expression !loosePrefix plusPlus } |
-  decrement { minusMinus expression | expression !loosePrefix minusMinus } |
-  power { expression !exponentiation asteriskAsterisk expression } |
-  unaryMinus { !tightPrefix minus expression } |
-  unaryPlus { !tightPrefix plus expression } |
-  logicalNot { !tightPrefix exclamation expression } |
-  bitwiseNot { !tightPrefix tilde expression } |
-  multiply { expression !multiplication asterisk expression } |
-  divide { expression !multiplication slash expression } |
-  integerDivide { expression !multiplication slashSlash expression } |
-  add { expression !addition plus expression } |
-  subtract { expression !addition minus expression } |
-  shiftLeft { expression !shift lessLess expression } |
-  shiftRight { expression !shift greaterGreater expression } |
-  logicalShiftRight { expression !shift greaterGreaterGreater expression } |
-  bitwiseAnd { expression !combination ampersand expression } |
-  bitwiseXor { expression !combination circumflex expression } |
-  bitwiseOr { expression !combination pipe expression } |
-  concatenate { expression !concatenation dot? expression } |
-  match { expression !regexComparison tildeEqual expression } |
-  greaterThan { expression !numericComparison greater expression } |
-  lessThan { expression !numericComparison less expression } |
-  greaterThanOrEqualTo { expression !numericComparison greaterEqual expression } |
-  lessThanOrEqualTo { expression !numericComparison lessEqual expression } |
-  equalTo { expression !equalityComparison (equal | equalEqual) expression } |
-  unequalTo { expression !equalityComparison (exclamationEqual | exclamationEqualEqual) expression } |
+  array { "[" (() | expression ("," expression)*) "]" } |
+  object { !object "{" ~blockOrObject (() | objectKeyValuePair ("," objectKeyValuePair)*) "}" } |
+  increment { "++" expression | expression !loosePrefix "++" } |
+  decrement { "--" expression | expression !loosePrefix "--" } |
+  power { expression !exponentiation "**" expression } |
+  unaryMinus { !tightPrefix "-" expression } |
+  unaryPlus { !tightPrefix "+" expression } |
+  logicalNot { !tightPrefix "!" expression } |
+  bitwiseNot { !tightPrefix "~" expression } |
+  multiply { expression !multiplication "*" expression } |
+  divide { expression !multiplication "/" expression } |
+  integerDivide { expression !multiplication "//" expression } |
+  add { expression !addition "+" expression } |
+  subtract { expression !addition "-" expression } |
+  shiftLeft { expression !shift "<<" expression } |
+  shiftRight { expression !shift ">>" expression } |
+  logicalShiftRight { expression !shift ">>>" expression } |
+  bitwiseAnd { expression !combination "&" expression } |
+  bitwiseXor { expression !combination "^" expression } |
+  bitwiseOr { expression !combination "|" expression } |
+  concatenate { expression !concatenation "."? expression } |
+  match { expression !regexComparison "~=" expression } |
+  greaterThan { expression !numericComparison ">" expression } |
+  lessThan { expression !numericComparison "<" expression } |
+  greaterThanOrEqualTo { expression !numericComparison ">=" expression } |
+  lessThanOrEqualTo { expression !numericComparison "<=" expression } |
+  equalTo { expression !equalityComparison ("=" | "==") expression } |
+  unequalTo { expression !equalityComparison ("!=" | "!==") expression } |
   containment { expression !containmentCheck ContainmentOperator expression } |
   logicalNotWord { !loosePrefix Not expression } |
-  booleanAnd { expression !andCombination (ampersandAmpersand | And) expression } |
-  booleanOr { expression !orCombination (pipePipe | Or) expression } |
-  maybe { expression !maybeAlternation questionQuestion expression } |
+  booleanAnd { expression !andCombination ("&&" | And) expression } |
+  booleanOr { expression !orCombination ("||" | Or) expression } |
+  maybe { expression !maybeAlternation "??" expression } |
   assignment |
-  ternary { expression !ternaryFirst question expression !ternarySecond colon expression } |
+  ternary { expression !ternaryFirst "?" expression !ternarySecond ":" expression } |
   functionExpression { (FunctionName { identifier ~name })? "(" parameters ~parenthesized ")" FatArrow } |
-  multi { expression !alternation comma expression }
+  multi { expression !alternation "," expression }
 }
 
-assignment { expression !assignment (colonEqual | plusEqual | minusEqual | asteriskEqual | slashEqual | slashSlashEqual | dotEqual | pipeEqual | ampersandEqual | circumflexEqual | greaterGreaterEqual | lessLessEqual | greaterGreaterGreaterEqual) expression }
+assignment { expression !assignment (":=" | "+=" | "-=" | "*=" | "/=" | "//=" | ".=" | "|=" | "&=" | "^=" | ">>=" | "<<=" | ">>>=") expression }
 
-FatArrow { equalGreater expression }
+FatArrow { "=>" expression }
 
 Name { identifier }
 
@@ -472,8 +472,6 @@ Name { identifier }
   }
 }
 
-
-
 @tokens {
   DirectiveString { UnquotedDirectiveString | QuotedDirectiveString }
   UnquotedDirectiveString { ![\n\r \t<>]+ }
@@ -498,59 +496,9 @@ Name { identifier }
     ($[0-9]+ "." $[0-9]* | $[0-9]* "." $[0-9]+ | $[0-9]+) "e" ("+" | "-")? $[0-9]+
   }
 
-  @precedence { Float, Integer, dot }
+  @precedence { Float, Integer, "." }
 
   LineComment { ";" ![\n]* }
-
-  percent { "%" }
-  dot { "." }
-  question { "?" }
-  plusPlus { "++" }
-  minusMinus { "--" }
-  asteriskAsterisk { "**" }
-  minus { "-" }
-  plus { "+" }
-  exclamation { "!" }
-  tilde { "~" }
-  ampersand { "&" }
-  asterisk { "*" }
-  slash { "/" }
-  slashSlash { "//" }
-  lessLess { "<<" }
-  greaterGreater { ">>" }
-  greaterGreaterGreater { ">>>" }
-  circumflex { "^" }
-  pipe { "|" }
-  tildeEqual { "~=" }
-  greater { ">" }
-  less { "<" }
-  greaterEqual { ">=" }
-  lessEqual { "<=" }
-  equal { "=" }
-  equalEqual { "==" }
-  exclamationEqual { "!=" }
-  exclamationEqualEqual { "!==" }
-  ampersandAmpersand { "&&" }
-  pipePipe { "||" }
-  questionQuestion { "??" }
-  colon { ":" }
-  colonEqual { ":=" }
-  plusEqual { "+=" }
-  minusEqual { "-=" }
-  asteriskEqual { "*=" }
-  slashEqual { "/=" }
-  slashSlashEqual { "//=" }
-  dotEqual { ".=" }
-  pipeEqual { "|=" }
-  ampersandEqual { "&=" }
-  circumflexEqual { "^=" }
-  greaterGreaterEqual { ">>=" }
-  lessLessEqual { "<<=" }
-  greaterGreaterGreaterEqual { ">>>=" }
-  equalGreater { "=>" }
-  comma { "," }
-
-  hash { "#" }
 
   space { $[ \t] }
 
