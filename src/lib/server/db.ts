@@ -29,15 +29,15 @@ export async function init() {
 
   await sql`
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+      id UUID PRIMARY KEY DEFAULT uuidv7(),
       name VARCHAR(255) NOT NULL,
       password VARCHAR(255) NOT NULL
     )
   `;
   await sql`
     CREATE TABLE IF NOT EXISTS sessions (
-      id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-      user_id INTEGER REFERENCES users,
+      id UUID PRIMARY KEY DEFAULT uuidv7(),
+      user_id UUID REFERENCES users,
       expiry TIMESTAMPTZ NOT NULL
     )
   `;
@@ -112,14 +112,14 @@ export async function deletePaste(pasteId: string): Promise<number> {
 }
 
 export async function getAllPastesWithoutContent() {
-  const data: { id: number; language: Language; creation: Date; expiry: Date }[] = await sql`
+  const data: { id: string; language: Language; creation: Date; expiry: Date }[] = await sql`
     SELECT id, language, creation, expiry FROM pastes
   `;
 
   return [...data];
 }
 
-export async function getUserData(id: number) {
+export async function getUserData(id: string) {
   const users: { name: number }[] = await sql`
     SELECT name FROM users WHERE id = ${id}
   `;
@@ -130,7 +130,7 @@ export async function getUserData(id: number) {
 }
 
 export async function getUserByName(name: string) {
-  const users: { id: number; password: string }[] = await sql`
+  const users: { id: string; password: string }[] = await sql`
     SELECT id, password FROM users WHERE name = ${name}
   `;
 
@@ -140,10 +140,10 @@ export async function getUserByName(name: string) {
   return users[0];
 }
 
-export async function startSession(userId: number): Promise<number> {
+export async function startSession(userId: string): Promise<string> {
   const expiry = add(new Date(), { minutes: 30 });
 
-  const sessions: { id: number }[] = await sql`
+  const sessions: { id: string }[] = await sql`
     INSERT INTO sessions ${sql({ user_id: userId, expiry })}
       RETURNING id
   `;
@@ -153,8 +153,8 @@ export async function startSession(userId: number): Promise<number> {
   return sessions[0].id;
 }
 
-export async function getSession(id: number) {
-  const sessions: { user_id: number; expiry: Date }[] = await sql`
+export async function getSession(id: string) {
+  const sessions: { user_id: string; expiry: Date }[] = await sql`
     SELECT user_id, expiry FROM sessions
       WHERE id = ${id}
   `;
@@ -176,7 +176,7 @@ export async function deleteExpiredSessions(expiry: Date): Promise<number> {
   return x.count ?? 0;
 }
 
-export async function deleteSession(id: number): Promise<number> {
+export async function deleteSession(id: string): Promise<number> {
   const x = await sql`
     DELETE FROM sessions
     WHERE id = ${id}

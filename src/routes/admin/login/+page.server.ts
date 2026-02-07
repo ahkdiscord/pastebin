@@ -5,12 +5,7 @@ import { add } from "date-fns";
 export async function load({ cookies }) {
   const sessionId = cookies.get("sessionId");
 
-  if (sessionId) {
-    const number = Number.parseInt(sessionId);
-    if (!Number.isFinite(number)) return;
-
-    await deleteSession(number);
-  }
+  if (sessionId) await deleteSession(sessionId);
 
   cookies.delete("sessionId", { path: "/" });
 }
@@ -36,7 +31,7 @@ export const actions = {
 
       const sessionId = await startSession(user.id);
 
-      cookies.set("sessionId", sessionId.toFixed(), { path: "/" });
+      cookies.set("sessionId", sessionId, { path: "/" });
 
       redirect(307, cookies.get("returnTo") ?? "/admin");
     } catch (e) {

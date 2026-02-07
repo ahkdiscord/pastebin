@@ -8,7 +8,7 @@
 
   const { data } = $props();
 
-  async function deletePaste(pasteId: number) {
+  async function deletePaste(pasteId: string) {
     const response = await fetch(`/admin/pastes/${pasteId}`, { method: "DELETE" });
 
     if (response.ok) await invalidateAll();
