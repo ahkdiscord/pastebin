@@ -1,0 +1,40 @@
+import { getUserByName, startSession } from "$lib/server/db";
+import { error, isRedirect, redirect } from "@sveltejs/kit";
+import { add } from "date-fns";
+
+export async function load({ cookies }) {
+  cookies.delete("sessionId", { path: "/" });
+}
+
+export const actions = {
+  async default({ request, cookies }) {
+    // to prevent automated login attempts:
+    const delayedRequestEnd = add(new Date(), { seconds: 0.5 });
+
+    try {
+      const data = await request.formData();
+
+      const username = data.get("username");
+      if (typeof username !== "string") error(400);
+
+      const user = await getUserByName(username);
+      if (!user) error(401);
+
+      const password = data.get("password");
+      if (typeof password !== "string") error(400);
+
+      if (!(await Bun.password.verify(password, user.password))) error(403);
+
+      const sessionId = await startSession(user.id);
+
+      cookies.set("sessionId", sessionId.toFixed(), { path: "/" });
+
+      redirect(307, cookies.get("returnTo") ?? "/admin");
+    } catch (e) {
+      if (isRedirect(e)) throw e;
+
+      await Bun.sleep(delayedRequestEnd);
+      throw e;
+    }
+  },
+};

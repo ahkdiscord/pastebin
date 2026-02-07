@@ -1,8 +1,10 @@
 import { init } from "$lib/server/db";
-import { AutoExpire } from "$lib/server/services";
+import { AutoExpirePastes, AutoExpireSessions } from "$lib/server/services";
 
 await init();
 
-const autoExpire = new AutoExpire();
+const autoExpirePastes = new AutoExpirePastes();
+autoExpirePastes.start();
 
-autoExpire.start();
+const autoExpireSessions = new AutoExpireSessions();
+autoExpireSessions.start();

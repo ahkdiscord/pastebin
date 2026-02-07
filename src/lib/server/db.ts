@@ -26,6 +26,21 @@ export async function init() {
     CREATE INDEX IF NOT EXISTS pastes_expiry
     ON pastes (expiry)
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+      name VARCHAR(255) NOT NULL,
+      password VARCHAR(255) NOT NULL
+    )
+  `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS sessions (
+      id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+      user_id INTEGER REFERENCES users,
+      expiry TIMESTAMPTZ NOT NULL
+    )
+  `;
 }
 
 export async function addPaste(language: Language, content: string): Promise<string> {
@@ -77,7 +92,64 @@ export async function getPaste(pasteId: string): Promise<Paste | null> {
 export async function deleteExpiredPastes(expiry: Date): Promise<number> {
   const x = await sql`
     DELETE FROM pastes
-    WHERE expiry < ${sql.options.adapter === "sqlite" ? expiry.valueOf() : expiry}
+    WHERE expiry < ${expiry}
+  `;
+
+  return x.count ?? 0;
+}
+
+export async function getUserData(id: number) {
+  const users: { name: number }[] = await sql`
+    SELECT name FROM users WHERE id = ${id}
+  `;
+
+  if (!users || !users.length) return undefined;
+
+  return users[0];
+}
+
+export async function getUserByName(name: string) {
+  const users: { id: number; password: string }[] = await sql`
+    SELECT id, password FROM users WHERE name = ${name}
+  `;
+
+  if (!users || !users.length) return undefined;
+  if (users.length > 1) throw new Error("More than one user with the same name!");
+
+  return users[0];
+}
+
+export async function startSession(userId: number): Promise<number> {
+  const expiry = add(new Date(), { minutes: 30 });
+
+  const sessions: { id: number }[] = await sql`
+    INSERT INTO sessions ${sql({ user_id: userId, expiry })}
+      RETURNING id
+  `;
+
+  if (!sessions || !sessions.length) throw new Error("Session could not be created");
+
+  return sessions[0].id;
+}
+
+export async function getSession(id: number) {
+  const sessions: { user_id: number; expiry: Date }[] = await sql`
+    SELECT user_id, expiry FROM sessions
+      WHERE id = ${id}
+  `;
+
+  if (!sessions || !sessions.length) return undefined;
+
+  return {
+    userId: sessions[0].user_id,
+    expiry: sessions[0].expiry,
+  };
+}
+
+export async function deleteExpiredSessions(expiry: Date): Promise<number> {
+  const x = await sql`
+    DELETE FROM sessions
+    WHERE expiry < ${expiry}
   `;
 
   return x.count ?? 0;
