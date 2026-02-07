@@ -3,13 +3,13 @@
   import Button from "$lib/Button.svelte";
   import Editor from "$lib/Editor.svelte";
   import Page from "$lib/Page.svelte";
-  import { Language } from "$lib/Language.js";
+  import { Language } from "$lib/Language";
   import Share from "@lucide/svelte/icons/share";
   import Play from "@lucide/svelte/icons/play";
   import Ellipsis from "@lucide/svelte/icons/ellipsis";
   import Output from "$lib/Output.svelte";
   import SubPanelLayout from "$lib/SubPanelLayout.svelte";
-  import { isRunnable, runScript } from "$lib/client/running.js";
+  import { isRunnable, runScript } from "$lib/client/running";
   import LanguageSelect from "$lib/LanguageSelect.svelte";
 
   const { data } = $props();

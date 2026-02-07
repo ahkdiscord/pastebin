@@ -9,7 +9,7 @@
   import { enhance } from "$app/forms";
   import SubPanelLayout from "$lib/SubPanelLayout.svelte";
   import Output from "$lib/Output.svelte";
-  import { isRunnable, runScript } from "$lib/client/running.js";
+  import { isRunnable, runScript } from "$lib/client/running";
   import LanguageSelect from "$lib/LanguageSelect.svelte";
 
   const { data } = $props();
