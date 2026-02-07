@@ -97,7 +97,7 @@ winActivateForceDirective {
   winActivateForce
 }
 
-statement {
+statement[@name=statement] {
   (
     callStatement |
     classDeclaration |
@@ -107,11 +107,11 @@ statement {
   ) lineEnd
 }
 
-callStatement[@dynamicPrecedence=1] {
+callStatement[@dynamicPrecedence=1,@name=callStatement] {
   FunctionName { identifier ~name | BuiltinFunction ~name } arguments
 }
 
-classDeclaration {
+classDeclaration[@name=classDeclaration] {
   Class ClassName (Extends ClassName)? "{" classBody "}"
 }
 
@@ -123,7 +123,7 @@ classBody {
   (Static? (assignment | functionDeclaration | propertyDeclaration) lineEnd)*
 }
 
-functionDeclaration {
+functionDeclaration[@name=functionDeclaration] {
   FunctionName { identifier ~name } "(" parameters ")" "{" functionBody "}"
 }
 
@@ -139,8 +139,8 @@ variable {
   VariableName { identifier ~name }
 }
 
-block {
-  lineEnd statement | "{" ~blockOrObject statement+ "}"
+block[@dynamicPrecedence=1,@name=block] {
+  lineEnd statement | lineEnd? !block "{" ~blockOrObject newLine+ statement+ "}"
 }
 
 breakStatement {
@@ -177,10 +177,10 @@ throwStatement {
   ControlFlowKeyword { throw } expression?
 }
 tryStatement {
-  ControlFlowKeyword { try } (statement | "{" statement* "}")
-  (ControlFlowKeyword { catch } (ClassName { identifier })? (as VariableName { identifier })? (statement | "{" statement* "}") )?
-  (ControlFlowKeyword { else } (statement | "{" statement* "}"))?
-  (ControlFlowKeyword { finally } (statement | "{" statement* "}"))?
+  ControlFlowKeyword { try } block
+  (ControlFlowKeyword { catch } (ClassName { identifier })? (ControlFlowKeyword { as } VariableName { identifier })? block )?
+  (ControlFlowKeyword { else } block)?
+  (ControlFlowKeyword { finally } block)?
 }
 whileStatement {
   ControlFlowKeyword { while } expression loopBlock
@@ -193,7 +193,7 @@ loopBlock {
   block untilStatement?
 }
 
-controlFlowStatement {
+controlFlowStatement[@name=controlFlowStatement] {
   breakStatement |
   continueStatement |
   forStatement |
@@ -203,6 +203,7 @@ controlFlowStatement {
   returnStatement |
   switchStatement |
   throwStatement |
+  tryStatement |
   whileStatement
 }
 
@@ -258,7 +259,7 @@ argument {
   expression
 }
 
-expression {
+expression[@name=expression] {
   Operation |
   Integer |
   Float |
@@ -268,7 +269,31 @@ expression {
 }
 
 @external tokens controlFlowKeywords from "./ahk-v2.0.tokens" {
-  as, break, case, catch, Class, continue, default, else, Extends, finally, files, for, goto, if, in, loop, parse, read, reg, return, switch, throw, try, until, while
+  as,
+  break,
+  case,
+  catch,
+  Class,
+  continue,
+  default,
+  else,
+  Extends,
+  finally,
+  files,
+  for,
+  goto,
+  if,
+  in,
+  loop,
+  parse,
+  read,
+  reg,
+  return,
+  switch,
+  throw,
+  try,
+  until,
+  while
 }
 
 @external tokens specialKeywords from "./ahk-v2.0.tokens" {
@@ -335,6 +360,8 @@ objectKeyValuePair {
 }
 
 @precedence {
+  block @left,
+  object @left,
   tightSuffix @left,
   looseSuffix @left,
   exponentiation @right,
@@ -369,7 +396,7 @@ Operation {
   dynamicCall { parenthesis !tightSuffix "(" arguments asterisk? ")" } |
   itemAccess { expression !tightSuffix "[" expression "]" } |
   array { "[" (() | expression (comma expression)*) "]" } |
-  object { "{" ~blockOrObject (() | objectKeyValuePair (comma objectKeyValuePair)*) "}" } |
+  object { !object "{" ~blockOrObject (() | objectKeyValuePair (comma objectKeyValuePair)*) "}" } |
   increment { plusPlus expression | expression !loosePrefix plusPlus } |
   decrement { minusMinus expression | expression !loosePrefix minusMinus } |
   power { expression !exponentiation asteriskAsterisk expression } |
@@ -527,7 +554,9 @@ Name { identifier }
 
   space { $[ \t] }
 
-  lineEnd { "\n" | "\r\n" | @eof }
+  newLine { "\n" | "\r\n" }
+
+  lineEnd { newLine | @eof }
 }
 
 @skip { space+ | LineComment | BlockComment }
