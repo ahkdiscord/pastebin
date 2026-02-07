@@ -9,7 +9,7 @@
   const { data } = $props();
 
   async function deletePaste(pasteId: number) {
-    const response = await fetch(`/api/v1/${pasteId}`, { method: "DELETE" });
+    const response = await fetch(`/admin/pastes/${pasteId}`, { method: "DELETE" });
 
     if (response.ok) await invalidateAll();
   }

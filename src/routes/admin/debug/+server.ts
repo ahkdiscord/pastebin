@@ -1,6 +1,6 @@
 import { executeStatements } from "$lib/server/db";
 import { error, json } from "@sveltejs/kit";
-import { getAuth } from "../../../lib/auth.js";
+import { getAuth } from "../auth";
 
 export async function POST({ request, cookies }) {
   if (!(await getAuth(cookies))) error(401);
