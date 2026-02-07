@@ -242,8 +242,8 @@ parameters {
   () | (parameter ("," parameter)*)
 }
 
-parameter {
-  !loosePrefix ByRef { "&"? }
+parameter[@name=parameter] {
+  !loosePrefix ByRef { "&" }?
   ParameterName { identifier }
   !looseSuffix (
     "?" |
@@ -255,7 +255,7 @@ arguments {
   () | argument ("," argument)*
 }
 
-argument {
+argument[@name=argument] {
   expression
 }
 
