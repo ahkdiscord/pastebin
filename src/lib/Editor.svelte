@@ -25,6 +25,7 @@
   import { getLrLanguage } from "./editor-highlighting";
   import { tags } from "@lezer/highlight";
   import type { Language } from "./Language";
+  import { dev } from "$app/environment";
 
   interface Props {
     content: string;
@@ -58,6 +59,22 @@
       effects: languageSupportCompartment.reconfigure(getLanguageSupport(language)),
     });
   });
+
+  if (dev) {
+    $effect(() => {
+      const support = languageSupportCompartment.get(editorState)! as LanguageSupport;
+      const tree = support.language.parser.parse(content);
+
+      console.clear();
+      tree.cursor().iterate(
+        node => {
+          console.group(node.type.name);
+          console.debug(content.slice(node.from, node.to));
+        },
+        () => console.groupEnd(),
+      );
+    });
+  }
 
   function getLanguageSupport(language: Language): Extension {
     const lrLanguage = getLrLanguage(language);
