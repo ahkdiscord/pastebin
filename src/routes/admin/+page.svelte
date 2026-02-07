@@ -1,5 +1,8 @@
-<script lang="ts">
-  const { data } = $props();
-</script>
+<h1>HERE BE DRAGONS!</h1>
+<p>Just be careful, ok?</p>
 
-Hello, {data.user.name}!
+<style>
+  * {
+    text-align: center;
+  }
+</style>

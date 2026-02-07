@@ -1,4 +1,5 @@
-import { getPaste } from "$lib/server/db";
+import { getAuth } from "$lib/auth";
+import { deletePaste, getPaste } from "$lib/server/db";
 import { error, json, text } from "@sveltejs/kit";
 
 export async function GET({ request, params }) {
@@ -9,4 +10,12 @@ export async function GET({ request, params }) {
   } else {
     return text(paste.content);
   }
+}
+
+export async function DELETE({ params, cookies }) {
+  if (!(await getAuth(cookies))) return error(401);
+
+  const amount = await deletePaste(params.id);
+
+  return json(amount);
 }

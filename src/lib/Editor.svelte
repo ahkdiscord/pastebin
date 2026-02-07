@@ -62,7 +62,10 @@
 
   if (dev) {
     $effect(() => {
-      const support = languageSupportCompartment.get(editorState)! as LanguageSupport;
+      const support = languageSupportCompartment.get(editorState) as LanguageSupport | [];
+
+      if (!(support instanceof LanguageSupport)) return;
+
       const tree = support.language.parser.parse(content);
 
       console.clear();

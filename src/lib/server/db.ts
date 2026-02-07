@@ -43,6 +43,10 @@ export async function init() {
   `;
 }
 
+export async function executeStatements(statements: string) {
+  return await sql.unsafe(statements).execute();
+}
+
 export async function addPaste(language: Language, content: string): Promise<string> {
   const id = Bun.hash
     .cityHash32(
@@ -96,6 +100,23 @@ export async function deleteExpiredPastes(expiry: Date): Promise<number> {
   `;
 
   return x.count ?? 0;
+}
+
+export async function deletePaste(pasteId: string): Promise<number> {
+  const x = await sql`
+    DELETE FROM pastes
+    WHERE id = ${pasteId}
+  `;
+
+  return x.count ?? 0;
+}
+
+export async function getAllPastesWithoutContent() {
+  const data: { id: number; language: Language; creation: Date; expiry: Date }[] = await sql`
+    SELECT id, language, creation, expiry FROM pastes
+  `;
+
+  return [...data];
 }
 
 export async function getUserData(id: number) {
