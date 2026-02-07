@@ -27,6 +27,8 @@
       <span>{format(paste.expiry, "yyyy-MM-dd HH:mm:ss")}</span>
       <Button color="coral" onclick={() => deletePaste(paste.id)}><Trash size={16} color="var(--coral)" /></Button>
     </article>
+  {:else}
+    No pastes.
   {/each}
 </div>
 
