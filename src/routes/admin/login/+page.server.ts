@@ -27,7 +27,7 @@ export const actions = {
       const password = data.get("password");
       if (typeof password !== "string") error(400);
 
-      if (!(await Bun.password.verify(password, user.password))) error(403);
+      if (!(await Bun.password.verify(password, user.password))) error(401);
 
       const sessionId = await startSession(user.id);
 
