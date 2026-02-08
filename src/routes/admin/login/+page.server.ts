@@ -13,7 +13,7 @@ export async function load({ cookies }) {
 export const actions = {
   async default({ request, cookies }) {
     // to prevent automated login attempts:
-    const delayedRequestEnd = add(new Date(), { seconds: 0.5 });
+    const delayedRequestEnd = add(new Date(), { seconds: 2.0 });
 
     try {
       const data = await request.formData();
