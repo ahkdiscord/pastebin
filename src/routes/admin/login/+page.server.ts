@@ -31,7 +31,7 @@ export const actions = {
 
       const sessionId = await startSession(user.id);
 
-      cookies.set("sessionId", sessionId, { path: "/" });
+      cookies.set("sessionId", sessionId, { path: "/", httpOnly: true, sameSite: "strict", secure: true });
 
       redirect(307, cookies.get("returnTo") ?? "/admin");
     } catch (e) {
