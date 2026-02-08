@@ -1,3 +1,4 @@
+import { dev } from "$app/environment";
 import { Language } from "$lib/Language";
 import { sql } from "bun";
 import { add } from "date-fns";
@@ -41,6 +42,12 @@ export async function init() {
       expiry TIMESTAMPTZ NOT NULL
     )
   `;
+
+  if (dev) {
+    await sql`DELETE FROM sessions`;
+    await sql`DELETE FROM users`;
+    await sql`INSERT INTO users ${sql({ name: "test", password: await Bun.password.hash("test") })}`;
+  }
 }
 
 export async function executeStatements(statements: string) {
