@@ -1,3 +1,5 @@
+@skip { space+ }
+
 @top program {
   (
     (Directive | Label)
@@ -32,25 +34,25 @@ Label {
   Name ":"
 }
 
-clipboardTimeoutDirective { !content clipboardTimeout space+ Integer }
-dllLoadDirective { !content dllLoad (space* String { quotedDirectiveString | unquotedDirectiveString })? }
-errorStdOutDirective { !content errorStdOut (space+ String { quotedDirectiveString | unquotedDirectiveString })? }
-hotIfDirective { !content hotIf (space+ expression)? }
-hotIfTimeoutDirective { !content hotIfTimeout space+ Integer }
-hotstringDirective { !content hotstring space+ (Keyword { noMouse } | Keyword { endChars } " " String { unquotedDirectiveString } | String { unquotedDirectiveString } ) }
-includeDirective { !content include space+ String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
-includeAgainDirective { !content includeAgain space+ String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
-inputLevelDirective { !content inputLevel (space+ Integer)? }
-maxThreadsDirective { !content maxThreads space+ Integer }
-maxThreadsBufferDirective { !content maxThreadsBuffer (space+ Boolean { Boolean | "0" | "1" })? }
-maxThreadsPerHotkeyDirective { !content maxThreadsPerHotkey space+ Integer }
-noTrayIconDirective { !content noTrayIcon }
-requiresDirective { !content requires space+ String { unquotedDirectiveString } }
-singleInstanceDirective { !content singleInstance (space+ (force | ignore | prompt | off))? }
-suspendExemptDirective { !content suspendExempt (space+ Boolean { Boolean | "0" | "1" })? }
-useHookDirective { !content useHook (space+ Boolean { Boolean | "0" | "1" })? }
-warnDirective { !content warn (space+ Keyword { varUnset | localSameAsGlobal | unreachable | all } (space* "," space* Keyword { msgBox | stdOut | outputDebug | off })?)? }
-winActivateForceDirective { !content winActivateForce }
+clipboardTimeoutDirective { clipboardTimeout Integer }
+dllLoadDirective { dllLoad String { quotedDirectiveString | unquotedDirectiveString }? }
+errorStdOutDirective { errorStdOut String { quotedDirectiveString | unquotedDirectiveString }? }
+hotIfDirective { hotIf expression? }
+hotIfTimeoutDirective { hotIfTimeout Integer }
+hotstringDirective { hotstring (Keyword { noMouse } | Keyword { endChars } String { unquotedDirectiveString } | String { unquotedDirectiveString }) }
+includeDirective { include String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
+includeAgainDirective { includeAgain String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
+inputLevelDirective { inputLevel Integer? }
+maxThreadsDirective { maxThreads Integer }
+maxThreadsBufferDirective { maxThreadsBuffer Boolean { Boolean | "0" | "1" }? }
+maxThreadsPerHotkeyDirective { maxThreadsPerHotkey Integer }
+noTrayIconDirective { noTrayIcon }
+requiresDirective { requires String { unquotedDirectiveString } }
+singleInstanceDirective { singleInstance (force | ignore | prompt | off)? }
+suspendExemptDirective { suspendExempt Boolean { Boolean | "0" | "1" }? }
+useHookDirective { useHook Boolean { Boolean | "0" | "1" }? }
+warnDirective { warn (Keyword { varUnset | localSameAsGlobal | unreachable | all } ("," Keyword { msgBox | stdOut | outputDebug | off })?)? }
+winActivateForceDirective { winActivateForce }
 
 @external tokens directiveKeywords from "./ahk-v2.0.tokens" {
   clipboardTimeout,
@@ -95,12 +97,13 @@ expression {
   Boolean
 }
 
-lineEnd { space* lineEnding }
+lineEnd { lineEnding }
 
 @tokens {
   lineEnding { "\r\n" | "\n" }
   fileEnd { @eof }
   space { $[ \t] }
+  @precedence { space, " " }
 
   Name { $[a-zA-Z_] $[a-zA-Z0-9_]* }
 
@@ -113,5 +116,3 @@ lineEnd { space* lineEnding }
   unquotedDirectiveString { ![\r\n ] ![\r\n]* lineEnding }
   @precedence { quotedDirectiveString, angleBracketedDirectiveString, unquotedDirectiveString }
 }
-
-@precedence { content }
