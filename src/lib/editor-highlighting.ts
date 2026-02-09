@@ -1,14 +1,19 @@
-import { styleTags, tags } from "@lezer/highlight";
+import { styleTags, Tag, tags } from "@lezer/highlight";
 import { LRParser } from "@lezer/lr";
 import { parser as ahkV11Parser } from "./parsing/ahk-v1.1.gen";
 import { parser as ahkV20Parser } from "./parsing/ahk-v2.0.gen";
 import { LRLanguage } from "@codemirror/language";
 import type { Language } from "./Language";
 
+export const customTags = {
+  error: Tag.define("error"),
+};
+
 function parserWithMetadata(baseParser: LRParser) {
   return baseParser.configure({
     props: [
       styleTags({
+        "⚠": customTags.error,
         "Directive": tags.keyword,
         "Directive/Boolean": tags.bool,
         "Directive/Keyword": tags.keyword,

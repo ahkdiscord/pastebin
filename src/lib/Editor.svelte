@@ -22,7 +22,7 @@
   } from "@codemirror/language";
   import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
   import { highlightSelectionMatches } from "@codemirror/search";
-  import { getLrLanguage } from "./editor-highlighting";
+  import { customTags, getLrLanguage } from "./editor-highlighting";
   import { tags } from "@lezer/highlight";
   import type { Language } from "./Language";
   import { dev } from "$app/environment";
@@ -136,31 +136,9 @@
 
       syntaxHighlighting(
         HighlightStyle.define([
-          { tag: tags.blockComment, class: "comment" },
+          { tag: customTags.error, class: "error" },
           { tag: tags.bool, class: "bool" },
-          { tag: tags.className, class: "class" },
-          { tag: tags.comment, class: "comment" },
-          { tag: tags.controlKeyword, class: "keyword" },
-          { tag: tags.definitionOperator, class: "definition operator" },
-          { tag: tags.escape, class: "escape" },
-          { tag: tags.float, class: "float number" },
-          { tag: tags.function(tags.keyword), class: "function keyword" },
-          { tag: tags.function(tags.name), class: "function" },
-          { tag: tags.integer, class: "integer number" },
           { tag: tags.keyword, class: "keyword" },
-          { tag: tags.labelName, class: "label" },
-          { tag: tags.lineComment, class: "comment" },
-          { tag: tags.modifier, class: "modifier" },
-          { tag: tags.name, class: "name" },
-          { tag: tags.null, class: "unset" },
-          { tag: tags.operatorKeyword, class: "keyword" },
-          { tag: tags.propertyName, class: "variable" },
-          { tag: tags.standard(tags.className), class: "builtin class constant" },
-          { tag: tags.standard(tags.constant(tags.variableName)), class: "builtin constant variable" },
-          { tag: tags.standard(tags.function(tags.variableName)), class: "builtin function" },
-          { tag: tags.standard(tags.variableName), class: "builtin variable" },
-          { tag: tags.string, class: "string" },
-          { tag: tags.variableName, class: "variable" },
         ]),
       ),
     ],
@@ -236,71 +214,15 @@
     background-color: color-mix(in srgb, var(--slime) 25%, transparent);
   }
 
-  .editor :global(.comment) {
-    color: var(--dusty);
+  .editor :global(.error) {
+    background-color: var(--coral);
   }
 
   .editor :global(.bool) {
     color: var(--berry);
   }
 
-  .editor :global(.number) {
-    color: var(--berry);
-  }
-
   .editor :global(.keyword) {
     color: var(--blush);
-  }
-
-  .editor :global(.variable) {
-    color: var(--paper);
-  }
-
-  .editor :global(.class) {
-    color: var(--magic);
-  }
-
-  .editor :global(.string) {
-    color: var(--royal);
-  }
-
-  .editor :global(.escape) {
-    color: var(--peach);
-  }
-
-  .editor :global(.function) {
-    color: var(--slush);
-  }
-
-  .editor :global(.function.keyword) {
-    font-weight: bolder;
-  }
-
-  .editor :global(.constant) {
-    font-style: italic;
-  }
-
-  .editor :global(.builtin) {
-    font-weight: bolder;
-  }
-
-  .editor :global(.modifier) {
-    color: var(--slime);
-  }
-
-  .editor :global(.operator) {
-    color: var(--white);
-  }
-
-  .editor :global(.definition.operator) {
-    font-weight: bolder;
-  }
-
-  .editor :global(.label) {
-    color: var(--slime);
-  }
-
-  .editor :global(.unset) {
-    color: var(--berry);
   }
 </style>
