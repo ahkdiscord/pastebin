@@ -109,10 +109,10 @@ export async function deleteExpiredPastes(expiry: Date): Promise<number> {
   return x.count ?? 0;
 }
 
-export async function deletePaste(pasteId: string): Promise<number> {
+export async function deletePastes(...pasteIds: string[]): Promise<number> {
   const x = await sql`
     DELETE FROM pastes
-    WHERE id = ${pasteId}
+    WHERE id IN ${sql(pasteIds)}
   `;
 
   return x.count ?? 0;

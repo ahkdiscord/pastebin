@@ -1,4 +1,4 @@
-import { deletePaste, getPaste, getUserByName } from "$lib/server/db";
+import { deletePastes, getPaste, getUserByName } from "$lib/server/db";
 import { error, json, text } from "@sveltejs/kit";
 import { add } from "date-fns";
 
@@ -29,7 +29,7 @@ export async function DELETE({ request, params }) {
 
     if (!(await Bun.password.verify(password, user.password))) error(401);
 
-    const amount = await deletePaste(params.id);
+    const amount = await deletePastes(params.id);
 
     return json({ deleted: amount });
   } catch (e) {
