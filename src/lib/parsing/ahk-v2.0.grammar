@@ -3,6 +3,7 @@
 @top program {
   (
     (
+      BlockComment |
       Directive |
       Label
     )?
@@ -113,6 +114,16 @@ expression {
   }
 }
 
+@local tokens {
+  blockCommentEnd { "\n" $[ \t]* "*/" | "*/" $[ \t]* ("\n" | @eof) | @eof }
+  @else blockCommentContent
+}
+@skip {} {
+  BlockComment {
+    blockCommentStart blockCommentContent* blockCommentEnd
+  }
+}
+
 @tokens {
   lineEnd { "\r\n" | "\n" }
   fileEnd { @eof }
@@ -125,6 +136,7 @@ expression {
   hexadecimalInteger { ("0x" | "0X") $[0-9a-fA-F]+ }
 
   lineCommentStart { ";" }
+  blockCommentStart { "/*" }
 
   quotedDirectiveString { '"' ![\r\n]* '"' }
   angleBracketedDirectiveString { '<' ![\r\n]* '>' }

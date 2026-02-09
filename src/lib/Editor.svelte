@@ -136,6 +136,7 @@
       syntaxHighlighting(
         HighlightStyle.define([
           { tag: customTags.error, class: "error" },
+          { tag: tags.blockComment, class: "block-comment" },
           { tag: tags.bool, class: "bool" },
           { tag: tags.keyword, class: "keyword" },
           { tag: tags.labelName, class: "label" },
@@ -232,7 +233,8 @@
     color: var(--slime);
   }
 
-  .editor :global(.line-comment) {
+  .editor :global(.line-comment),
+  .editor :global(.block-comment) {
     color: var(--dusty);
   }
 

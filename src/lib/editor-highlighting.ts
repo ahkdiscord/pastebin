@@ -14,6 +14,7 @@ function parserWithMetadata(baseParser: LRParser) {
     props: [
       styleTags({
         "⚠": customTags.error,
+        "BlockComment": tags.blockComment,
         "Directive": tags.keyword,
         "Directive/Boolean": tags.bool,
         "Directive/Keyword": tags.keyword,
