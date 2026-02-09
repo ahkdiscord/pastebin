@@ -1,0 +1,104 @@
+@top program {
+  (
+    (Directive)*
+  )
+  lineEnd
+}
+
+Directive {
+  clipboardTimeoutDirective |
+  dllLoadDirective |
+  errorStdOutDirective |
+  hotIfDirective |
+  hotIfTimeoutDirective |
+  hotstringDirective |
+  includeDirective |
+  includeAgainDirective |
+  inputLevelDirective |
+  maxThreadsDirective |
+  maxThreadsBufferDirective |
+  maxThreadsPerHotkeyDirective |
+  noTrayIconDirective |
+  requiresDirective |
+  singleInstanceDirective |
+  suspendExemptDirective |
+  useHookDirective |
+  warnDirective |
+  winActivateForceDirective
+}
+
+clipboardTimeoutDirective { clipboardTimeout Integer }
+dllLoadDirective { dllLoad String { quotedDirectiveString | unquotedDirectiveString }? }
+errorStdOutDirective { errorStdOut String { quotedDirectiveString | unquotedDirectiveString }? }
+hotIfDirective { hotIf expression? }
+hotIfTimeoutDirective { hotIfTimeout Integer }
+hotstringDirective { hotstring Keyword { noMouse } | hotstring Keyword { endChars } String { unquotedDirectiveString } | hotstring String { unquotedDirectiveString } }
+includeDirective { include String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
+includeAgainDirective { includeAgain String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
+inputLevelDirective { inputLevel Integer? }
+maxThreadsDirective { maxThreads Integer }
+maxThreadsBufferDirective { maxThreadsBuffer Boolean { Boolean | "0" | "1" }? }
+maxThreadsPerHotkeyDirective { maxThreadsPerHotkey Integer }
+noTrayIconDirective { noTrayIcon }
+requiresDirective { requires unquotedDirectiveString+ }
+singleInstanceDirective { singleInstance (force | ignore | prompt | off)? }
+suspendExemptDirective { suspendExempt Boolean { Boolean | "0" | "1" }? }
+useHookDirective { useHook Boolean { Boolean | "0" | "1" }? }
+warnDirective { warn (Keyword { varUnset | localSameAsGlobal | unreachable | all } ("," Keyword { msgBox | stdOut | outputDebug | off })?)? }
+winActivateForceDirective { winActivateForce }
+
+@external tokens directiveKeywords from "./ahk-v2.0.tokens" {
+  clipboardTimeout,
+  dllLoad,
+  errorStdOut,
+  hotIf,
+  hotIfTimeout,
+  hotstring,
+  include,
+  includeAgain,
+  inputLevel,
+  maxThreads,
+  maxThreadsBuffer,
+  maxThreadsPerHotkey,
+  noTrayIcon,
+  requires,
+  singleInstance,
+  suspendExempt,
+  useHook,
+  warn,
+  winActivateForce
+  noMouse,
+  endChars,
+  force,
+  ignore,
+  prompt,
+  off,
+  varUnset,
+  localSameAsGlobal,
+  unreachable,
+  all,
+  msgBox,
+  stdOut,
+  outputDebug
+}
+
+expression {
+  "°TODO: expression"
+}
+
+@external tokens specialKeywords from "./ahk-v2.0.tokens" {
+  Boolean
+}
+
+@tokens {
+  lineEnd { "\r\n" | "\n" | @eof }
+
+  Integer { simpleInteger | hexadecimalInteger }
+  simpleInteger { $[0-9]+ }
+  hexadecimalInteger { ("0x" | "0X") $[0-9a-fA-F]+ }
+
+  quotedDirectiveString { '"' ![\r\n]* '"' }
+  angleBracketedDirectiveString { '<' ![\r\n]* '>' }
+  unquotedDirectiveString { ![\r\n ] ![\r\n]* lineEnd }
+  @precedence { quotedDirectiveString, angleBracketedDirectiveString, unquotedDirectiveString }
+}
