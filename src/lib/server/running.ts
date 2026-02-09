@@ -17,7 +17,7 @@ export async function runScript(script: string, language: Language): Promise<Res
     body: script,
     method: "POST",
     headers: {
-      Authorization: `Basic ${btoa(`${CLOUDAHK_USERNAME}:${CLOUDAHK_PASSWORD}`)}`,
+      Authorization: `Basic ${Buffer.from(`${CLOUDAHK_USERNAME}:${CLOUDAHK_PASSWORD}`).toString("base64")}`,
     },
   });
 
