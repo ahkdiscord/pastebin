@@ -139,6 +139,7 @@
           { tag: customTags.error, class: "error" },
           { tag: tags.bool, class: "bool" },
           { tag: tags.keyword, class: "keyword" },
+          { tag: tags.string, class: "string" },
         ]),
       ),
     ],
@@ -214,15 +215,19 @@
     background-color: color-mix(in srgb, var(--slime) 25%, transparent);
   }
 
-  .editor :global(.error) {
-    background-color: var(--coral);
-  }
-
   .editor :global(.bool) {
     color: var(--berry);
   }
 
+  .editor :global(.error) {
+    background-color: var(--coral);
+  }
+
   .editor :global(.keyword) {
     color: var(--blush);
+  }
+
+  .editor :global(.string) {
+    color: var(--royal);
   }
 </style>

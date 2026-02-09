@@ -27,24 +27,24 @@ Directive {
   winActivateForceDirective
 }
 
-clipboardTimeoutDirective { clipboardTimeout Integer }
-dllLoadDirective { dllLoad String { quotedDirectiveString | unquotedDirectiveString }? }
-errorStdOutDirective { errorStdOut String { quotedDirectiveString | unquotedDirectiveString }? }
-hotIfDirective { hotIf expression? }
-hotIfTimeoutDirective { hotIfTimeout Integer }
-hotstringDirective { hotstring Keyword { noMouse } | hotstring Keyword { endChars } String { unquotedDirectiveString } | hotstring String { unquotedDirectiveString } }
-includeDirective { include String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
-includeAgainDirective { includeAgain String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
-inputLevelDirective { inputLevel Integer? }
-maxThreadsDirective { maxThreads Integer }
-maxThreadsBufferDirective { maxThreadsBuffer Boolean { Boolean | "0" | "1" }? }
-maxThreadsPerHotkeyDirective { maxThreadsPerHotkey Integer }
+clipboardTimeoutDirective { clipboardTimeout space+ Integer }
+dllLoadDirective { dllLoad (space+ String { quotedDirectiveString | unquotedDirectiveString })? }
+errorStdOutDirective { errorStdOut (space+ String { quotedDirectiveString | unquotedDirectiveString })? }
+hotIfDirective { hotIf (space+ expression)? }
+hotIfTimeoutDirective { hotIfTimeout space+ Integer }
+hotstringDirective { hotstring space+ Keyword { noMouse } | hotstring space+ Keyword { endChars } " " String { unquotedDirectiveString } | hotstring space+ String { unquotedDirectiveString } }
+includeDirective { include space+ String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
+includeAgainDirective { includeAgain space+ String { quotedDirectiveString | unquotedDirectiveString | angleBracketedDirectiveString } }
+inputLevelDirective { inputLevel (space+ Integer)? }
+maxThreadsDirective { maxThreads space+ Integer }
+maxThreadsBufferDirective { maxThreadsBuffer (space+ Boolean { Boolean | "0" | "1" })? }
+maxThreadsPerHotkeyDirective { maxThreadsPerHotkey space+ Integer }
 noTrayIconDirective { noTrayIcon }
-requiresDirective { requires unquotedDirectiveString+ }
-singleInstanceDirective { singleInstance (force | ignore | prompt | off)? }
-suspendExemptDirective { suspendExempt Boolean { Boolean | "0" | "1" }? }
-useHookDirective { useHook Boolean { Boolean | "0" | "1" }? }
-warnDirective { warn (Keyword { varUnset | localSameAsGlobal | unreachable | all } ("," Keyword { msgBox | stdOut | outputDebug | off })?)? }
+requiresDirective { requires space+ String { unquotedDirectiveString } }
+singleInstanceDirective { singleInstance (space+ (force | ignore | prompt | off))? }
+suspendExemptDirective { suspendExempt (space+ Boolean { Boolean | "0" | "1" })? }
+useHookDirective { useHook (space+ Boolean { Boolean | "0" | "1" })? }
+warnDirective { warn (space+ Keyword { varUnset | localSameAsGlobal | unreachable | all } (space* "," space* Keyword { msgBox | stdOut | outputDebug | off })?)? }
 winActivateForceDirective { winActivateForce }
 
 @external tokens directiveKeywords from "./ahk-v2.0.tokens" {
@@ -92,6 +92,7 @@ expression {
 
 @tokens {
   lineEnd { "\r\n" | "\n" | @eof }
+  space { $[ \t] }
 
   Integer { simpleInteger | hexadecimalInteger }
   simpleInteger { $[0-9]+ }
