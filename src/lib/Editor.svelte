@@ -68,7 +68,6 @@
 
       const tree = support.language.parser.parse(content);
 
-      console.clear();
       tree.cursor().iterate(
         node => {
           console.group(node.type.name);
@@ -140,6 +139,7 @@
           { tag: tags.bool, class: "bool" },
           { tag: tags.keyword, class: "keyword" },
           { tag: tags.labelName, class: "label" },
+          { tag: tags.lineComment, class: "line-comment" },
           { tag: tags.string, class: "string" },
         ]),
       ),
@@ -230,6 +230,10 @@
 
   .editor :global(.label) {
     color: var(--slime);
+  }
+
+  .editor :global(.line-comment) {
+    color: var(--dusty);
   }
 
   .editor :global(.string) {

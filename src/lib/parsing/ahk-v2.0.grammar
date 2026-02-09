@@ -2,8 +2,14 @@
 
 @top program {
   (
-    (Directive | Label)
-    lineEnd+
+    (
+      Directive |
+      Label
+    )?
+    (
+      LineComment |
+      lineEnd
+    )
   )*
   fileEnd
 }
@@ -97,13 +103,20 @@ expression {
   Boolean
 }
 
-lineEnd { lineEnding }
+@local tokens {
+  lineCommentEnd { "\r\n" | "\n" }
+  @else lineCommentContent
+}
+@skip {} {
+  LineComment {
+    lineCommentStart lineCommentContent+ lineCommentEnd
+  }
+}
 
 @tokens {
-  lineEnding { "\r\n" | "\n" }
+  lineEnd { "\r\n" | "\n" }
   fileEnd { @eof }
   space { $[ \t] }
-  @precedence { space, " " }
 
   Name { $[a-zA-Z_] $[a-zA-Z0-9_]* }
 
@@ -111,8 +124,10 @@ lineEnd { lineEnding }
   simpleInteger { $[0-9]+ }
   hexadecimalInteger { ("0x" | "0X") $[0-9a-fA-F]+ }
 
+  lineCommentStart { ";" }
+
   quotedDirectiveString { '"' ![\r\n]* '"' }
   angleBracketedDirectiveString { '<' ![\r\n]* '>' }
-  unquotedDirectiveString { ![\r\n ] ![\r\n]* lineEnding }
+  unquotedDirectiveString { ![\r\n ] ![\r\n]* lineEnd }
   @precedence { quotedDirectiveString, angleBracketedDirectiveString, unquotedDirectiveString }
 }

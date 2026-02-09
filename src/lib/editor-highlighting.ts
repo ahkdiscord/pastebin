@@ -19,6 +19,7 @@ function parserWithMetadata(baseParser: LRParser) {
         "Directive/Keyword": tags.keyword,
         "Directive/String": tags.string,
         "Label/Name": tags.labelName,
+        "LineComment": tags.lineComment,
       }),
     ],
   });

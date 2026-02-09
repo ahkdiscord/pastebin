@@ -10,9 +10,6 @@ export function specializeIdentifier(name: string) {
   return -1;
 }
 
-// NOTE: This is a bit inefficient as it peeks a lot more than it would technically need to.
-// The reason for this is code simplicity. The alternative would be a tree of switch-statements.
-// This is better, unless it causes actual performance issues.
 export const controlFlowKeywords = new ExternalTokenizer(input => {
   return (
     acceptIfMatch(input, "as", terms.as) ||
