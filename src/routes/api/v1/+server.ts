@@ -18,7 +18,7 @@ export async function POST({ request }) {
 }
 
 const DeleteRequest = object({
-  pasteIds: array(hex().length(8)).max(5),
+  pasteIds: array(hex().length(8)).max(10),
 });
 export async function DELETE({ request }) {
   const delayedRequestEnd = add(new Date(), { seconds: 2.0 });
