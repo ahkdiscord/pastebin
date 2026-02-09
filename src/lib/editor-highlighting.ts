@@ -18,6 +18,7 @@ function parserWithMetadata(baseParser: LRParser) {
         "Directive/Boolean": tags.bool,
         "Directive/Keyword": tags.keyword,
         "Directive/String": tags.string,
+        "Label/Name": tags.labelName,
       }),
     ],
   });

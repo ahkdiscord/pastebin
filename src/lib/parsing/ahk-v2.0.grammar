@@ -1,8 +1,8 @@
 @top program {
   (
-    (Directive)*
-  )
-  lineEnd
+    (Directive | Label)
+    lineEnd
+  )*
 }
 
 Directive {
@@ -25,6 +25,10 @@ Directive {
   useHookDirective |
   warnDirective |
   winActivateForceDirective
+}
+
+Label {
+  Name ":"
 }
 
 clipboardTimeoutDirective { clipboardTimeout space+ Integer }
@@ -93,6 +97,8 @@ expression {
 @tokens {
   lineEnd { "\r\n" | "\n" | @eof }
   space { $[ \t] }
+
+  Name { $[a-zA-Z_] $[a-zA-Z0-9_]* }
 
   Integer { simpleInteger | hexadecimalInteger }
   simpleInteger { $[0-9]+ }

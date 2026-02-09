@@ -139,6 +139,7 @@
           { tag: customTags.error, class: "error" },
           { tag: tags.bool, class: "bool" },
           { tag: tags.keyword, class: "keyword" },
+          { tag: tags.labelName, class: "label" },
           { tag: tags.string, class: "string" },
         ]),
       ),
@@ -225,6 +226,10 @@
 
   .editor :global(.keyword) {
     color: var(--blush);
+  }
+
+  .editor :global(.label) {
+    color: var(--slime);
   }
 
   .editor :global(.string) {
