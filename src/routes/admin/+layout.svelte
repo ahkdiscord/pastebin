@@ -20,7 +20,7 @@
     </span>
     <span class="together padded">
       Logged in as: {data.user.name}
-      <Link href="/admin/login">
+      <Link href="/admin/login" data-sveltekit-preload-data="off">
         <LogOut size={16} />
       </Link>
     </span>
