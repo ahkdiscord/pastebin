@@ -219,7 +219,10 @@ labelDeclaration {
 }
 
 hotkeyDeclaration {
-  "°todo::"
+  HotkeyModifiers { hotkeyModifier+ }? HotkeyName { identifier ~name } HotkeyModifiers { up }? "::"
+}
+@external tokens hotkeys from "./ahk-v2.0.tokens" {
+  up
 }
 
 hotstringDeclaration {
@@ -495,6 +498,9 @@ Name { identifier }
   scientificFloat {
     ($[0-9]+ "." $[0-9]* | $[0-9]* "." $[0-9]+ | $[0-9]+) "e" ("+" | "-")? $[0-9]+
   }
+
+  hotkeyModifier { $[<>]? $[#!^+] | $[*~$] }
+  @precedence { hotkeyModifier, "#", "+", "!", "~" }
 
   @precedence { Float, Integer, "." }
 

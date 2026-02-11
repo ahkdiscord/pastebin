@@ -150,6 +150,7 @@
           { tag: tags.keyword, class: "keyword" },
           { tag: tags.labelName, class: "label" },
           { tag: tags.lineComment, class: "comment" },
+          { tag: tags.macroName, class: "hotkey" },
           { tag: tags.modifier, class: "modifier" },
           { tag: tags.name, class: "name" },
           { tag: tags.null, class: "unset" },
@@ -302,5 +303,9 @@
 
   .editor :global(.unset) {
     color: var(--berry);
+  }
+
+  .editor :global(.hotkey) {
+    color: var(--slime);
   }
 </style>

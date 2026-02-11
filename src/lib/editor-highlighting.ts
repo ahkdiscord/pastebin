@@ -30,6 +30,8 @@ function parserWithMetadata(baseParser: LRParser) {
         "Float": tags.float,
         "FunctionName": tags.function(tags.name),
         "Get Set": tags.function(tags.keyword),
+        "HotkeyModifiers": tags.macroName,
+        "HotkeyName": tags.macroName,
         "Integer": tags.integer,
         "IsSet": tags.operatorKeyword,
         "LabelName": tags.labelName,
