@@ -10,6 +10,14 @@ export function specializeIdentifier(name: string) {
   return -1;
 }
 
+export function specializeKey(name: string) {
+  if (/^`[:;` ]$/.test(name)) return terms.keyName;
+
+  if (keys.test(name)) return terms.keyName;
+
+  if (name.length === 1) return terms.keyName;
+}
+
 export const controlFlowKeywords = new ExternalTokenizer(input => {
   return (
     acceptIfMatch(input, "as", terms.as) ||
@@ -93,6 +101,11 @@ export const specialKeywords = new ExternalTokenizer(input => {
     acceptIfMatch(input, "or", terms.Or) ||
     acceptIfMatch(input, "unset", terms.Unset)
   );
+});
+
+export const hotkeys = new ExternalTokenizer((input, stack) => {
+  if (acceptIfMatch(input, " up", terms.hotkeySuffix)) return;
+  if (/\W/.test(String.fromCharCode(input.peek(-1))) && acceptIfMatch(input, "up", terms.hotkeySuffix)) return;
 });
 
 function isNextWord(inputStream: InputStream, string: string): boolean {
@@ -663,3 +676,6 @@ const builtinClasses = new Set([
   "comobject",
   "comvalueref",
 ]);
+
+const keys =
+  /^([LRM]Button|XButton[12]|Wheel(Down|Up|Left|Right)|CapsLock|Space|Tab|Enter|Escape|Esc|Backspace|BS|ScrollLock|Delete|Del|Insert|Ins|Home|End|PgUp|PgDn|Up|Down|Left|Right|Numpad([0-9]|Ins|End|Down|PgDn|Left|Clear|Right|Home|Up|PgUp|Del|Div|Mult|Add|Sub|Enter)|NumLock|F2[0-4]|F1[0-9]|F[1-9]|[LR](Win|Alt|Shift|Control|Ctrl)|Control|Ctrl|Alt|Shift|Browser_(Back|Forward|Refresh|Stop|Search|Favorites|Home)|Volume_(Mute|Down|Up)|Media_(Next|Prev|Stop|Play_Pause)|Launch_(Mail|Media|App1|App2)|AppsKey|PrintScreen|CtrlBreak|Pause|Help|Sleep|SC[0-9a-f]{,3}|VK[0-9a-f]{,2})$/i;

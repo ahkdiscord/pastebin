@@ -7,6 +7,8 @@ import type { Language } from "./Language";
 
 export const customTags = {
   error: Tag.define("error"),
+  hotkeyKey: Tag.define("hotkeyKey"),
+  hotkeyModifiers: Tag.define("hotkeyModifiers"),
 };
 
 function parserWithMetadata(baseParser: LRParser) {
@@ -19,6 +21,8 @@ function parserWithMetadata(baseParser: LRParser) {
         "Directive/Boolean": tags.bool,
         "Directive/Keyword": tags.keyword,
         "Directive/String": tags.string,
+        "Hotkey/Key": customTags.hotkeyKey,
+        "Hotkey/Modifiers": customTags.hotkeyModifiers,
         "Label/Name": tags.labelName,
         "LineComment": tags.lineComment,
       }),

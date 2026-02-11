@@ -5,12 +5,13 @@
     (
       BlockComment |
       Directive |
-      Label
-    )?
+      Label |
+      Hotkey
+    )
     (
       LineComment |
       lineEnd
-    )
+    )+
   )*
   fileEnd
 }
@@ -38,7 +39,15 @@ Directive {
 }
 
 Label {
-  Name ":"
+  Name { labelOrHotkeyName | keyName } ":"
+}
+
+Hotkey {
+  Modifiers { hotkeyPrefix+ }? (Key { keyName } | labelOrHotkeyName) Modifiers { hotkeySuffix? } "::"
+}
+
+@external specialize { labelOrHotkeyName } specializeKey from "./ahk-v2.0.tokens" {
+  keyName
 }
 
 clipboardTimeoutDirective { clipboardTimeout Integer }
@@ -96,6 +105,10 @@ winActivateForceDirective { winActivateForce }
   outputDebug
 }
 
+@external tokens hotkeys from "./ahk-v2.0.tokens" {
+  hotkeySuffix
+}
+
 expression {
   "°TODO: expression"
 }
@@ -129,7 +142,7 @@ expression {
   fileEnd { @eof }
   space { $[ \t] }
 
-  Name { $[a-zA-Z_] $[a-zA-Z0-9_]* }
+  name { $[a-zA-Z_] $[a-zA-Z0-9_]* }
 
   Integer { simpleInteger | hexadecimalInteger }
   simpleInteger { $[0-9]+ }
@@ -137,6 +150,11 @@ expression {
 
   lineCommentStart { ";" }
   blockCommentStart { "/*" }
+
+  labelOrHotkeyName { ![ \t\n\r:;]+ | "`:" | "`;" }
+  @precedence { lineCommentStart, blockCommentStart, hotkeyPrefix, labelOrHotkeyName, name }
+
+  hotkeyPrefix { $[<>]? $[#!^+] | $[*~$] }
 
   quotedDirectiveString { '"' ![\r\n]* '"' }
   angleBracketedDirectiveString { '<' ![\r\n]* '>' }

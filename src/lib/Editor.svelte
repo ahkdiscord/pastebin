@@ -139,6 +139,8 @@
           { tag: tags.blockComment, class: "block-comment" },
           { tag: tags.bool, class: "bool" },
           { tag: tags.keyword, class: "keyword" },
+          { tag: customTags.hotkeyKey, class: "hotkey-key" },
+          { tag: customTags.hotkeyModifiers, class: "hotkey-modifiers" },
           { tag: tags.labelName, class: "label" },
           { tag: tags.lineComment, class: "line-comment" },
           { tag: tags.string, class: "string" },
@@ -227,6 +229,14 @@
 
   .editor :global(.keyword) {
     color: var(--blush);
+  }
+
+  .editor :global(.hotkey-key) {
+    color: var(--slime);
+  }
+
+  .editor :global(.hotkey-modifiers) {
+    color: var(--berry);
   }
 
   .editor :global(.label) {
