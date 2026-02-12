@@ -32,7 +32,8 @@ export async function init() {
     CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY DEFAULT uuidv7(),
       name VARCHAR(255) NOT NULL,
-      password VARCHAR(255) NOT NULL
+      password VARCHAR(255) NOT NULL,
+      is_admin BOOLEAN NOT NULL DEFAULT false
     )
   `;
   await sql`
@@ -46,7 +47,7 @@ export async function init() {
   if (dev) {
     await sql`DELETE FROM sessions`;
     await sql`DELETE FROM users`;
-    await sql`INSERT INTO users ${sql({ name: "test", password: await Bun.password.hash("test") })}`;
+    await sql`INSERT INTO users ${sql({ name: "test", password: await Bun.password.hash("test"), is_admin: true })}`;
   }
 }
 
@@ -137,14 +138,18 @@ export async function getUserData(id: string) {
 }
 
 export async function getUserByName(name: string) {
-  const users: { id: string; password: string }[] = await sql`
-    SELECT id, password FROM users WHERE name = ${name}
+  const users: { id: string; password: string; is_admin: boolean }[] = await sql`
+    SELECT id, password, is_admin FROM users WHERE name = ${name}
   `;
 
   if (!users || !users.length) return undefined;
   if (users.length > 1) throw new Error("More than one user with the same name!");
 
-  return users[0];
+  return {
+    id: users[0].id,
+    password: users[0].password,
+    isAdmin: users[0].is_admin,
+  };
 }
 
 export async function startSession(userId: string): Promise<string> {

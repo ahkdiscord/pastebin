@@ -23,6 +23,7 @@ export const actions = {
 
       const user = await getUserByName(username);
       if (!user) error(401);
+      if (!user.isAdmin) error(401);
 
       const password = data.get("password");
       if (typeof password !== "string") error(400);
