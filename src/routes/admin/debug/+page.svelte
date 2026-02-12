@@ -85,7 +85,7 @@
     height: 8lh;
 
     border-radius: 0.5em;
-    overflow: clip;
+    overflow: hidden;
   }
 
   .sql-output {
