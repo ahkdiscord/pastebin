@@ -31,13 +31,12 @@
   </main>
 
   <footer>
-    <Button>
-      <Cog size={16} /> Settings
-    </Button>
-
-    <Button onclick={() => (aboutDialogOpen = true)}>
-      <Info size={16} /> About
-    </Button>
+    <div class="together"></div>
+    <div class="together">
+      <Button onclick={() => (aboutDialogOpen = true)}>
+        <Info size={16} /> About
+      </Button>
+    </div>
   </footer>
 </div>
 
