@@ -1,10 +1,20 @@
 FROM oven/bun:1 AS build
 
+RUN apt-get update && apt-get install -y python3 make g++ nodejs emscripten
+
 WORKDIR /app
 
 COPY . .
-RUN bun --bun install --frozen-lockfile
 
+WORKDIR /app/tree-sitter-autohotkey-v2
+
+RUN bun --bun install --frozen-lockfile
+RUN bun run tree-sitter generate
+RUN bun run tree-sitter build --wasm
+
+WORKDIR /app
+
+RUN bun --bun install --frozen-lockfile
 RUN bun --bun run build
 
 FROM oven/bun:1
