@@ -12,7 +12,7 @@
         "@lucide/svelte": "^0.563.1",
         "codemirror": "^6.0.2",
         "date-fns": "^4.1.0",
-        "tree-sitter-autohotkey-v2": "../tree-sitter-autohotkey-v2",
+        "tree-sitter-autohotkey-v2": "./tree-sitter-autohotkey-v2",
         "web-tree-sitter": "^0.26.5",
         "zod": "^4.3.6",
       },
@@ -555,7 +555,7 @@
 
     "tree-sitter": ["tree-sitter@0.22.4", "", { "dependencies": { "node-addon-api": "^8.3.0", "node-gyp-build": "^4.8.4" } }, "sha512-usbHZP9/oxNsUY65MQUsduGRqDHQOou1cagUSwjhoSYAmSahjQDAVsh9s+SlZkn8X8+O1FULRGwHu7AFP3kjzg=="],
 
-    "tree-sitter-autohotkey-v2": ["tree-sitter-autohotkey-v2@file:../tree-sitter-autohotkey-v2", { "dependencies": { "node-addon-api": "^8.5.0", "node-gyp-build": "^4.8.4" }, "devDependencies": { "prebuildify": "^6.0.1", "tree-sitter": "^0.22.4", "tree-sitter-cli": "^0.25.10" }, "peerDependencies": { "tree-sitter": "^0.22.4" }, "optionalPeers": ["tree-sitter"] }],
+    "tree-sitter-autohotkey-v2": ["tree-sitter-autohotkey-v2@file:tree-sitter-autohotkey-v2", { "dependencies": { "node-addon-api": "^8.5.0", "node-gyp-build": "^4.8.4" }, "devDependencies": { "prebuildify": "^6.0.1", "tree-sitter": "^0.22.4", "tree-sitter-cli": "^0.25.10" }, "peerDependencies": { "tree-sitter": "^0.22.4" }, "optionalPeers": ["tree-sitter"] }],
 
     "tree-sitter-cli": ["tree-sitter-cli@0.25.10", "", { "bin": { "tree-sitter": "cli.js" } }, "sha512-KoebQguKMCIghisEOdA372TIbrUl0kdnfZ9YQIBRAeOvNSKe85XbU4LuFW7hduRUwJj0rAG7pX5wo9sZhbBF1g=="],
 

@@ -1,0 +1,3 @@
+[submodule "tree-sitter-autohotkey-v2"]
+	path = tree-sitter-autohotkey-v2
+	url = https://github.com/ahkdiscord/tree-sitter-autohotkey-v2.git
