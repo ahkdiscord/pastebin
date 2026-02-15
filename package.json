@@ -7,13 +7,11 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "prepare": "svelte-kit sync && bun run generate-parser:v1.1 && bun run generate-parser:v2.0",
+    "prepare": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check . && eslint .",
-    "format": "prettier --write .",
-    "generate-parser:v1.1": "lezer-generator --typeScript --output src/lib/parsing/ahk-v1.1.gen.ts src/lib/parsing/ahk-v1.1.grammar",
-    "generate-parser:v2.0": "lezer-generator --typeScript --output src/lib/parsing/ahk-v2.0.gen.ts src/lib/parsing/ahk-v2.0.grammar"
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.1",
@@ -42,8 +40,6 @@
     "@codemirror/search": "^6.6.0",
     "@codemirror/state": "^6.5.4",
     "@codemirror/view": "^6.39.11",
-    "@lezer/highlight": "^1.2.3",
-    "@lezer/lr": "^1.4.8",
     "@lucide/svelte": "^0.563.1",
     "codemirror": "^6.0.2",
     "date-fns": "^4.1.0",

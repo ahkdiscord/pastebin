@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Compartment, EditorState, type Extension } from "@codemirror/state";
+  import { Compartment, EditorState } from "@codemirror/state";
   import { EditorView } from "codemirror";
   import {
     drawSelection,
@@ -12,20 +12,10 @@
   } from "@codemirror/view";
   import { onDestroy, onMount } from "svelte";
   import { defaultKeymap, history, indentWithTab } from "@codemirror/commands";
-  import {
-    bracketMatching,
-    foldGutter,
-    HighlightStyle,
-    indentOnInput,
-    LanguageSupport,
-    syntaxHighlighting,
-  } from "@codemirror/language";
+  import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
   import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
   import { highlightSelectionMatches } from "@codemirror/search";
-  import { getLrLanguage } from "./editor-highlighting";
-  import { tags } from "@lezer/highlight";
   import type { Language } from "./Language";
-  import { dev } from "$app/environment";
 
   interface Props {
     content: string;
@@ -53,47 +43,10 @@
     });
   });
 
-  const languageSupportCompartment = new Compartment();
-  $effect(() => {
-    view?.dispatch({
-      effects: languageSupportCompartment.reconfigure(getLanguageSupport(language)),
-    });
-  });
-
-  if (dev) {
-    $effect(() => {
-      const support = languageSupportCompartment.get(editorState) as LanguageSupport | [];
-
-      if (!(support instanceof LanguageSupport)) return;
-
-      const tree = support.language.parser.parse(content);
-
-      console.clear();
-      tree.cursor().iterate(
-        node => {
-          console.group(node.type.name);
-          console.debug(content.slice(node.from, node.to));
-        },
-        () => console.groupEnd(),
-      );
-    });
-  }
-
-  function getLanguageSupport(language: Language): Extension {
-    const lrLanguage = getLrLanguage(language);
-
-    if (!lrLanguage) return [];
-
-    return new LanguageSupport(lrLanguage);
-  }
-
   const editorState = EditorState.create({
     // svelte-ignore state_referenced_locally
     doc: content,
     extensions: [
-      // svelte-ignore state_referenced_locally
-      languageSupportCompartment.of(getLanguageSupport(language)),
-
       lineNumbers(),
       foldGutter(),
 
@@ -133,37 +86,6 @@
 
         return null;
       }),
-
-      syntaxHighlighting(
-        HighlightStyle.define([
-          { tag: tags.blockComment, class: "comment" },
-          { tag: tags.bool, class: "bool" },
-          { tag: tags.className, class: "class" },
-          { tag: tags.comment, class: "comment" },
-          { tag: tags.controlKeyword, class: "keyword" },
-          { tag: tags.definitionOperator, class: "definition operator" },
-          { tag: tags.escape, class: "escape" },
-          { tag: tags.float, class: "float number" },
-          { tag: tags.function(tags.keyword), class: "function keyword" },
-          { tag: tags.function(tags.name), class: "function" },
-          { tag: tags.integer, class: "integer number" },
-          { tag: tags.keyword, class: "keyword" },
-          { tag: tags.labelName, class: "label" },
-          { tag: tags.lineComment, class: "comment" },
-          { tag: tags.macroName, class: "hotkey" },
-          { tag: tags.modifier, class: "modifier" },
-          { tag: tags.name, class: "name" },
-          { tag: tags.null, class: "unset" },
-          { tag: tags.operatorKeyword, class: "keyword" },
-          { tag: tags.propertyName, class: "variable" },
-          { tag: tags.standard(tags.className), class: "builtin class constant" },
-          { tag: tags.standard(tags.constant(tags.variableName)), class: "builtin constant variable" },
-          { tag: tags.standard(tags.function(tags.variableName)), class: "builtin function" },
-          { tag: tags.standard(tags.variableName), class: "builtin variable" },
-          { tag: tags.string, class: "string" },
-          { tag: tags.variableName, class: "variable" },
-        ]),
-      ),
     ],
   });
 
