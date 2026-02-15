@@ -3,9 +3,9 @@ FROM oven/bun:1 AS build
 WORKDIR /app
 
 COPY . .
-RUN bun install --frozen-lockfile
+RUN bun --bun install --frozen-lockfile
 
-RUN bun run build
+RUN bun --bun run build
 
 FROM oven/bun:1
 
