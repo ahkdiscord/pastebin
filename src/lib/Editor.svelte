@@ -22,6 +22,7 @@
   import wasmUrl from "web-tree-sitter/web-tree-sitter.wasm?url";
   import autohotkeyV2WasmUrl from "tree-sitter-autohotkey-v2/tree-sitter-autohotkey_v2.wasm?url";
   import type { Tree } from "web-tree-sitter";
+  import { dev } from "$app/environment";
 
   interface Props {
     content: string;
@@ -99,6 +100,10 @@
 
         content = doc;
 
+        if (dev) {
+          console.log(tree.rootNode.toString());
+        }
+
         return null;
       }),
     ],
@@ -111,6 +116,7 @@
 
     do {
       if (iter.startIndex === iter.endIndex) continue;
+      if (iter.currentNode.type === "source_file") continue;
       ranges.push(Decoration.mark({ class: iter.currentNode.type }).range(iter.startIndex, iter.endIndex));
     } while (iter.gotoFirstChild() || iter.gotoNextSibling() || (iter.gotoParent() && iter.gotoNextSibling()));
 
@@ -212,5 +218,13 @@
 
   .editor :global(.integer) {
     color: var(--berry);
+  }
+
+  .editor :global(.string) {
+    color: var(--royal);
+  }
+
+  .editor :global(.string .escape) {
+    color: var(--peach);
   }
 </style>
