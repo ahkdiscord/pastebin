@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { Compartment, EditorState } from "@codemirror/state";
+  import { Compartment, EditorState, Range, RangeSet } from "@codemirror/state";
   import { EditorView } from "codemirror";
   import {
+    Decoration,
     drawSelection,
     dropCursor,
     highlightActiveLineGutter,
@@ -9,6 +10,7 @@
     keymap,
     lineNumbers,
     rectangularSelection,
+    type DecorationSet,
   } from "@codemirror/view";
   import { onDestroy, onMount } from "svelte";
   import { defaultKeymap, history, indentWithTab } from "@codemirror/commands";
@@ -16,6 +18,10 @@
   import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
   import { highlightSelectionMatches } from "@codemirror/search";
   import type { Language } from "./Language";
+  import { Parser, Language as TreeSitterLanguage } from "web-tree-sitter";
+  import wasmUrl from "web-tree-sitter/web-tree-sitter.wasm?url";
+  import autohotkeyV2WasmUrl from "tree-sitter-autohotkey-v2/tree-sitter-autohotkey_v2.wasm?url";
+  import type { Tree } from "web-tree-sitter";
 
   interface Props {
     content: string;
@@ -28,6 +34,9 @@
 
   let wrapper: HTMLDivElement;
   let view: EditorView | undefined = $state(undefined);
+  let parser: Parser | undefined = $state(undefined);
+  let tree: Tree | undefined = $state(undefined);
+  let decorations: DecorationSet = RangeSet.empty;
 
   const tabSizeCompartment = new Compartment();
   $effect(() => {
@@ -77,17 +86,42 @@
 
       EditorView.theme({}, { dark: true }),
 
+      EditorView.decorations.of(getDecorations),
+
       EditorState.transactionExtender.of(transaction => {
         if (!transaction.docChanged) return null;
 
-        const string = transaction.newDoc.toString();
+        const doc = transaction.newDoc.toString();
 
-        content = string;
+        tree = parser?.parse(doc)!;
+
+        decorations = computeDecorations(tree);
+
+        content = doc;
 
         return null;
       }),
     ],
   });
+
+  function computeDecorations(tree: Tree) {
+    const ranges: Range<Decoration>[] = [];
+
+    const iter = tree.walk();
+
+    do {
+      if (iter.startIndex === iter.endIndex) continue;
+      ranges.push(Decoration.mark({ class: iter.currentNode.type }).range(iter.startIndex, iter.endIndex));
+    } while (iter.gotoFirstChild() || iter.gotoNextSibling() || (iter.gotoParent() && iter.gotoNextSibling()));
+
+    iter.delete();
+
+    return RangeSet.of(ranges);
+  }
+
+  function getDecorations(): DecorationSet {
+    return decorations;
+  }
 
   $effect(() => {
     if (view) {
@@ -97,10 +131,23 @@
     }
   });
 
-  onMount(() => {
+  onMount(async () => {
     view = new EditorView({
       state: editorState,
     });
+
+    Parser.init({
+      locateFile() {
+        return wasmUrl;
+      },
+    })
+      .then(() => {
+        parser = new Parser();
+        return TreeSitterLanguage.load(autohotkeyV2WasmUrl);
+      })
+      .then(lang => {
+        parser!.setLanguage(lang);
+      });
   });
 
   onDestroy(() => {
@@ -159,75 +206,11 @@
     background-color: color-mix(in srgb, var(--slime) 25%, transparent);
   }
 
-  .editor :global(.comment) {
-    color: var(--dusty);
-  }
-
-  .editor :global(.bool) {
-    color: var(--berry);
-  }
-
-  .editor :global(.number) {
-    color: var(--berry);
-  }
-
-  .editor :global(.keyword) {
+  .editor :global(.directive) {
     color: var(--blush);
   }
 
-  .editor :global(.variable) {
-    color: var(--paper);
-  }
-
-  .editor :global(.class) {
-    color: var(--magic);
-  }
-
-  .editor :global(.string) {
-    color: var(--royal);
-  }
-
-  .editor :global(.escape) {
-    color: var(--peach);
-  }
-
-  .editor :global(.function) {
-    color: var(--slush);
-  }
-
-  .editor :global(.function.keyword) {
-    font-weight: bolder;
-  }
-
-  .editor :global(.constant) {
-    font-style: italic;
-  }
-
-  .editor :global(.builtin) {
-    font-weight: bolder;
-  }
-
-  .editor :global(.modifier) {
-    color: var(--slime);
-  }
-
-  .editor :global(.operator) {
-    color: var(--white);
-  }
-
-  .editor :global(.definition.operator) {
-    font-weight: bolder;
-  }
-
-  .editor :global(.label) {
-    color: var(--slime);
-  }
-
-  .editor :global(.unset) {
+  .editor :global(.integer) {
     color: var(--berry);
-  }
-
-  .editor :global(.hotkey) {
-    color: var(--slime);
   }
 </style>

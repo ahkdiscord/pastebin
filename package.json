@@ -43,6 +43,8 @@
     "@lucide/svelte": "^0.563.1",
     "codemirror": "^6.0.2",
     "date-fns": "^4.1.0",
+    "tree-sitter-autohotkey-v2": "../tree-sitter-autohotkey-v2",
+    "web-tree-sitter": "^0.26.5",
     "zod": "^4.3.6"
   }
 }
