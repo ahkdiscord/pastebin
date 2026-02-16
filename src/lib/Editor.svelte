@@ -227,4 +227,8 @@
   .editor :global(.string .escape) {
     color: var(--peach);
   }
+
+  .editor :global(.label .name) {
+    color: var(--slime);
+  }
 </style>
