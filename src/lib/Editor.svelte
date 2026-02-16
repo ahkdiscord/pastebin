@@ -142,18 +142,14 @@
       state: editorState,
     });
 
-    Parser.init({
+    await Parser.init({
       locateFile() {
         return wasmUrl;
       },
-    })
-      .then(() => {
-        parser = new Parser();
-        return TreeSitterLanguage.load(autohotkeyV2WasmUrl);
-      })
-      .then(lang => {
-        parser!.setLanguage(lang);
-      });
+    });
+    const lang = await TreeSitterLanguage.load(autohotkeyV2WasmUrl);
+    parser = new Parser();
+    parser!.setLanguage(lang);
   });
 
   onDestroy(() => {
