@@ -36,8 +36,14 @@
   let wrapper: HTMLDivElement;
   let view: EditorView | undefined = $state(undefined);
   let parser: Parser | undefined = $state(undefined);
-  let tree: Tree | undefined = $state(undefined);
-  let decorations: DecorationSet = RangeSet.empty;
+  let decorations: DecorationSet = $state(RangeSet.empty);
+
+  const decorationsCompartment = new Compartment();
+  $effect(() => {
+    view?.dispatch({
+      effects: decorationsCompartment.reconfigure(EditorView.decorations.of(decorations)),
+    });
+  });
 
   const tabSizeCompartment = new Compartment();
   $effect(() => {
@@ -87,27 +93,36 @@
 
       EditorView.theme({}, { dark: true }),
 
-      EditorView.decorations.of(getDecorations),
+      // svelte-ignore state_referenced_locally
+      decorationsCompartment.of(EditorView.decorations.of(decorations)),
 
       EditorState.transactionExtender.of(transaction => {
         if (!transaction.docChanged) return null;
 
         const doc = transaction.newDoc.toString();
 
-        tree = parser?.parse(doc)!;
-
-        decorations = computeDecorations(tree);
+        highlight(doc);
 
         content = doc;
-
-        if (dev) {
-          console.log(tree.rootNode.toString());
-        }
 
         return null;
       }),
     ],
   });
+
+  function highlight(doc?: string) {
+    const tree = parser?.parse(doc ?? editorState.doc.toString());
+
+    if (tree) {
+      decorations = computeDecorations(tree);
+
+      if (dev) {
+        console.log(tree.rootNode.toString());
+      }
+    } else {
+      decorations = RangeSet.empty;
+    }
+  }
 
   function computeDecorations(tree: Tree) {
     const ranges: Range<Decoration>[] = [];
@@ -125,10 +140,6 @@
     return RangeSet.of(ranges);
   }
 
-  function getDecorations(): DecorationSet {
-    return decorations;
-  }
-
   $effect(() => {
     if (view) {
       wrapper.replaceChildren(view.dom);
@@ -136,6 +147,31 @@
       wrapper.replaceChildren();
     }
   });
+
+  $effect(() => {
+    switch (language) {
+      case "ahkv2.0":
+        setTreeSitterLanguage(autohotkeyV2WasmUrl);
+        break;
+      default:
+        setTreeSitterLanguage(undefined);
+        break;
+    }
+  });
+
+  async function setTreeSitterLanguage(url: string | undefined) {
+    if (!parser) return;
+
+    if (!url) {
+      parser!.setLanguage(null);
+      highlight();
+      return;
+    }
+
+    const lang = await TreeSitterLanguage.load(url);
+    parser!.setLanguage(lang);
+    highlight();
+  }
 
   onMount(async () => {
     view = new EditorView({
@@ -147,9 +183,7 @@
         return wasmUrl;
       },
     });
-    const lang = await TreeSitterLanguage.load(autohotkeyV2WasmUrl);
     parser = new Parser();
-    parser!.setLanguage(lang);
   });
 
   onDestroy(() => {
