@@ -132,7 +132,17 @@
     do {
       if (iter.startIndex === iter.endIndex) continue;
       if (iter.currentNode.type === "source_file") continue;
-      ranges.push(Decoration.mark({ class: iter.currentNode.type.replace(/_/g, "-") }).range(iter.startIndex, iter.endIndex));
+
+      const mark = Decoration.mark({ class: iter.currentNode.type.replace(/_/g, "-") }).range(iter.startIndex, iter.endIndex);
+
+      const last = ranges.at(ranges.length - 1);
+      // If a child spans the same content as its parent, we need to swap their order so that codemirror nests them correctly.
+      // Otherwise the parent will be nested inside of the child.
+      if (iter.startIndex == last?.from && iter.endIndex == last?.to) {
+        ranges.push(mark, ranges.pop()!);
+      } else {
+        ranges.push(mark);
+      }
     } while (iter.gotoFirstChild() || iter.gotoNextSibling() || (iter.gotoParent() && iter.gotoNextSibling()));
 
     iter.delete();
@@ -281,5 +291,9 @@
   }
   .editor :global(.hotstring .replacement) {
     color: var(--royal);
+  }
+
+  .editor :global(.call-statement .function-name) {
+    color: var(--slush);
   }
 </style>
