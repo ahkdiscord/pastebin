@@ -267,4 +267,14 @@
   .editor :global(.hotkey .modifiers) {
     color: var(--berry);
   }
+
+  .editor :global(.hotstring .options) {
+    color: var(--berry);
+  }
+  .editor :global(.hotstring .trigger) {
+    color: var(--slime);
+  }
+  .editor :global(.hotstring .replacement) {
+    color: var(--royal);
+  }
 </style>
