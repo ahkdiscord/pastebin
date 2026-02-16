@@ -242,6 +242,11 @@
     background-color: color-mix(in srgb, var(--slime) 25%, transparent);
   }
 
+  .editor :global(.ERROR) {
+    text-decoration: underline 2px var(--coral);
+    text-decoration-skip-ink: none;
+  }
+
   .editor :global(.directive) {
     color: var(--blush);
   }
