@@ -117,7 +117,7 @@
     do {
       if (iter.startIndex === iter.endIndex) continue;
       if (iter.currentNode.type === "source_file") continue;
-      ranges.push(Decoration.mark({ class: iter.currentNode.type }).range(iter.startIndex, iter.endIndex));
+      ranges.push(Decoration.mark({ class: iter.currentNode.type.replace(/_/g, "-") }).range(iter.startIndex, iter.endIndex));
     } while (iter.gotoFirstChild() || iter.gotoNextSibling() || (iter.gotoParent() && iter.gotoNextSibling()));
 
     iter.delete();
@@ -223,12 +223,18 @@
   .editor :global(.string) {
     color: var(--royal);
   }
-
   .editor :global(.string .escape) {
     color: var(--peach);
   }
 
   .editor :global(.label .name) {
     color: var(--slime);
+  }
+
+  .editor :global(.hotkey .trigger) {
+    color: var(--slime);
+  }
+  .editor :global(.hotkey .modifiers) {
+    color: var(--berry);
   }
 </style>
