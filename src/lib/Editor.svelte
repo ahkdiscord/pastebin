@@ -153,6 +153,7 @@
   $effect(() => {
     if (view) {
       wrapper.replaceChildren(view.dom);
+      view.focus();
     } else {
       wrapper.replaceChildren();
     }
