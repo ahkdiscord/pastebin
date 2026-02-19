@@ -101,9 +101,9 @@
 
         const doc = transaction.newDoc.toString();
 
-        highlight(doc);
-
         content = doc;
+
+        highlight(doc);
 
         return null;
       }),
@@ -129,23 +129,40 @@
 
     const iter = tree.walk();
 
-    do {
-      if (iter.startIndex === iter.endIndex) continue;
-      if (iter.currentNode.type === "source_file") continue;
+    function visit() {
+      if (iter.startIndex === iter.endIndex) return;
 
-      const mark = Decoration.mark({ class: iter.currentNode.type.replace(/_/g, "-") }).range(iter.startIndex, iter.endIndex);
-
-      const last = ranges.at(ranges.length - 1);
-      // If a child spans the same content as its parent, we need to swap their order so that codemirror nests them correctly.
-      // Otherwise the parent will be nested inside of the child.
-      if (iter.startIndex == last?.from && iter.endIndex == last?.to) {
-        ranges.push(mark, ranges.pop()!);
-      } else {
-        ranges.push(mark);
+      if (dev) {
+        console.group(iter.currentNode.type);
+        console.debug(content.slice(iter.startIndex, iter.endIndex));
       }
-    } while (iter.gotoFirstChild() || iter.gotoNextSibling() || (iter.gotoParent() && iter.gotoNextSibling()));
+
+      if (iter.gotoFirstChild()) {
+        do {
+          visit();
+        } while (iter.gotoNextSibling());
+        iter.gotoParent();
+      }
+
+      ranges.push(Decoration.mark({ class: iter.currentNode.type.replace(/_/g, "-") }).range(iter.startIndex, iter.endIndex));
+
+      if (dev) {
+        console.groupEnd();
+      }
+    }
+
+    if (iter.gotoFirstChild()) {
+      do {
+        visit();
+      } while (iter.gotoNextSibling());
+    }
 
     iter.delete();
+
+    // Sort to maintain proper order
+    ranges.sort((a, b) => {
+      return a.from - b.from || b.to - a.to;
+    });
 
     return RangeSet.of(ranges);
   }
