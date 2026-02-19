@@ -273,7 +273,7 @@
     color: var(--peach);
   }
 
-  .editor :global(.label .name) {
+  .editor :global(.label-name) {
     color: var(--slime);
   }
 
@@ -294,7 +294,17 @@
     color: var(--royal);
   }
 
-  .editor :global(.call-statement .function-name) {
+  .editor :global(.function-name) {
     color: var(--slush);
+  }
+  .editor :global(.variable-name) {
+    color: var(--white);
+  }
+  .editor :global(.class-name) {
+    color: var(--magic);
+  }
+
+  .editor :global(.keyword) {
+    color: var(--blush);
   }
 </style>
