@@ -279,7 +279,9 @@
     color: var(--blush);
   }
 
-  .editor :global(.integer) {
+  .editor :global(.integer),
+  .editor :global(.float),
+  .editor :global(.boolean) {
     color: var(--berry);
   }
 
