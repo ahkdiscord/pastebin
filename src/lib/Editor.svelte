@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Compartment, EditorState, Range, RangeSet } from "@codemirror/state";
+  import { Compartment, EditorState, Range, RangeSet, Text } from "@codemirror/state";
   import { EditorView } from "codemirror";
   import {
     Decoration,
@@ -18,10 +18,10 @@
   import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
   import { highlightSelectionMatches } from "@codemirror/search";
   import type { Language } from "./Language";
-  import { Parser, Language as TreeSitterLanguage } from "web-tree-sitter";
+  import { Edit, Parser, Language as TreeSitterLanguage } from "web-tree-sitter";
   import wasmUrl from "web-tree-sitter/web-tree-sitter.wasm?url";
   import autohotkeyV2WasmUrl from "tree-sitter-autohotkey-v2/tree-sitter-autohotkey_v2.wasm?url";
-  import type { Tree } from "web-tree-sitter";
+  import { Tree } from "web-tree-sitter";
   import { dev } from "$app/environment";
 
   interface Props {
@@ -37,6 +37,7 @@
   let view: EditorView | undefined = $state(undefined);
   let parser: Parser | undefined = $state(undefined);
   let decorations: DecorationSet = $state(RangeSet.empty);
+  let tree: Tree | undefined = $state(undefined);
 
   const decorationsCompartment = new Compartment();
   $effect(() => {
@@ -99,6 +100,8 @@
       EditorState.transactionExtender.of(transaction => {
         if (!transaction.docChanged) return null;
 
+        transaction.changes.iterChangedRanges(editTree);
+
         const doc = transaction.newDoc.toString();
 
         content = doc;
@@ -110,8 +113,31 @@
     ],
   });
 
+  function editTree(oldFrom: number, oldTo: number, newFrom: number, newTo: number) {
+    if (oldFrom !== newFrom) console.warn("oldFrom !== newFrom");
+
+    tree?.edit(
+      new Edit({
+        startIndex: oldFrom,
+        startPosition: findPos(oldFrom),
+        oldEndIndex: oldTo,
+        oldEndPosition: findPos(oldTo),
+        newEndIndex: newTo,
+        newEndPosition: findPos(newTo),
+      }),
+    );
+
+    function findPos(index: number): { column: number; row: number } {
+      const before = content.slice(0, index);
+      return {
+        row: before.match(/\n/g)?.length ?? 0,
+        column: before.slice(before.lastIndexOf("\n")).length,
+      };
+    }
+  }
+
   function highlight(doc?: string) {
-    const tree = parser?.parse(doc ?? editorState.doc.toString());
+    tree = parser?.parse(doc ?? editorState.doc.toString(), tree) ?? undefined;
 
     if (tree) {
       decorations = computeDecorations(tree);
