@@ -36,6 +36,12 @@
   let panels: SubPanelLayout;
 </script>
 
+<svelte:head>
+  <title>AHK Pastebin</title>
+  <meta property="og:title" content={`Paste ${data.paste.id}`} />
+  <meta property="og:description" content={script.length < 100 ? script : script.slice(0, 100) + "…"} />
+</svelte:head>
+
 <Page>
   {#snippet headerStart()}
     <LanguageSelect bind:language />
