@@ -195,9 +195,11 @@
 
   $effect(() => {
     if (view) {
+      // eslint-disable-next-line svelte/no-dom-manipulating
       wrapper.replaceChildren(view.dom);
       view.focus();
     } else {
+      // eslint-disable-next-line svelte/no-dom-manipulating
       wrapper.replaceChildren();
     }
   });
