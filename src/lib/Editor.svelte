@@ -160,7 +160,7 @@
 
       if (dev) {
         console.group(iter.currentNode.type);
-        console.debug(content.slice(iter.startIndex, iter.endIndex));
+        console.debug(iter.currentNode.text);
       }
 
       if (iter.gotoFirstChild()) {
