@@ -11,6 +11,7 @@
   import Output from "$lib/Output.svelte";
   import { isRunnable, runScript } from "$lib/client/running";
   import LanguageSelect from "$lib/LanguageSelect.svelte";
+  import { getDisplayNames } from "$lib/Language";
 
   const { data } = $props();
 
@@ -38,7 +39,7 @@
 
 <svelte:head>
   <title>AHK Pastebin</title>
-  <meta property="og:title" content={`Paste ${data.paste.id}`} />
+  <meta property="og:title" content={`Paste ${data.paste.id} (${getDisplayNames(data.paste.language).long})`} />
   <meta property="og:description" content={script.length < 100 ? script : script.slice(0, 100) + "…"} />
 </svelte:head>
 
